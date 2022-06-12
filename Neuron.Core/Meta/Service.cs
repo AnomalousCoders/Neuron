@@ -12,8 +12,8 @@ namespace Neuron.Core.Meta
         protected Service()
         {
             logger = NeuronLogger.For(GetType());
-            Neuron.Kernel.Get<NeuronLogger>("Test");
-            Neuron.Kernel.Inject(this);
+            Globals.Kernel.Get<NeuronLogger>("Test");
+            Globals.Kernel.Inject(this);
         }
     }
 

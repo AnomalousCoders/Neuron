@@ -3,7 +3,7 @@ using Ninject;
 
 namespace Neuron.Core
 {
-    public static class Neuron
+    public static class Globals
     {
         public static NeuronBase Instance;
         public static IKernel Kernel;
@@ -11,6 +11,7 @@ namespace Neuron.Core
         {
             Instance = neuron;
             Kernel = neuron.Kernel;
+            
         }
 
         public static void Bind<T>(T instance)
@@ -40,7 +41,7 @@ namespace Neuron.Core
         }
     }
 
-    public static class NeuronDebug
+    public static class NeuronMinimal
     {
         public static void DebugHook()
         {
@@ -50,8 +51,8 @@ namespace Neuron.Core
 
         public static void DebugUnhook()
         {
-            Neuron.Instance = null;
-            Neuron.Kernel = null;
+            Globals.Instance = null;
+            Globals.Kernel = null;
         }
     }
 }

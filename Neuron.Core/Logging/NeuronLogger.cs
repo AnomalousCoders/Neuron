@@ -33,7 +33,7 @@ namespace Neuron.Core.Logging
         public ILogger GetLogger<T>() => _logger.ForContext<T>();
 
         public ILogger GetLogger(object owner) => _logger.ForContext(owner.GetType());
-        public static ILogger For<T>() => Neuron.Get<NeuronLogger>().GetLogger<T>();
-        public static ILogger For(Type type) => Neuron.Get<NeuronLogger>().GetLogger(type);
+        public static ILogger For<T>() => Globals.Get<NeuronLogger>().GetLogger<T>();
+        public static ILogger For(Type type) => Globals.Get<NeuronLogger>().GetLogger(type);
     }
 }

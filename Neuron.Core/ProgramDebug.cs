@@ -6,7 +6,7 @@ namespace Neuron.Core
     {
         public static void Main()
         {
-            NeuronDebug.DebugHook();
+            NeuronMinimal.DebugHook();
         }
 
         public static void Foo(EventHandler handler)

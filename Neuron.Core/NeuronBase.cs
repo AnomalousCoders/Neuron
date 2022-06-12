@@ -15,8 +15,8 @@ namespace Neuron.Core
         {
             Platform = platform;
             Kernel = new StandardKernel();
-            Neuron.Instance = this;
-            Neuron.Kernel = Kernel;
+            Globals.Instance = this;
+            Globals.Kernel = Kernel;
         }
 
         public abstract void Start();

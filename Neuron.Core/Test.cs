@@ -12,13 +12,13 @@ namespace Neuron.Core
         public void Run()
         {
             Manager.RegisterEvent<ExampleEvent>();
-            Manager.RegisterListener(Neuron.Instantiate<ExampleListener>());
+            Manager.RegisterListener(Globals.Instantiate<ExampleListener>());
             Manager.Raise(new ExampleEvent()
             {
                 Text = "Hello World!"
             });
 
-            Neuron.Bind<Test2>();
+            Globals.Bind<Test2>();
         }
     }
 

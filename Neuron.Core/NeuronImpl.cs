@@ -18,17 +18,17 @@ namespace Neuron.Core
         public override void Start()
         {
             Kernel = new StandardKernel();
-            Neuron.Hook(this);
-            Neuron.Bind<NeuronBase>(this);
+            Globals.Hook(this);
+            Globals.Bind<NeuronBase>(this);
             if (Platform.Configuration.OverrideConsoleEncoding) Console.OutputEncoding = Encoding.UTF8;
             Configuration.Load(Platform.Configuration);
             
-            var neuronLogger = Neuron.Bind<NeuronLogger>();
+            var neuronLogger = Globals.Bind<NeuronLogger>();
             _logger = neuronLogger.GetLogger<NeuronImpl>();
             _logger.Information("Starting Neuron.Core {Box}", LogBoxes.Waiting);
 
-            var events = Neuron.Bind<EventManager>();
-            var modules = Neuron.Bind<ModuleManager>();
+            var events = Globals.Bind<EventManager>();
+            var modules = Globals.Bind<ModuleManager>();
 
             if (Platform.Configuration.FileIo) /* Second Line: */ PerformIo();
 

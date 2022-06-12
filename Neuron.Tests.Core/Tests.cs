@@ -1,5 +1,4 @@
 ﻿using System;
-using Neuron.Core;
 using Xunit;
 
 namespace Neuron.Tests.Core
