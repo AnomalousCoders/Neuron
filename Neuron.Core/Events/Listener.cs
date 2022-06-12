@@ -1,4 +1,4 @@
-﻿using NeuronCore.Logging;
+﻿using Neuron.Core.Logging;
 using Serilog;
 using System;
 using System.Collections.Generic;
