@@ -1,5 +1,4 @@
 ﻿using System;
-using FluentAssertions;
 using Neuron.Core.Events;
 using Xunit;
 
