@@ -7,7 +7,7 @@ namespace Neuron.Core
     {
         public static NeuronBase Instance;
         public static IKernel Kernel;
-        public static void Hook(NeuronBase neuron)
+        internal static void Hook(NeuronBase neuron)
         {
             Instance = neuron;
             Kernel = neuron.Kernel;
