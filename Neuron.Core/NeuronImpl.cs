@@ -10,10 +10,11 @@ using Serilog;
 
 namespace Neuron.Core
 {
-    public class NeuronImpl : NeuronBase {
-
-        public NeuronImpl(IPlatform platform) : base(platform) { }
+    public class NeuronImpl : NeuronBase 
+    {
         private ILogger _logger;
+        
+        public NeuronImpl(IPlatform platform) : base(platform) { }
 
         public override void Start()
         {
