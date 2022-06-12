@@ -1,4 +1,6 @@
-﻿using System;
+﻿using NeuronCore.Logging;
+using Serilog;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -13,8 +15,7 @@ namespace NeuronCore.Events
         internal void RegisterAll(EventManager manger)
         {
             _managerReference = manger;
-            foreach (var methodInfo in GetType().GetMethods()
-                         .Where(method => CustomAttributeExtensions.GetCustomAttributes((MemberInfo) method).Any(attr => attr is EventHandlerAttribute)))
+            foreach (var methodInfo in GetType().GetMethods().Where(method => method.GetCustomAttribute<EventHandlerAttribute>() is not null))
             {
                 var parameters = methodInfo.GetParameters();
                 if (parameters.Length != 1) throw new Exception("EventHandler must have a single Event parameter");
@@ -36,9 +37,12 @@ namespace NeuronCore.Events
 
                 _subscriptions.Clear();
             }
-            else throw new Exception("No manager is reference");
+            else
+            {
+                throw new Exception("No manager is reference");
+            }
         }
     }
-    
+
     public class EventHandlerAttribute : Attribute { }
 }
