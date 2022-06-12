@@ -22,16 +22,20 @@ namespace Neuron.Core
             Globals.Hook(this);
             Globals.Bind<NeuronBase>(this);
             if (Platform.Configuration.OverrideConsoleEncoding) Console.OutputEncoding = Encoding.UTF8;
-            Configuration.Load(Platform.Configuration);
+            if (Platform.Configuration.FileIo)
+            {
+                Directory.CreateDirectory(Platform.Configuration.BaseDirectory);
+                Configuration.Load(Platform.Configuration);
+            }
             
             var neuronLogger = Globals.Bind<NeuronLogger>();
             _logger = neuronLogger.GetLogger<NeuronImpl>();
             _logger.Information("Starting Neuron.Core {Box}", LogBoxes.Waiting);
 
+            if (Platform.Configuration.FileIo) /* Second Line: */ PerformIo();
+            
             var events = Globals.Bind<EventManager>();
             var modules = Globals.Bind<ModuleManager>();
-
-            if (Platform.Configuration.FileIo) /* Second Line: */ PerformIo();
 
             Platform.Enable();
             _logger.Information("Neuron.Core started successfully {Box}", LogBoxes.Successful);

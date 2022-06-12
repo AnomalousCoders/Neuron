@@ -1,4 +1,5 @@
-﻿using Neuron.Core.Platform;
+﻿using Neuron.Core.Events;
+using Neuron.Core.Platform;
 using Ninject;
 
 namespace Neuron.Core
