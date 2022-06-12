@@ -40,6 +40,7 @@ namespace NeuronCore
             var instance = new T();
             Kernel.Inject(instance);
             return instance;
+            
         }
     }
 
