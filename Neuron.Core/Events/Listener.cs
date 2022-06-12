@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 
-namespace NeuronCore.Events
+namespace Neuron.Core.Events
 {
     public abstract class Listener
     {

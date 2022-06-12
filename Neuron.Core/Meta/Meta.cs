@@ -1,4 +1,4 @@
-﻿namespace NeuronCore.Meta
+﻿namespace Neuron.Core.Meta
 {
     public class Meta
     {

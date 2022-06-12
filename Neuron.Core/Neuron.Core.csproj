@@ -4,10 +4,10 @@
         <TargetFramework>netstandard2.0</TargetFramework>
         <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
         <OutputType>Library</OutputType>
-        <AssemblyName>NeuronCore</AssemblyName>
-        <RootNamespace>NeuronCore</RootNamespace>
         <Configurations>Debug;Release</Configurations>
         <Platforms>AnyCPU</Platforms>
+        <RootNamespace>Neuron.Core</RootNamespace>
+        <PackageId>Neuron.Core</PackageId>
     </PropertyGroup>
 
     <ItemGroup>

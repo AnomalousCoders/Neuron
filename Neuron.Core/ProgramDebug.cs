@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace NeuronCore
+namespace Neuron.Core
 {
     public class ProgramDebug
     {

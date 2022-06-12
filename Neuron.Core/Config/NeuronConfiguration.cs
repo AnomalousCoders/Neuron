@@ -1,9 +1,8 @@
-﻿using System;
-using System.IO;
-using NeuronCore.Platform;
+﻿using System.IO;
+using Neuron.Core.Platform;
 using Syml;
 
-namespace NeuronCore.Config
+namespace Neuron.Core.Config
 {
     public class NeuronConfiguration
     {

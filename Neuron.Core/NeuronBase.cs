@@ -1,10 +1,9 @@
-﻿using System;
-using System.IO;
-using NeuronCore.Config;
-using NeuronCore.Platform;
+﻿using System.IO;
+using Neuron.Core.Config;
+using Neuron.Core.Platform;
 using Ninject;
 
-namespace NeuronCore
+namespace Neuron.Core
 {
     public abstract class NeuronBase
     {

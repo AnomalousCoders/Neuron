@@ -1,7 +1,7 @@
 ﻿using System.IO;
-using NeuronCore.Events;
+using Neuron.Core.Events;
 
-namespace NeuronCore.Platform
+namespace Neuron.Core.Platform
 {
     public class StandaloneEntrypoint : IPlatform
     {

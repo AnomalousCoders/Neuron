@@ -1,4 +1,4 @@
-﻿namespace NeuronCore.Platform
+﻿namespace Neuron.Core.Platform
 {
     public interface IPlatform
     {

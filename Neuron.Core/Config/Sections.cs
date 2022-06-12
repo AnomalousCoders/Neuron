@@ -2,7 +2,7 @@
 using Serilog.Events;
 using Syml;
 
-namespace NeuronCore.Config
+namespace Neuron.Core.Config
 {
     [DocumentSection("Engine")]
     public class EngineSection : IDocumentSection

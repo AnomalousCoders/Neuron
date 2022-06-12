@@ -1,11 +1,13 @@
 ﻿using System;
+using System.Collections.Generic;
 
-namespace NeuronCore.Module
+namespace Neuron.Core.Module
 {
 
     public class ModuleManager
     {
         private NeuronBase _neuronBase;
+        private List<IModule> Modules = new List<IModule>();
 
         public ModuleManager(NeuronBase neuronBase)
         {

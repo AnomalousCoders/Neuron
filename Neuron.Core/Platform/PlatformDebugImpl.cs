@@ -1,6 +1,6 @@
 using Serilog.Events;
 
-namespace NeuronCore.Platform
+namespace Neuron.Core.Platform
 {
     public class PlatformDebugImpl : IPlatform
     {

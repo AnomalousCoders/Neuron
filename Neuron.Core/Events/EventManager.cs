@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace NeuronCore.Events
+namespace Neuron.Core.Events
 {
     public class EventManager
     {

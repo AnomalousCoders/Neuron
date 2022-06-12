@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Reflection;
-using NeuronCore.Meta;
+using Neuron.Core.Meta;
 
-namespace NeuronCore.Events
+namespace Neuron.Core.Events
 {
     public interface IEvent { }
 

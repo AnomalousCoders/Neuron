@@ -1,4 +1,4 @@
-﻿namespace NeuronCore.Dev
+﻿namespace Neuron.Core.Dev
 {
     public class Dev
     {

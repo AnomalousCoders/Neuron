@@ -1,10 +1,7 @@
-﻿using System;
-using NeuronCore.Logging;
-using NeuronCore.Platform;
+﻿using Neuron.Core.Platform;
 using Ninject;
-using Serilog;
 
-namespace NeuronCore
+namespace Neuron.Core
 {
     public static class Neuron
     {
@@ -40,7 +37,6 @@ namespace NeuronCore
             var instance = new T();
             Kernel.Inject(instance);
             return instance;
-            
         }
     }
 

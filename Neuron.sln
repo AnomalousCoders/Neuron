@@ -1,6 +1,6 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NeuronCore", "NeuronCore\NeuronCore.csproj", "{2F17FA64-F5B9-43DE-9887-D221B2798CED}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Neuron.Core", "Neuron.Core\Neuron.Core.csproj", "{2F17FA64-F5B9-43DE-9887-D221B2798CED}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

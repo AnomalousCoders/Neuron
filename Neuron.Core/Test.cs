@@ -1,11 +1,9 @@
-﻿using System;
-using System.Diagnostics.Tracing;
-using NeuronCore.Events;
-using NeuronCore.Logging;
+﻿using Neuron.Core.Events;
+using Neuron.Core.Logging;
 using Ninject;
 using Serilog;
 
-namespace NeuronCore
+namespace Neuron.Core
 {
     public class Test
     {

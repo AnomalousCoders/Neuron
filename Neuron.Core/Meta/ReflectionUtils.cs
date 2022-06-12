@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Reflection;
 
-namespace NeuronCore.Meta
+namespace Neuron.Core.Meta
 {
     public static class ReflectionUtils
     {

@@ -1,12 +1,9 @@
 ﻿using System;
-using Ninject;
-using Ninject.Activation;
 using Serilog;
 using Serilog.Core;
-using Serilog.Events;
 using Serilog.Sinks.SystemConsole.Themes;
 
-namespace NeuronCore.Logging
+namespace Neuron.Core.Logging
 {
     public class NeuronLogger
     {
@@ -37,5 +34,6 @@ namespace NeuronCore.Logging
 
         public ILogger GetLogger(object owner) => _logger.ForContext(owner.GetType());
         public static ILogger For<T>() => Neuron.Get<NeuronLogger>().GetLogger<T>();
+        public static ILogger For(Type type) => Neuron.Get<NeuronLogger>().GetLogger(type);
     }
 }

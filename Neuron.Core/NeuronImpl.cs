@@ -1,15 +1,14 @@
 using System;
 using System.IO;
 using System.Text;
-using NeuronCore.Events;
-using NeuronCore.Logging;
-using NeuronCore.Platform;
+using Neuron.Core.Events;
+using Neuron.Core.Logging;
+using Neuron.Core.Module;
+using Neuron.Core.Platform;
 using Ninject;
-using Ninject.Activation;
 using Serilog;
-using Serilog.Core;
 
-namespace NeuronCore
+namespace Neuron.Core
 {
     public class NeuronImpl : NeuronBase {
 
@@ -26,19 +25,20 @@ namespace NeuronCore
             
             var neuronLogger = Neuron.Bind<NeuronLogger>();
             _logger = neuronLogger.GetLogger<NeuronImpl>();
-            _logger.Information("Starting NeuronCore {Box}", LogBoxes.Waiting);
+            _logger.Information("Starting Neuron.Core {Box}", LogBoxes.Waiting);
 
             var events = Neuron.Bind<EventManager>();
+            var modules = Neuron.Bind<ModuleManager>();
 
             if (Platform.Configuration.FileIo) /* Second Line: */ PerformIo();
 
             Platform.Enable();
-            _logger.Information("NeuronCore started successfully {Box}", LogBoxes.Successful);
+            _logger.Information("Neuron.Core started successfully {Box}", LogBoxes.Successful);
         }
 
         private void PerformIo()
         {
-            _logger.Debug("NeuronCore I/O tasks {Box}", LogBoxes.Waiting);
+            _logger.Debug("Neuron.Core I/O tasks {Box}", LogBoxes.Waiting);
             Directory.CreateDirectory(Platform.Configuration.BaseDirectory);
 
             var moduleDirectory = PrepareRelativeDirectory(Configuration.Files.ModuleDirectory);
