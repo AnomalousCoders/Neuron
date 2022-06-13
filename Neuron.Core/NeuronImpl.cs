@@ -32,7 +32,7 @@ namespace Neuron.Core
             _logger = neuronLogger.GetLogger<NeuronImpl>();
             _logger.Information("Starting Neuron.Core {Box}", LogBoxes.Waiting);
 
-            if (Platform.Configuration.FileIo) /* Second Line: */ PerformIo();
+            if (Platform.Configuration.FileIo) PerformIo();
             
             var events = Globals.Bind<EventManager>();
             var modules = Globals.Bind<ModuleManager>();
