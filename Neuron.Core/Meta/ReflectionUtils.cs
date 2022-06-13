@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Reflection;
 
 namespace Neuron.Core.Meta
@@ -17,6 +18,24 @@ namespace Neuron.Core.Meta
             var delegateType = typeof(T);
             var delegated = info.CreateDelegate(delegateType, instance);
             return (T)delegated;
+        }
+        
+        public static IEnumerable<object> ResolveInterfaceAttributes(Type type)
+        {
+            var attributes = new HashSet<object>();
+            foreach (var face in type.GetInterfaces())
+            {
+                foreach (var o in face.GetCustomAttributes(true))
+                {
+                    attributes.Add(o);
+                }
+                foreach (var o in ResolveInterfaceAttributes(face))
+                {
+                    attributes.Add(o);
+                }
+            }
+
+            return attributes;
         }
     }
 }

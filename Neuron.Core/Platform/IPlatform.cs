@@ -24,7 +24,7 @@
         /// <summary>
         ///  Base directory for all subdirectories like Modules/, Configs/, etc.
         /// </summary>
-        public string BaseDirectory { get; set; }
+        public string BaseDirectory { get; set; } = "/";
 
         /// <summary>
         /// Disables file I/O
@@ -35,5 +35,10 @@
         /// Enables the override for the console encoding to UTF8
         /// </summary>
         public bool OverrideConsoleEncoding { get; set; } = true;
+
+        /// <summary>
+        /// Enables hooking to the static <see cref="Globals"/>
+        /// </summary>
+        public bool UseGlobals { get; set; } = true;
     }
 }

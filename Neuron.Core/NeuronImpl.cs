@@ -19,8 +19,12 @@ namespace Neuron.Core
         public override void Start()
         {
             Kernel = new StandardKernel();
-            Globals.Hook(this);
-            Globals.Bind<NeuronBase>(this);
+            if (Platform.Configuration.UseGlobals)
+            {
+                if (!ReferenceEquals(Globals.Instance, this)) throw new Exception("Loading unbound NeuronImpl");
+                Globals.Hook(this);
+            }
+            Kernel.BindSimple<NeuronBase>(this);
             if (Platform.Configuration.OverrideConsoleEncoding) Console.OutputEncoding = Encoding.UTF8;
             if (Platform.Configuration.FileIo)
             {
@@ -28,14 +32,14 @@ namespace Neuron.Core
                 Configuration.Load(Platform.Configuration);
             }
             
-            var neuronLogger = Globals.Bind<NeuronLogger>();
+            var neuronLogger = Kernel.BindSimple<NeuronLogger>();
             _logger = neuronLogger.GetLogger<NeuronImpl>();
             _logger.Information("Starting Neuron.Core {Box}", LogBoxes.Waiting);
 
             if (Platform.Configuration.FileIo) PerformIo();
             
-            var events = Globals.Bind<EventManager>();
-            var modules = Globals.Bind<ModuleManager>();
+            var events = Kernel.BindSimple<EventManager>();
+            var modules = Kernel.BindSimple<ModuleManager>();
 
             Platform.Enable();
             _logger.Information("Neuron.Core started successfully {Box}", LogBoxes.Successful);

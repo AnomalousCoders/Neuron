@@ -9,7 +9,7 @@ namespace Neuron.Core
     {
         public IPlatform Platform { get; set; }
         public NeuronConfiguration Configuration { get; set; } = new NeuronConfiguration();
-        internal IKernel Kernel { get; set; }
+        public IKernel Kernel { get; set; }
         
         public NeuronBase(IPlatform platform)
         {

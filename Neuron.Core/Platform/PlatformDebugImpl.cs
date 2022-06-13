@@ -9,6 +9,7 @@ namespace Neuron.Core.Platform
         public void Load()
         {
             Configuration.FileIo = false;
+            Configuration.UseGlobals = false;
             NeuronBase.Configuration.Logging.FileLogging = false;
             NeuronBase.Configuration.Logging.LogLevel = LogEventLevel.Debug;
         }

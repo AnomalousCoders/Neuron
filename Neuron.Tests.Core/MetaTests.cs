@@ -1,0 +1,101 @@
+﻿using System;
+using System.Linq;
+using Neuron.Core;
+using Neuron.Core.Events;
+using Neuron.Core.Logging;
+using Neuron.Core.Meta;
+using Neuron.Core.Platform;
+using Ninject;
+using Xunit;
+using Xunit.Abstractions;
+
+namespace Neuron.Tests.Core
+{
+    public class MetaTests
+    {
+        private readonly ITestOutputHelper output;
+        private readonly IPlatform _neuron;
+
+        public MetaTests(ITestOutputHelper output)
+        {
+            this.output = output;
+            _neuron = NeuronMinimal.DebugHook();
+        }
+
+        [Fact]
+        public void Test()
+        {
+            var logger = _neuron.NeuronBase.Kernel.Get<NeuronLogger>();;
+            var metaManager = new MetaManager(logger);
+            
+            Assert.Null(metaManager.SingleAnalyse(typeof(NonMetaType)));
+            Assert.NotNull(metaManager.SingleAnalyse(typeof(DirectMetaType)));
+            Assert.Equal(1, metaManager.SingleAnalyse(typeof(DirectMetaType)).Attributes.Length);
+            Assert.Equal(0, metaManager.SingleAnalyse(typeof(DirectMetaType)).Properties.Length);
+            Assert.NotNull(metaManager.SingleAnalyse(typeof(IndirectMetaType)));
+            Assert.Equal(1, metaManager.SingleAnalyse(typeof(IndirectMetaType)).Attributes.Length);
+            Assert.Equal(0, metaManager.SingleAnalyse(typeof(IndirectMetaType)).Properties.Length);
+            Assert.NotNull(metaManager.SingleAnalyse(typeof(MetaMethodType)));
+            Assert.Equal(0, metaManager.SingleAnalyse(typeof(MetaMethodType)).Attributes.Length);
+            Assert.Equal(0, metaManager.SingleAnalyse(typeof(MetaMethodType)).Properties.Length);
+            Assert.NotNull(metaManager.SingleAnalyse(typeof(MetaPropertyType)));
+            Assert.Equal(0, metaManager.SingleAnalyse(typeof(MetaPropertyType)).Attributes.Length);
+            Assert.Equal(1, metaManager.SingleAnalyse(typeof(MetaPropertyType)).Properties.Length);
+            
+            Assert.NotNull(metaManager.SingleAnalyse(typeof(ExtendingMetaType)));
+            Assert.Equal(1, metaManager.SingleAnalyse(typeof(ExtendingMetaType)).Attributes.Length);
+            Assert.NotNull(metaManager.SingleAnalyse(typeof(ImplementingMetaType)));
+            Assert.Equal(1, metaManager.SingleAnalyse(typeof(ImplementingMetaType)).Attributes.Length);
+            Assert.NotNull(metaManager.SingleAnalyse(typeof(HighlyNestedMetaType)));
+            Assert.Equal(1, metaManager.SingleAnalyse(typeof(HighlyNestedMetaType)).Attributes.Length);
+            Assert.NotNull(metaManager.SingleAnalyse(typeof(OverloadMethodType)));
+            
+        }
+    }
+
+    public class NonMetaType { }
+
+    [Meta]
+    public class DirectMetaType { }
+    
+    public class IndirectMetaAttribute : MetaAttributeBase { }
+
+    [IndirectMeta]
+    public class IndirectMetaType { }
+    
+    [IndirectMeta]
+    public abstract class MetaSupertype { }
+    
+    public class ExtendingMetaType : MetaSupertype { }
+
+    public interface ISecondLevelMetaObject : IMetaObject { }
+    public interface IThirdLevelMetaObject : ISecondLevelMetaObject { }
+    
+    public class ImplementingMetaType : IMetaObject { }
+    
+    public class HighlyNestedMetaType : IThirdLevelMetaObject { }
+
+    public class MetaMethodType
+    {
+        [Meta]
+        public void MetaMethod() { }
+    }
+    
+    public class MetaPropertyType
+    {
+        [Meta]
+        public string MetaProperty { get; set; }
+    }
+
+    public abstract class OverloadBase
+    {
+        [Meta]
+        public abstract void Test();
+    }
+    
+    public class OverloadMethodType : OverloadBase
+    {
+        public override void Test() { }
+    }
+    
+}

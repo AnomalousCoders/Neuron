@@ -1,4 +1,5 @@
-﻿using Neuron.Core.Events;
+﻿using System.Threading;
+using Neuron.Core.Events;
 using Neuron.Core.Platform;
 using Ninject;
 
@@ -15,22 +16,11 @@ namespace Neuron.Core
             
         }
 
-        public static void Bind<T>(T instance)
-        {
-            Kernel.Bind<T>().ToConstant(instance).InSingletonScope();
-        }
-        
-        public static T Bind<T>()
-        {
-            Kernel.Bind<T>().To<T>().InSingletonScope();
-            return Get<T>();
-        }
-        
-        public static TA Bind<TA, TB>() where TB: TA
-        {
-            Kernel.Bind<TA>().To<TB>().InSingletonScope();
-            return Get<TA>();
-        }
+        public static void Bind<T>(T instance) => Kernel.BindSimple(instance);
+
+        public static T Bind<T>() => Kernel.BindSimple<T>();
+
+        public static TA Bind<TA, TB>() where TB : TA => Kernel.BindSimple<TA, TB>();
 
         public static T Get<T>() => Kernel.Get<T>();
 
@@ -44,14 +34,16 @@ namespace Neuron.Core
 
     public static class NeuronMinimal
     {
-        public static void DebugHook()
+        public static IPlatform DebugHook()
         {
             var entrypoint = new PlatformDebugImpl();
             entrypoint.Boostrap();
+            return entrypoint;
         }
 
         public static void DebugUnhook()
         {
+            Globals.Kernel.Dispose();
             Globals.Instance = null;
             Globals.Kernel = null;
         }
