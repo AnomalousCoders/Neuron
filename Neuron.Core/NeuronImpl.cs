@@ -63,9 +63,12 @@ namespace Neuron.Core
 
             var assemblies = Kernel.Get<AssemblyManager>();
             var moduleManager = Kernel.Get<ModuleManager>();
+            assemblies.SetupManager();
+            
             foreach (var file in Directory.GetFiles(dependenciesDirectory, "*.dll"))
             {
-                var assembly = assemblies.LoadAssembly(file);
+                var moduleBytes = File.ReadAllBytes(file);
+                var assembly = assemblies.LoadAssembly(moduleBytes);
             }
             
             foreach (var file in Directory.GetFiles(moduleDirectory, "*.dll"))

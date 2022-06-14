@@ -1,7 +1,8 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <TargetFramework>netstandard2.0</TargetFramework>
+        <TargetFramework>net472</TargetFramework>
+        <PlatformTarget>x64</PlatformTarget>
         <LangVersion>10.0</LangVersion>
         <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
         <OutputType>Library</OutputType>
@@ -9,6 +10,7 @@
         <Platforms>AnyCPU</Platforms>
         <RootNamespace>Neuron.Core</RootNamespace>
         <PackageId>Neuron.Core</PackageId>
+        <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     </PropertyGroup>
     
     <ItemGroup>

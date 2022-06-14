@@ -1,6 +1,4 @@
-﻿using System;
-using Neuron.Core.Logging;
-using Serilog.Core;
+﻿using Serilog.Core;
 
 namespace Neuron.Core.Platform
 {
