@@ -52,7 +52,7 @@ public class ModuleManager
             Batch = batch,
             Dependencies = first!.attribute.Dependencies,
             ModuleType = instance.GetType(),
-            Events = new ModuleEvents()
+            Lifecycle = new ModuleLifecycle()
         };
             
         _moduleBuffer.Add(context);
@@ -66,23 +66,45 @@ public class ModuleManager
         {
             var context = solved.Dequeue();
             var batchResolved = context.Batch.Process();
-            var services = batchResolved.OfType<Service>();
+            var emittedServices = batchResolved.OfType<ServiceManager.ServiceRegistration>();
 
             context.Module = (Module)_kernel.Get(context.ModuleType);
             _kernel.BindSimple(context.Module);
             context.Module.Load();
-                
-            foreach (var service in services)
+
+            var unboundServices = emittedServices.ToList();
+            var maxServiceDepth = 255;
+            var depth = 0;
+            while (depth < maxServiceDepth)
             {
-                context.Events.Enable.SubscribeAction(service, service.GetType().GetMethod(nameof(Service.Enable)));
-                context.Events.Disable.SubscribeAction(service, service.GetType().GetMethod(nameof(Service.Disable)));
-                context.Events.Disable.Subscribe(_ => _serviceManager.UnbindService(service));
+                var resolved = new List<ServiceManager.ServiceRegistration>();
+                foreach (var service in unboundServices)
+                {
+                    if (_kernel.CheckDependencies(service.MetaType.Type))
+                    {
+                        _serviceManager.BindService(service);
+                        var serv = _kernel.Get(service.MetaType.Type);
+                        context.Lifecycle.EnableComponents.SubscribeAction(serv, service.MetaType.Type.GetMethod(nameof(Service.Enable)));
+                        context.Lifecycle.DisableComponents.SubscribeAction(serv, service.MetaType.Type.GetMethod(nameof(Service.Disable)));
+                        context.Lifecycle.DisableComponents.Subscribe(_ => _serviceManager.UnbindService(service));   
+                        resolved.Add(service);
+                    }
+                }
+                foreach (var registration in resolved)
+                {
+                    unboundServices.Remove(registration);
+                }
+
+                if (!resolved.Any()) break;
+                depth++;
             }
 
-            context.Events.Enable.SubscribeAction(context.Module, context.ModuleType.GetMethod(nameof(Module.Enable)));
-            context.Events.LateEnable.SubscribeAction(context.Module, context.ModuleType.GetMethod(nameof(Module.LateEnable)));
-            context.Events.Disable.SubscribeAction(context.Module, context.ModuleType.GetMethod(nameof(Module.Disable)));
-            context.Events.Disable.Subscribe(_ => _kernel.Unbind(context.ModuleType));
+            if (unboundServices.Any()) throw new Exception($"Could not resolve services {string.Join(", ", unboundServices.Select(x => x.MetaType.Type))}");
+
+            context.Lifecycle.Enable.SubscribeAction(context.Module, context.ModuleType.GetMethod(nameof(Module.Enable)));
+            context.Lifecycle.LateEnable.SubscribeAction(context.Module, context.ModuleType.GetMethod(nameof(Module.LateEnable)));
+            context.Lifecycle.Disable.SubscribeAction(context.Module, context.ModuleType.GetMethod(nameof(Module.Disable)));
+            context.Lifecycle.Disable.Subscribe(_ => _kernel.Unbind(context.ModuleType));
 
             _activeModules.Add(context);
         }
@@ -92,11 +114,11 @@ public class ModuleManager
     {
         foreach (var module in _activeModules)
         {
-            module.Events.Enable.Raise();
+            module.Lifecycle.EnableSignal();
         }
         foreach (var module in _activeModules)
         {
-            module.Events.LateEnable.Raise();
+            module.Lifecycle.LateEnable.Raise();
         }
     }
         
@@ -104,7 +126,7 @@ public class ModuleManager
     {
         foreach (var module in _activeModules)
         {
-            module.Events.Disable.Raise();
+            module.Lifecycle.DisableSignal();
         }
     }
         

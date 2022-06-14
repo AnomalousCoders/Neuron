@@ -7,6 +7,8 @@ using Neuron.Core.Meta;
 using Neuron.Core.Module;
 using Neuron.Core.Platform;
 using Ninject;
+using Ninject.Activation.Strategies;
+using Ninject.Parameters;
 using Serilog;
 using Xunit;
 using Xunit.Abstractions;
@@ -35,7 +37,10 @@ namespace Neuron.Tests.Core
             var serviceManager = new ServiceManager(kernel, metaManager);
             var moduleManager = new ModuleManager(_neuron.NeuronBase, metaManager, logger, kernel, serviceManager);
             moduleManager.LoadModule(new []{typeof(ModuleB), typeof(ServiceB)});
-            moduleManager.LoadModule(new []{typeof(ModuleA), typeof(ServiceA)}); // Out of order for test reasons
+            moduleManager.LoadModule(new []{typeof(ModuleA), typeof(ServiceA), typeof(ServiceASub)}); // Out of order for test reasons
+
+            output.WriteLine(String.Join(":", DependencyResolver.GetPropertyDependencies(typeof(ServiceA))));
+            output.WriteLine(String.Join(":", DependencyResolver.GetPropertyDependencies(typeof(ServiceB))));
 
             Assert.False(moduleManager.IsLocked);
             moduleManager.ActivateModules();
@@ -92,6 +97,9 @@ namespace Neuron.Tests.Core
 
     public class ServiceA : Service
     {
+        [Inject]
+        public ServiceASub SubService { get; set; }
+        
         public override void Enable()
         {
             Logger.Information("Enabled ServiceA");
@@ -100,6 +108,19 @@ namespace Neuron.Tests.Core
         public override void Disable()
         {
             Logger.Information("Disabled ServiceA");
+        }
+    } 
+    
+    public class ServiceASub : Service
+    {
+        public override void Enable()
+        {
+            Logger.Information("Enabled ServiceA Sub");
+        }
+
+        public override void Disable()
+        {
+            Logger.Information("Disabled ServiceA Sub");
         }
     } 
     
@@ -141,8 +162,11 @@ namespace Neuron.Tests.Core
         public ModuleA A { get; set; }
         
         [Inject]
-        public ServiceA ServiceA { get; set; }
+        public ModuleB B { get; set; }
         
+        [Inject]
+        public ServiceA ServiceA { get; set; }
+
         public override void Enable()
         {
             Logger.Information("Enabled ServiceB");

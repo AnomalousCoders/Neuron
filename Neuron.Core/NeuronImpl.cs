@@ -59,7 +59,6 @@ namespace Neuron.Core
             var configDirectory = PrepareRelativeDirectory(Configuration.Files.ConfigDirectory);
         }
 
-        [Obsolete("Do not invoke manually", false)]
         public override void Stop()
         {
             Platform.Disable();

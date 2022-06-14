@@ -37,19 +37,30 @@ namespace Neuron.Tests.Core
             Assert.Equal(0, kernel.GetBindings(typeof(ExampleService)).ToArray().Length);
             Assert.Equal(0, serviceManager.Services.Count);
             var processed = batch.Process();
+            Assert.Equal(0, kernel.GetBindings(typeof(ExampleService)).ToArray().Length);
+            Assert.Equal(0, serviceManager.Services.Count);
+            foreach (var o in processed)
+            {
+                if (o is ServiceManager.ServiceRegistration registration)
+                {
+                    serviceManager.BindService(registration);
+                }
+            }
             Assert.NotNull(kernel.Get<ExampleService>());
             Assert.Equal(1, kernel.GetBindings(typeof(ExampleService)).ToArray().Length);
             Assert.Equal(1, serviceManager.Services.Count);
             
             Assert.False(ExampleService.IsEnabled);
-            foreach (var serviceBase in processed.OfType<Service>())
+            foreach (var service in processed.OfType<ServiceManager.ServiceRegistration>())
             {
-                serviceBase.Enable();
+                var obj = kernel.Get(service.MetaType.Type) as Service;
+                obj!.Enable();
             }
             Assert.True(ExampleService.IsEnabled);
-            foreach (var serviceBase in processed.OfType<Service>())
+            foreach (var service in processed.OfType<ServiceManager.ServiceRegistration>())
             {
-                serviceBase.Disable();
+                var obj = kernel.Get(service.MetaType.Type) as Service;
+                obj!.Disable();
             }
             Assert.False(ExampleService.IsEnabled);
         }

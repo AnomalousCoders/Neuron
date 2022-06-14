@@ -1,4 +1,8 @@
-﻿using Ninject;
+﻿using System;
+using System.Linq;
+using System.Runtime.CompilerServices;
+using Neuron.Core.Meta;
+using Ninject;
 
 namespace Neuron.Core;
 
@@ -9,7 +13,10 @@ public static class KernelExtensions
     {
         kernel.Bind<T>().ToConstant(instance).InSingletonScope();
     }
-        
+
+    public static bool CheckDependencies(this IKernel kernel, Type type) => DependencyResolver.GetPropertyDependencies(type)
+        .All(dependency => kernel.GetBindings(dependency).Any());
+
     public static T BindSimple<T>(this IKernel kernel)
     {
         kernel.Bind<T>().To<T>().InSingletonScope();
