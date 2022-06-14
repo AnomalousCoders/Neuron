@@ -15,7 +15,7 @@ public static class KernelExtensions
         kernel.Bind<T>().To<T>().InSingletonScope();
         return kernel.Get<T>();
     }
-        
+
     public static TA BindSimple<TA, TB>(this IKernel kernel) where TB: TA
     {
         kernel.Bind<TA>().To<TB>().InSingletonScope();

@@ -3,6 +3,7 @@ using System.IO;
 using System.Text;
 using Neuron.Core.Events;
 using Neuron.Core.Logging;
+using Neuron.Core.Meta;
 using Neuron.Core.Module;
 using Neuron.Core.Platform;
 using Ninject;
@@ -34,15 +35,19 @@ namespace Neuron.Core
             
             var neuronLogger = Kernel.BindSimple<NeuronLogger>();
             _logger = neuronLogger.GetLogger<NeuronImpl>();
-            _logger.Information("Starting Neuron.Core {Box}", LogBoxes.Waiting);
+            _logger.Information("Starting Neuron {Box}", LogBoxes.Waiting);
 
             if (Platform.Configuration.FileIo) PerformIo();
             
             var events = Kernel.BindSimple<EventManager>();
+            var meta = Kernel.BindSimple<MetaManager>();
+            var services = Kernel.BindSimple<ServiceManager>();
             var modules = Kernel.BindSimple<ModuleManager>();
+            
+            modules.EnableAll();
 
             Platform.Enable();
-            _logger.Information("Neuron.Core started successfully {Box}", LogBoxes.Successful);
+            _logger.Information("Neuron started successfully {Box}", LogBoxes.Successful);
         }
 
         private void PerformIo()
@@ -58,7 +63,8 @@ namespace Neuron.Core
         public override void Stop()
         {
             Platform.Disable();
-            Configuration.Store(Platform.Configuration);
+            Configuration.Store(Platform.Configuration); // Save latest updates
+            Kernel.Get<ModuleManager>().DisableAll();
         }
     }
 }

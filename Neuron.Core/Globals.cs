@@ -1,5 +1,6 @@
 ﻿using System.Threading;
 using Neuron.Core.Events;
+using Neuron.Core.Logging;
 using Neuron.Core.Platform;
 using Ninject;
 
@@ -37,6 +38,14 @@ namespace Neuron.Core
         public static IPlatform DebugHook()
         {
             var entrypoint = new PlatformDebugImpl();
+            entrypoint.Boostrap();
+            return entrypoint;
+        }
+        
+        public static IPlatform DebugHook(LogMessageConsumer logConsumer)
+        {
+            var entrypoint = new PlatformDebugImpl();
+            entrypoint.Configuration.LogEventSink = new StringEventSink(logConsumer);
             entrypoint.Boostrap();
             return entrypoint;
         }

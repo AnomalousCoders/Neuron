@@ -1,12 +1,28 @@
-﻿namespace Neuron.Core.Logging
+﻿using Serilog;
+using Serilog.Core;
+using Serilog.Events;
+
+namespace Neuron.Core.Logging
 {
     public class LogBoxes
     {
-        public static string Successful = "[✓]";
-        public static string Failed = "[✖]";
-        public static string Waiting = "[⏳]";
-        public static string Time = "[🕘]";
-        public static string Info = "[⚹]";
-        public static string Magic = "[✨]";
+        public static LogBox Successful = new("[✓]");
+        public static LogBox Failed = new("[✖]");
+        public static LogBox Waiting = new("[⏳]");
+        public static LogBox Time = new("[🕘]");
+        public static LogBox Info = new("[⚹]");
+        public static LogBox Magic = new("[✨]");
+    }
+
+    public class LogBox
+    {
+        public string s;
+
+        public LogBox(string s)
+        {
+            this.s = s;
+        }
+
+        public override string ToString() => s;
     }
 }

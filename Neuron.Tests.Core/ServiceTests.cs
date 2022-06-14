@@ -42,12 +42,12 @@ namespace Neuron.Tests.Core
             Assert.Equal(1, serviceManager.Services.Count);
             
             Assert.False(ExampleService.IsEnabled);
-            foreach (var serviceBase in processed.OfType<ServiceBase>())
+            foreach (var serviceBase in processed.OfType<Service>())
             {
                 serviceBase.Enable();
             }
             Assert.True(ExampleService.IsEnabled);
-            foreach (var serviceBase in processed.OfType<ServiceBase>())
+            foreach (var serviceBase in processed.OfType<Service>())
             {
                 serviceBase.Disable();
             }
@@ -55,7 +55,7 @@ namespace Neuron.Tests.Core
         }
     }
 
-    public class ExampleService : ServiceBase
+    public class ExampleService : Service
     {
         public static bool IsEnabled = false;
         public override void Enable()

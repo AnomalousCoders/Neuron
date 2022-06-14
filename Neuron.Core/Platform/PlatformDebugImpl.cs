@@ -6,6 +6,7 @@ namespace Neuron.Core.Platform
     {
         public PlatformConfiguration Configuration { get; set; } = new PlatformConfiguration();
         public NeuronBase NeuronBase { get; set; }
+        
         public void Load()
         {
             Configuration.FileIo = false;

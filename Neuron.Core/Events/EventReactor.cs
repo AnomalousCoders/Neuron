@@ -44,9 +44,31 @@ namespace Neuron.Core.Events
             BackingEvent -= subscription as EventHandler<T>;
         }
     }
+    
+    public static class VoidEventExtension
+    {
+
+        public static readonly VoidEvent RecyclableEvent = new();
+        
+        public static void Raise(this EventReactor<VoidEvent> reactor)
+        {
+            reactor.Raise(RecyclableEvent);
+        }
+        
+        public static object SubscribeAction(this EventReactor<VoidEvent> reactor, object obj, MethodInfo info)
+        {
+            var action = ReflectionUtils.CreateDelegate<Action>(obj, info);
+            EventHandler<VoidEvent> handler = _ => action.Invoke();
+            reactor.Subscribe(handler);
+            return handler;
+        }
+
+    }
 
     public delegate void EventHandler<in T>(T args) where T: IEvent;
-    
+
+    public class VoidEvent : IEvent { }
+
     public interface IEventReactor
     {
         Type TypeDelegate();

@@ -1,4 +1,8 @@
-﻿namespace Neuron.Core.Platform
+﻿using System;
+using Neuron.Core.Logging;
+using Serilog.Core;
+
+namespace Neuron.Core.Platform
 {
     public interface IPlatform
     {
@@ -40,5 +44,10 @@
         /// Enables hooking to the static <see cref="Globals"/>
         /// </summary>
         public bool UseGlobals { get; set; } = true;
+
+        /// <summary>
+        /// Also writes events to this consumer instead of only the console and possibly a logfile
+        /// </summary>
+        public ILogEventSink LogEventSink { get; set; } = null;
     }
 }
