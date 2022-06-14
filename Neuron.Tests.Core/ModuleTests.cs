@@ -1,28 +1,27 @@
 ﻿using System;
 using System.Linq;
 using Neuron.Core;
-using Neuron.Core.Events;
+using Neuron.Core.Dependencies;
 using Neuron.Core.Logging;
 using Neuron.Core.Meta;
 using Neuron.Core.Module;
 using Neuron.Core.Platform;
 using Ninject;
-using Ninject.Activation.Strategies;
-using Ninject.Parameters;
-using Serilog;
+using Ninject.Planning.Bindings.Resolvers;
 using Xunit;
 using Xunit.Abstractions;
+// ReSharper disable UnusedAutoPropertyAccessor.Global
 
 namespace Neuron.Tests.Core
 {
     public class ModuleTests
     {
-        private readonly ITestOutputHelper output;
+        private readonly ITestOutputHelper _output;
         private readonly IPlatform _neuron;
 
         public ModuleTests(ITestOutputHelper output)
         {
-            this.output = output;
+            this._output = output;
             _neuron = NeuronMinimal.DebugHook(output.WriteLine);
         }
 
@@ -36,11 +35,14 @@ namespace Neuron.Tests.Core
             var metaManager = new MetaManager(logger);
             var serviceManager = new ServiceManager(kernel, metaManager);
             var moduleManager = new ModuleManager(_neuron.NeuronBase, metaManager, logger, kernel, serviceManager);
+            //moduleManager.LoadModule(new []{typeof(ModuleC)});
             moduleManager.LoadModule(new []{typeof(ModuleB), typeof(ServiceB)});
+            moduleManager.LoadModule(new []{typeof(ModuleD)});
             moduleManager.LoadModule(new []{typeof(ModuleA), typeof(ServiceA), typeof(ServiceASub)}); // Out of order for test reasons
-
-            output.WriteLine(String.Join(":", DependencyResolver.GetPropertyDependencies(typeof(ServiceA))));
-            output.WriteLine(String.Join(":", DependencyResolver.GetPropertyDependencies(typeof(ServiceB))));
+            
+            _output.WriteLine(String.Join(":", KernelDependencyResolver.GetPropertyDependencies(typeof(ServiceA))));
+            _output.WriteLine(String.Join(":", KernelDependencyResolver.GetPropertyDependencies(typeof(ServiceB))));
+            _output.WriteLine(String.Join(":", KernelDependencyResolver.GetPropertyDependencies(typeof(ModuleB))));
 
             Assert.False(moduleManager.IsLocked);
             moduleManager.ActivateModules();
@@ -74,6 +76,7 @@ namespace Neuron.Tests.Core
     )]
     public class ModuleA : Module
     {
+
         public override void Load()
         {
             Logger.Information("Loaded ModuleA");
@@ -99,7 +102,7 @@ namespace Neuron.Tests.Core
     {
         [Inject]
         public ServiceASub SubService { get; set; }
-        
+
         public override void Enable()
         {
             Logger.Information("Enabled ServiceA");
@@ -176,6 +179,20 @@ namespace Neuron.Tests.Core
         {
             Logger.Information("Disabled ServiceB");
         }
-    } 
+    }
+
+
+    [Module(
+        Name = "Module C",
+        Dependencies = new[] {typeof(ModuleB), typeof(ModuleD)}
+    )]
+    public class ModuleC : Module { }
     
+    [Module(
+        Name = "Module D",
+        Dependencies = new Type[0]
+    )]
+    public class ModuleD : Module { }
+    
+    public class Unbound {}
 }

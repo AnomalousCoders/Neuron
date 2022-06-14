@@ -24,6 +24,8 @@ namespace Neuron.Core
         public static TA Bind<TA, TB>() where TB : TA => Kernel.BindSimple<TA, TB>();
 
         public static T Get<T>() => Kernel.Get<T>();
+        
+        public static T GetSafe<T>() => Kernel.GetSafe<T>();
 
         public static T Instantiate<T>() where T: new()
         {

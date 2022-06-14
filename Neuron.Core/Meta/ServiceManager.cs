@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Neuron.Core.Dependencies;
 using Ninject;
 
 namespace Neuron.Core.Meta;
@@ -57,10 +58,15 @@ public class ServiceManager
         }
         _kernel.Unbind(serviceType);
     }
+}
 
-    public class ServiceRegistration
-    {
-        public Type ServiceType { get; set; }
-        public MetaType MetaType { get; set; }
-    }
+public class ServiceRegistration : SimpleDependencyBase
+{
+    public Type ServiceType { get; set; }
+    public MetaType MetaType { get; set; }
+
+    public override IEnumerable<object> Dependencies => KernelDependencyResolver.GetPropertyDependencies(MetaType.Type);
+    public override object Dependable => ServiceType;
+
+    public override string ToString() => ServiceType.Name;
 }

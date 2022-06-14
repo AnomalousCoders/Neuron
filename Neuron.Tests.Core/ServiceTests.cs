@@ -41,7 +41,7 @@ namespace Neuron.Tests.Core
             Assert.Equal(0, serviceManager.Services.Count);
             foreach (var o in processed)
             {
-                if (o is ServiceManager.ServiceRegistration registration)
+                if (o is ServiceRegistration registration)
                 {
                     serviceManager.BindService(registration);
                 }
@@ -51,13 +51,13 @@ namespace Neuron.Tests.Core
             Assert.Equal(1, serviceManager.Services.Count);
             
             Assert.False(ExampleService.IsEnabled);
-            foreach (var service in processed.OfType<ServiceManager.ServiceRegistration>())
+            foreach (var service in processed.OfType<ServiceRegistration>())
             {
                 var obj = kernel.Get(service.MetaType.Type) as Service;
                 obj!.Enable();
             }
             Assert.True(ExampleService.IsEnabled);
-            foreach (var service in processed.OfType<ServiceManager.ServiceRegistration>())
+            foreach (var service in processed.OfType<ServiceRegistration>())
             {
                 var obj = kernel.Get(service.MetaType.Type) as Service;
                 obj!.Disable();

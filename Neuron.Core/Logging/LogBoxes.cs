@@ -24,5 +24,7 @@ namespace Neuron.Core.Logging
         }
 
         public override string ToString() => s;
+
+        public static LogBox Of(string s) => new LogBox(s);
     }
 }

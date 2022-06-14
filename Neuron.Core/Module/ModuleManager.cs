@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Neuron.Core.Dependencies;
 using Neuron.Core.Events;
 using Neuron.Core.Logging;
 using Neuron.Core.Meta;
 using Ninject;
+using Ninject.Planning.Bindings;
 
 namespace Neuron.Core.Module;
 
@@ -50,7 +52,7 @@ public class ModuleManager
         {
             Attribute = first.attribute,
             Batch = batch,
-            Dependencies = first!.attribute.Dependencies,
+            ModuleDependencies = first!.attribute.Dependencies,
             ModuleType = instance.GetType(),
             Lifecycle = new ModuleLifecycle()
         };
@@ -61,46 +63,72 @@ public class ModuleManager
     public void ActivateModules()
     {
         IsLocked = true;
-        var solved = SolveDependencies();
-        while (solved.Count != 0)
-        {
-            var context = solved.Dequeue();
-            var batchResolved = context.Batch.Process();
-            var emittedServices = batchResolved.OfType<ServiceManager.ServiceRegistration>();
+        
+        var moduleResolver = new CyclicDependencyResolver<ModuleLoadContext>();
+        moduleResolver.AddDependables(_activeModules);
+        moduleResolver.AddDependencies(_moduleBuffer);
+        var moduleResult = moduleResolver.Resolve();
 
-            context.Module = (Module)_kernel.Get(context.ModuleType);
-            _kernel.BindSimple(context.Module);
+        var logger = _neuronLogger.GetLogger<ModuleManager>();
+        logger.Debug("\n{Tree}", LogBox.Of(moduleResolver.BuildTree(moduleResult)));
+        
+        if (!moduleResult.Successful)
+        {
+            logger.Warning("Module dependencies not resolved");
+        }
+        
+        foreach (var context in moduleResult.Solved)
+        {;
+            var batchResolved = context.Batch.Process();
+            var emittedServices = batchResolved.OfType<ServiceRegistration>();
+
+            context.Module = (Module)Activator.CreateInstance(context.ModuleType);
+            context.Module.NeuronLoggerInjected = _neuronLogger;
+            _kernel.Bind(context.ModuleType).ToConstant(context.Module).InSingletonScope();
             context.Module.Load();
 
-            var unboundServices = emittedServices.ToList();
-            var maxServiceDepth = 255;
-            var depth = 0;
-            while (depth < maxServiceDepth)
+            var serviceResolver = new CyclicDependencyResolver<ServiceRegistration>();
+            foreach (var service in emittedServices)
             {
-                var resolved = new List<ServiceManager.ServiceRegistration>();
-                foreach (var service in unboundServices)
+                serviceResolver.AddDependency(service);
+                foreach (var dependency in service.Dependencies)
                 {
-                    if (_kernel.CheckDependencies(service.MetaType.Type))
-                    {
-                        _serviceManager.BindService(service);
-                        var serv = _kernel.Get(service.MetaType.Type);
-                        context.Lifecycle.EnableComponents.SubscribeAction(serv, service.MetaType.Type.GetMethod(nameof(Service.Enable)));
-                        context.Lifecycle.DisableComponents.SubscribeAction(serv, service.MetaType.Type.GetMethod(nameof(Service.Disable)));
-                        context.Lifecycle.DisableComponents.Subscribe(_ => _serviceManager.UnbindService(service));   
-                        resolved.Add(service);
-                    }
+                    if (dependency is not Type type) continue;
+                    if (_kernel.GetBindings(type).Any()) serviceResolver.AddDependable(type);
                 }
-                foreach (var registration in resolved)
-                {
-                    unboundServices.Remove(registration);
-                }
-
-                if (!resolved.Any()) break;
-                depth++;
             }
 
-            if (unboundServices.Any()) throw new Exception($"Could not resolve services {string.Join(", ", unboundServices.Select(x => x.MetaType.Type))}");
+            var serviceResult = serviceResolver.Resolve();
+            if (serviceResult.Successful) logger.Debug("{Module} Services:\n{Tree}", LogBox.Of(context.ModuleType.Name),
+                    LogBox.Of(serviceResolver.BuildTree(serviceResult)));
+            else logger.Error("{Module} Services [ERROR]:\n{Tree}", LogBox.Of(context.ModuleType.Name),
+                    LogBox.Of(serviceResolver.BuildTree(serviceResult)));
 
+            foreach (var registration in serviceResult.Solved)
+            {
+                if (_kernel.CheckDependencies(registration.MetaType.Type))
+                {
+                    _serviceManager.BindService(registration);
+                    var serv = _kernel.Get(registration.ServiceType);
+                    context.Lifecycle.EnableComponents.SubscribeAction(serv,
+                        registration.MetaType.Type.GetMethod(nameof(Service.Enable)));
+                    context.Lifecycle.DisableComponents.SubscribeAction(serv,
+                        registration.MetaType.Type.GetMethod(nameof(Service.Disable)));
+                    context.Lifecycle.DisableComponents.Subscribe(_ => _serviceManager.UnbindService(registration));
+                }
+                else throw new Exception("Unbound Kernel Dependency");
+            }
+
+            context.Lifecycle.Enable.Subscribe(delegate
+            {
+                foreach (var dependency in KernelDependencyResolver.GetPropertyDependencies(context.ModuleType))
+                {
+                    var isResolvable = _kernel.GetBindings(dependency).Any();
+                    if (!isResolvable) throw new Exception($"Module {context.ModuleType} has unsolved dependency {dependency}");
+                }
+                _kernel.Inject(context.Module);
+            });
+            
             context.Lifecycle.Enable.SubscribeAction(context.Module, context.ModuleType.GetMethod(nameof(Module.Enable)));
             context.Lifecycle.LateEnable.SubscribeAction(context.Module, context.ModuleType.GetMethod(nameof(Module.LateEnable)));
             context.Lifecycle.Disable.SubscribeAction(context.Module, context.ModuleType.GetMethod(nameof(Module.Disable)));
@@ -142,13 +170,13 @@ public class ModuleManager
             var resolved = new List<ModuleLoadContext>();
             foreach (var context in remaining)
             {
-                if (context.Dependencies.Length == 0)
+                if (context.ModuleDependencies.Length == 0)
                 {
                     resolved.Add(context);
                     continue;
                 }
 
-                if (context.Dependencies.All(dep => loadingQueue.Any(loaded => loaded.ModuleType == dep)))
+                if (context.ModuleDependencies.All(dep => loadingQueue.Any(loaded => loaded.ModuleType == dep)))
                 {
                     resolved.Add(context);
                 }

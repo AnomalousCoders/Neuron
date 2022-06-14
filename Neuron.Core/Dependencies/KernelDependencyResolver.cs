@@ -1,12 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using Neuron.Core.Logging;
+using Neuron.Core.Meta;
 using Ninject;
 
-namespace Neuron.Core.Meta;
+namespace Neuron.Core.Dependencies;
 
-public class DependencyResolver
+public class KernelDependencyResolver
 {
     public static Dictionary<Type, List<Type>> DependencyCache = new();
 
