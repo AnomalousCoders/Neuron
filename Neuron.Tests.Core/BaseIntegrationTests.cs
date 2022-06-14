@@ -8,7 +8,6 @@ namespace Neuron.Tests.Core
 {
     public class BaseIntegrationTests
     {
-
         [Fact]
         public void Test()
         {

@@ -5,7 +5,7 @@ namespace Neuron.Tests.Core.Events
 {
     public class EventSetup : IDisposable
     {
-        public EventManager EventManager { get; set; }
+        public EventManager EventManager { get; }
 
         public EventSetup()
         {

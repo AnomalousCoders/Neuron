@@ -13,12 +13,12 @@ namespace Neuron.Tests.Core
 {
     public class MetaTests
     {
-        private readonly ITestOutputHelper output;
+        private readonly ITestOutputHelper _output;
         private readonly IPlatform _neuron;
 
         public MetaTests(ITestOutputHelper output)
         {
-            this.output = output;
+            _output = output;
             _neuron = NeuronMinimal.DebugHook();
         }
 
@@ -49,7 +49,6 @@ namespace Neuron.Tests.Core
             Assert.NotNull(MetaType.Analyze(typeof(HighlyNestedMetaType)));
             Assert.Equal(1, MetaType.Analyze(typeof(HighlyNestedMetaType)).Attributes.Length);
             Assert.NotNull(MetaType.Analyze(typeof(OverloadMethodType)));
-            
         }
     }
 
@@ -97,5 +96,4 @@ namespace Neuron.Tests.Core
     {
         public override void Test() { }
     }
-    
 }

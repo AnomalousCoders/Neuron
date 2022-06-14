@@ -6,6 +6,7 @@ namespace Neuron.Tests.Core.Events;
 public class ListenerTests : IClassFixture<EventSetup>
 {
     private readonly EventSetup _setup;
+    
     public ListenerTests(EventSetup setup)
     {
         _setup = setup;
