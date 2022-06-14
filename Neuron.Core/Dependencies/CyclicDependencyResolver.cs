@@ -63,7 +63,7 @@ public class CyclicDependencyResolver<T> where T: IDependency
             RecursiveDependencyTree(builder, result, dependency);
         }
 
-        return "Dependency Tree: \n" + builder.StringBuilder.ToString().Trim();
+        return builder.StringBuilder.ToString().Trim();
     }
 
     // ReSharper disable once CognitiveComplexity

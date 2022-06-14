@@ -34,7 +34,7 @@ public class ModuleManager
         _activeModules = new List<ModuleLoadContext>();
     }
 
-    public void LoadModule(IEnumerable<Type> types)
+    public ModuleLoadContext LoadModule(IEnumerable<Type> types)
     {
         var batch = _metaManager.Analyze(types);
         var modules = batch.Types.Where(x => x.TryGetAttribute<ModuleAttribute>(out _)).Select(meta =>
@@ -58,6 +58,7 @@ public class ModuleManager
         };
             
         _moduleBuffer.Add(context);
+        return context;
     }
 
     public void ActivateModules()
@@ -70,7 +71,7 @@ public class ModuleManager
         var moduleResult = moduleResolver.Resolve();
 
         var logger = _neuronLogger.GetLogger<ModuleManager>();
-        logger.Debug("\n{Tree}", LogBox.Of(moduleResolver.BuildTree(moduleResult)));
+        logger.Debug("{Header} Dependency Tree\n{Tree}",LogBox.Of("Modules"), LogBox.Of(moduleResolver.BuildTree(moduleResult)));
         
         if (!moduleResult.Successful)
         {

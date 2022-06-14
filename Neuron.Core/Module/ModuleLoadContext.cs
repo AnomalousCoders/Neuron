@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Reflection;
 using Neuron.Core.Dependencies;
 using Neuron.Core.Meta;
 
@@ -7,6 +8,7 @@ namespace Neuron.Core.Module;
 
 public class ModuleLoadContext : SimpleDependencyBase
 {
+    public Assembly Assembly { get; set; }
     public MetaBatchReference Batch { get; set; }
     public ModuleAttribute Attribute { get; set; }
     public Type[] ModuleDependencies { get; set; }

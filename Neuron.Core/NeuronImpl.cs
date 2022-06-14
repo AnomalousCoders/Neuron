@@ -1,5 +1,6 @@
 using System;
 using System.IO;
+using System.Reflection;
 using System.Text;
 using Neuron.Core.Events;
 using Neuron.Core.Logging;
@@ -37,12 +38,13 @@ namespace Neuron.Core
             _logger = neuronLogger.GetLogger<NeuronImpl>();
             _logger.Information("Starting Neuron {Box}", LogBoxes.Waiting);
 
-            if (Platform.Configuration.FileIo) PerformIo();
-            
             var events = Kernel.BindSimple<EventManager>();
             var meta = Kernel.BindSimple<MetaManager>();
             var services = Kernel.BindSimple<ServiceManager>();
             var modules = Kernel.BindSimple<ModuleManager>();
+            var assemblies = Kernel.BindSimple<AssemblyManager>();
+            
+            if (Platform.Configuration.FileIo) LoadIoModules();
             
             modules.EnableAll();
 
@@ -50,13 +52,31 @@ namespace Neuron.Core
             _logger.Information("Neuron started successfully {Box}", LogBoxes.Successful);
         }
 
-        private void PerformIo()
+        private void LoadIoModules()
         {
             _logger.Debug("Neuron.Core I/O tasks {Box}", LogBoxes.Waiting);
             Directory.CreateDirectory(Platform.Configuration.BaseDirectory);
 
             var moduleDirectory = PrepareRelativeDirectory(Configuration.Files.ModuleDirectory);
             var configDirectory = PrepareRelativeDirectory(Configuration.Files.ConfigDirectory);
+            var dependenciesDirectory = PrepareRelativeDirectory(Configuration.Files.DependenciesDirectory);
+
+            var assemblies = Kernel.Get<AssemblyManager>();
+            var moduleManager = Kernel.Get<ModuleManager>();
+            foreach (var file in Directory.GetFiles(dependenciesDirectory, "*.dll"))
+            {
+                var assembly = assemblies.LoadAssembly(file);
+            }
+            
+            foreach (var file in Directory.GetFiles(moduleDirectory, "*.dll"))
+            {
+                var moduleBytes = File.ReadAllBytes(file);
+                var assembly = assemblies.LoadAssembly(moduleBytes);
+                var context = moduleManager.LoadModule(assembly.GetTypes());
+                context.Assembly = assembly;
+            }
+            
+            moduleManager.ActivateModules();
         }
 
         public override void Stop()
