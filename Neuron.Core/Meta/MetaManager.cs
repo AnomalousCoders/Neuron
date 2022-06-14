@@ -33,7 +33,8 @@ public class MetaManager
         }
     }
     
-    public MetaType Resolve(Type type) => MetaTypes.First(x => x.Type == type);
+    public MetaType Resolve(Type type) 
+        => MetaTypes.First(x => x.Type == type);
 
     public ArrayList Process(List<MetaType> types)
     {

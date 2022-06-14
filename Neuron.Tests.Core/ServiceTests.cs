@@ -53,14 +53,14 @@ namespace Neuron.Tests.Core
             Assert.False(ExampleService.IsEnabled);
             foreach (var service in processed.OfType<ServiceRegistration>())
             {
-                var obj = kernel.Get(service.MetaType.Type) as Service;
-                obj!.Enable();
+                var obj = (Service)kernel.Get(service.MetaType.Type);
+                obj.Enable();
             }
             Assert.True(ExampleService.IsEnabled);
             foreach (var service in processed.OfType<ServiceRegistration>())
             {
-                var obj = kernel.Get(service.MetaType.Type) as Service;
-                obj!.Disable();
+                var obj = (Service)kernel.Get(service.MetaType.Type);
+                obj.Disable();
             }
             Assert.False(ExampleService.IsEnabled);
         }
@@ -68,7 +68,7 @@ namespace Neuron.Tests.Core
 
     public class ExampleService : Service
     {
-        public static bool IsEnabled = false;
+        public static bool IsEnabled;
         public override void Enable()
         {
             IsEnabled = true;
