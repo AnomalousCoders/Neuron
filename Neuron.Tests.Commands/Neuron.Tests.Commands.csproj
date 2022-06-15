@@ -1,0 +1,33 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net472</TargetFramework>
+        <LangVersion>10.0</LangVersion>
+        <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
+        <OutputType>Library</OutputType>
+        <Configurations>Debug;Release</Configurations>
+        <Platforms>AnyCPU</Platforms>
+        <RootNamespace>Neuron.Tests.Commands</RootNamespace>
+        <PackageId>Neuron.Tests.Commands</PackageId>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="xunit" Version="2.1.0" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\Neuron.Core\Neuron.Core.csproj" />
+        <ProjectReference Include="..\Neuron.Modules.Commands\Neuron.Modules.Commands.csproj" />
+    </ItemGroup>
+
+    <PropertyGroup Condition="'$(Configuration)' == 'Release'">
+        <TreatWarningsAsErrors>True</TreatWarningsAsErrors>
+        <GenerateDocumentationFile>True</GenerateDocumentationFile>
+        <DebugType>Portable</DebugType>
+    </PropertyGroup>
+
+    <PropertyGroup Condition="'$(Configuration)' == 'Debug'">
+
+    </PropertyGroup>
+
+</Project>

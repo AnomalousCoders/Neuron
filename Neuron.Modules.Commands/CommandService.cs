@@ -1,62 +1,41 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Neuron.Core.Logging;
 using Neuron.Core.Meta;
 using Neuron.Modules.Commands.Simple;
+using Ninject;
 
+// ReSharper disable MemberCanBePrivate.Global
 namespace Neuron.Modules.Commands;
 
 public class CommandService : Service
 {
-    public readonly CommandReactor GlobalCommandReactor = new CommandReactor();
+    private IKernel _kernel;
+    private NeuronLogger _neuronLogger;
+    private ILogger _logger;
 
-    public readonly Dictionary<Type, CommandReactor> CommandReactors =
-        new Dictionary<Type, CommandReactor>();
+    public CommandHandler GlobalHandler => GlobalCommandReactor.Handler;
 
-    public CommandResult Raise<TContext>(string message)
-        where TContext : ICommandContext
+    public readonly List<CommandReactor> CommandReactors;
+    public readonly CommandReactor GlobalCommandReactor;
+
+    public CommandService(IKernel kernel, NeuronLogger neuronLogger)
     {
-        var ev = new CommandEvent()
-        {
-            Context = (ICommandContext)Activator.CreateInstance(typeof(TContext))
-        };
-
-        ev.Context.FullCommand = message;
-        var args = message.Split(' ').ToList();
-        ev.Context.Command = args[0];
-        args.RemoveAt(0);
-        ev.Context.Arguments = args.ToArray();
-            
-        CommandReactors[typeof(TContext)].Raise(ev);
-
-        return ev.Result;
-    }
-        
-    public CommandResult Raise<TContext>(TContext context)
-        where TContext : ICommandContext
-    {
-        var ev = new CommandEvent()
-        {
-            Context = context
-        };
-            
-        CommandReactors[typeof(TContext)].Raise(ev);
-
-        return ev.Result;
+        _kernel = kernel;
+        _neuronLogger = neuronLogger;
+        _logger = _neuronLogger.GetLogger<CommandService>();
+        GlobalCommandReactor = new CommandReactor(_kernel, _neuronLogger);
+        CommandReactors = new List<CommandReactor>();
     }
 
-    public CommandReactor CreateCommandReactor<TContext>()
-        where TContext : ICommandContext
+    public CommandReactor CreateCommandReactor()
     {
-        var reactor = new CommandReactor();
-        CommandReactors[typeof(TContext)] = reactor;
+        var reactor = new CommandReactor(_kernel, _neuronLogger);
         reactor.Subscribe(CallGlobalReactor);
-            
+        CommandReactors.Add(reactor);
         return reactor;
     }
 
-    private void CallGlobalReactor(CommandEvent context)
-    {
-        GlobalCommandReactor.Raise(context);
-    }
+    private void CallGlobalReactor(CommandEvent context) => GlobalCommandReactor.Raise(context);
 }

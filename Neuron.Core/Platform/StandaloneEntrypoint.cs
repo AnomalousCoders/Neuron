@@ -26,15 +26,9 @@ namespace Neuron.Core.Platform
         
         public void Enable()
         {
-            CoroutineReactor.StartCoroutine(TestCoroutine());
+            
         }
-
-        public IEnumerator<float> TestCoroutine()
-        {
-            yield return 1f;
-            throw new NullReferenceException("Null value");
-        }
-
+        
         public void Continue()
         {
             CoroutineReactor.Start();

@@ -20,8 +20,6 @@ public class CommandModule : Module
     public override void Enable()
     {
         Logger.Info("Enabling CommandModule");
-        var reactor = Command.CreateCommandReactor<DefaultCommandContext>();
-        reactor.Handler.RegisterCommand<ExampleCommand>();
     }
 
     public override void Disable()

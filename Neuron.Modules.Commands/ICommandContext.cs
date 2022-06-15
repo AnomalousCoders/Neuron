@@ -7,4 +7,6 @@ public interface ICommandContext
     string[] Arguments { get; set; }
         
     string FullCommand { get; set; }
+    
+    bool IsAdmin { get; set; }
 }
