@@ -1,5 +1,9 @@
-﻿using System.IO;
+﻿using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Threading;
 using Neuron.Core.Events;
+using Neuron.Core.Scheduling;
 
 namespace Neuron.Core.Platform
 {
@@ -11,28 +15,30 @@ namespace Neuron.Core.Platform
             entrypoint.Boostrap();
         }
 
-        public PlatformConfiguration Configuration { get; set; } = new PlatformConfiguration();
+        public PlatformConfiguration Configuration { get; set; } = new();
+        public LoopingCoroutineReactor CoroutineReactor = new();
         public NeuronBase NeuronBase { get; set; }
 
         public void Load()
         {
             Configuration.BaseDirectory = Path.Combine(Directory.GetCurrentDirectory(), "Neuron");
             Configuration.FileIo = true;
+            Configuration.CoroutineReactor = CoroutineReactor;
         }
         
         public void Enable()
         {
-            new Test().Run();
-        }
-        
-        public void Disable()
-        {
             
         }
-    }
 
-    public class ExampleEventArgs : IEvent
-    {
-        public string Text { get; set; }
+        public void Continue()
+        {
+            CoroutineReactor.Start();
+        }
+
+        public void Disable()
+        {
+            CoroutineReactor.Running = false;
+        }
     }
 }

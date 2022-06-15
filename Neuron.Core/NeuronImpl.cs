@@ -7,6 +7,7 @@ using Neuron.Core.Logging;
 using Neuron.Core.Meta;
 using Neuron.Core.Module;
 using Neuron.Core.Platform;
+using Neuron.Core.Scheduling;
 using Ninject;
 using Serilog;
 
@@ -44,12 +45,17 @@ namespace Neuron.Core
             var modules = Kernel.BindSimple<ModuleManager>();
             var assemblies = Kernel.BindSimple<AssemblyManager>();
             
+            Platform.Configuration.CoroutineReactor.Logger = neuronLogger.GetLogger<CoroutineReactor>();
+            Kernel.Bind<CoroutineReactor>().ToConstant(Platform.Configuration.CoroutineReactor).InSingletonScope();
+            
             if (Platform.Configuration.FileIo) LoadIoModules();
             
+            Platform.Enable();
             modules.EnableAll();
 
-            Platform.Enable();
             _logger.Information("Neuron started successfully {Box}", LogBoxes.Successful);
+            
+            Platform.Continue();
         }
 
         private void LoadIoModules()

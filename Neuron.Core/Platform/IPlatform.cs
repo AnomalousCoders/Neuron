@@ -1,6 +1,4 @@
-﻿using Serilog.Core;
-
-namespace Neuron.Core.Platform
+﻿namespace Neuron.Core.Platform
 {
     public interface IPlatform
     {
@@ -8,6 +6,7 @@ namespace Neuron.Core.Platform
         NeuronBase NeuronBase { get; set; }
         void Load();
         void Enable();
+        void Continue();
         void Disable();
     }
 
@@ -19,33 +18,5 @@ namespace Neuron.Core.Platform
             platform.Load();
             platform.NeuronBase.Start();
         }
-    }
-    
-    public class PlatformConfiguration
-    {
-        /// <summary>
-        ///  Base directory for all subdirectories like Modules/, Configs/, etc.
-        /// </summary>
-        public string BaseDirectory { get; set; } = "/";
-
-        /// <summary>
-        /// Disables file I/O
-        /// </summary>
-        public bool FileIo { get; set; } = true;
-
-        /// <summary>
-        /// Enables the override for the console encoding to UTF8
-        /// </summary>
-        public bool OverrideConsoleEncoding { get; set; } = true;
-
-        /// <summary>
-        /// Enables hooking to the static <see cref="Globals"/>
-        /// </summary>
-        public bool UseGlobals { get; set; } = true;
-
-        /// <summary>
-        /// Also writes events to this consumer instead of only the console and possibly a logfile
-        /// </summary>
-        public ILogEventSink LogEventSink { get; set; } = null;
     }
 }
