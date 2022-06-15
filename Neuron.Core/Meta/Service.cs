@@ -1,8 +1,6 @@
 ﻿using System;
 using Neuron.Core.Logging;
 using Ninject;
-using Serilog;
-using Serilog.Core;
 
 namespace Neuron.Core.Meta
 {

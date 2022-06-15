@@ -1,5 +1,5 @@
 ﻿using System.ComponentModel;
-using Serilog.Events;
+using Neuron.Core.Logging;
 using Syml;
 
 namespace Neuron.Core.Config
@@ -27,7 +27,7 @@ namespace Neuron.Core.Config
     public class LoggingSection : IDocumentSection
     {
         [Description("Change the minimal importance level for logs")]
-        public LogEventLevel LogLevel { get; set; } = LogEventLevel.Information;
+        public LogLevel LogLevel { get; set; } = LogLevel.Information;
 
         [Description("Toggle writing console output to a logfile")]
         public bool FileLogging { get; set; } = true;

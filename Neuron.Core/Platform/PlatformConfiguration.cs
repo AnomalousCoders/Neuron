@@ -1,6 +1,5 @@
-using System.IO;
+using Neuron.Core.Logging;
 using Neuron.Core.Scheduling;
-using Serilog.Core;
 
 namespace Neuron.Core.Platform;
 
@@ -29,7 +28,7 @@ public class PlatformConfiguration
     /// <summary>
     /// Also writes events to this consumer instead of only the console and possibly a logfile
     /// </summary>
-    public ILogEventSink LogEventSink { get; set; } = null;
+    public ILogRender LogEventSink { get; set; } = null;
 
     /// <summary>
     /// The main coroutine reactor for any GameLoop related routines

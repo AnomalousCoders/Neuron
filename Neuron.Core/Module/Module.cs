@@ -2,7 +2,6 @@
 using Neuron.Core.Logging;
 using Neuron.Core.Meta;
 using Ninject;
-using Serilog;
 
 namespace Neuron.Core.Module;
 

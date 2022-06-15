@@ -1,12 +1,12 @@
 ﻿using HarmonyLib;
+using Neuron.Core;
 using Neuron.Core.Events;
 using Neuron.Core.Meta;
 using Ninject;
 
 namespace Neuron.Modules.Patcher;
 
-[ServiceInterface(typeof(IPatcherService))]
-public class PatcherService : Service, IPatcherService
+public class PatcherService : Service
 {
     
     [Inject]

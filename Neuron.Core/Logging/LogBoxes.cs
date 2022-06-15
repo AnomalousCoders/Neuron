@@ -1,8 +1,4 @@
-﻿using Serilog;
-using Serilog.Core;
-using Serilog.Events;
-
-namespace Neuron.Core.Logging
+﻿namespace Neuron.Core.Logging
 {
     public class LogBoxes
     {

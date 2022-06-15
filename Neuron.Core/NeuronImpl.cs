@@ -1,6 +1,5 @@
 using System;
 using System.IO;
-using System.Reflection;
 using System.Text;
 using Neuron.Core.Events;
 using Neuron.Core.Logging;
@@ -9,7 +8,6 @@ using Neuron.Core.Module;
 using Neuron.Core.Platform;
 using Neuron.Core.Scheduling;
 using Ninject;
-using Serilog;
 
 namespace Neuron.Core
 {
@@ -37,7 +35,7 @@ namespace Neuron.Core
             
             var neuronLogger = Kernel.BindSimple<NeuronLogger>();
             _logger = neuronLogger.GetLogger<NeuronImpl>();
-            _logger.Information("Starting Neuron {Box}", LogBoxes.Waiting);
+            _logger.Info("Starting Neuron [Box]", LogBoxes.Waiting);
 
             var events = Kernel.BindSimple<EventManager>();
             var meta = Kernel.BindSimple<MetaManager>();
@@ -53,14 +51,14 @@ namespace Neuron.Core
             Platform.Enable();
             modules.EnableAll();
 
-            _logger.Information("Neuron started successfully {Box}", LogBoxes.Successful);
+            _logger.Info("Neuron started successfully [Box]", LogBoxes.Successful);
             
             Platform.Continue();
         }
 
         private void LoadIoModules()
         {
-            _logger.Debug("Neuron.Core I/O tasks {Box}", LogBoxes.Waiting);
+            _logger.Debug("Neuron.Core I/O tasks [Box]", LogBoxes.Waiting);
             Directory.CreateDirectory(Platform.Configuration.BaseDirectory);
 
             var moduleDirectory = PrepareRelativeDirectory(Configuration.Files.ModuleDirectory);

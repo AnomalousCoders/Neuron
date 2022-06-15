@@ -6,7 +6,6 @@ using Neuron.Core.Events;
 using Neuron.Core.Logging;
 using Neuron.Core.Meta;
 using Ninject;
-using Ninject.Planning.Bindings;
 
 namespace Neuron.Core.Module;
 
@@ -71,11 +70,11 @@ public class ModuleManager
         var moduleResult = moduleResolver.Resolve();
 
         var logger = _neuronLogger.GetLogger<ModuleManager>();
-        logger.Debug("{Header} Dependency Tree\n{Tree}",LogBox.Of("Modules"), LogBox.Of(moduleResolver.BuildTree(moduleResult)));
+        logger.Debug("[Header] Dependency Tree\n[Tree]",LogBox.Of("Modules"), LogBox.Of(moduleResolver.BuildTree(moduleResult)));
         
         if (!moduleResult.Successful)
         {
-            logger.Warning("Module dependencies not resolved");
+            logger.Warn("Module dependencies not resolved");
         }
         
         foreach (var context in moduleResult.Solved)

@@ -2,7 +2,7 @@
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Threading;
-using Serilog;
+using Neuron.Core.Logging;
 
 namespace Neuron.Core.Scheduling;
 
@@ -52,7 +52,7 @@ public abstract class CoroutineReactor
             }
             catch (Exception e)
             {
-                Logger.Error(e, "Error while ticking coroutine");
+                Logger.Error(e);
             }
         }
     }

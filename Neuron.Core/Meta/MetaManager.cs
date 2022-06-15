@@ -2,11 +2,8 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
 using Neuron.Core.Events;
 using Neuron.Core.Logging;
-using Ninject;
-using Serilog;
 
 namespace Neuron.Core.Meta;
 
@@ -46,7 +43,7 @@ public class MetaManager
                 MetaType = type,
                 Outputs = list
             });
-            _logger.Debug("* {FullName} has been processed", type.Type.FullName);
+            _logger.Debug("* [FullName] has been processed", type.Type.FullName);
         }
 
         return list;
@@ -65,7 +62,7 @@ public class MetaManager
             {
                 Type = type 
             });
-            _logger.Debug("* {FullName} has been meta analyzed", type.Type.FullName);
+            _logger.Debug("* [FullName] has been meta analyzed", type.Type.FullName);
         }
 
         return new MetaBatchReference

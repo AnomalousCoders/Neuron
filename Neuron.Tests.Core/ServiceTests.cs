@@ -6,7 +6,6 @@ using Neuron.Core.Logging;
 using Neuron.Core.Meta;
 using Neuron.Core.Platform;
 using Ninject;
-using Serilog;
 using Xunit;
 using Xunit.Abstractions;
 
@@ -72,13 +71,13 @@ namespace Neuron.Tests.Core
         public override void Enable()
         {
             IsEnabled = true;
-            Logger.Information("The service has been enabled!");
+            Logger.Info("The service has been enabled!");
         }
 
         public override void Disable()
         {
             IsEnabled = false;
-            Logger.Information("The service has been disabled!");
+            Logger.Info("The service has been disabled!");
         }
     }
     

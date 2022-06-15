@@ -1,6 +1,4 @@
-﻿using System.Threading;
-using Neuron.Core.Events;
-using Neuron.Core.Logging;
+﻿using Neuron.Core.Logging;
 using Neuron.Core.Platform;
 using Ninject;
 

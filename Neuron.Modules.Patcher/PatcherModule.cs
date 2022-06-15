@@ -1,4 +1,5 @@
-﻿using Neuron.Core.Module;
+﻿using Neuron.Core;
+using Neuron.Core.Module;
 using Ninject;
 
 namespace Neuron.Modules.Patcher
@@ -11,21 +12,21 @@ namespace Neuron.Modules.Patcher
     {
         
         [Inject] 
-        public IPatcherService Patcher { get; set; }
+        public PatcherService Patcher { get; set; }
 
         public override void Load()
         {
-            Logger.Information("Loading PatcherModule");
+            Logger.Info("Loading PatcherModule");
         }
 
         public override void Enable()
         {
-            Logger.Information("Enabling PatcherModule");
+            Logger.Info("Enabling PatcherModule");
         }
 
         public override void Disable()
         {
-            Logger.Information("Disabling PatcherModule");
+            Logger.Info("Disabling PatcherModule");
         }
     }
 }

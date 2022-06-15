@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using Neuron.Core.Logging;
-using Serilog;
 
 namespace Neuron.Core;
 
@@ -33,7 +32,7 @@ public class AssemblyManager
     {
         var assembly = AppDomain.CurrentDomain.Load(bytes);
         _loadedAssemblies.Add(assembly);
-        _logger.Debug("Loaded assembly {Assembly}", LogBox.Of(assembly.FullName));
+        _logger.Debug("Loaded assembly [Assembly]", assembly.FullName);
         return assembly;
     }
 }

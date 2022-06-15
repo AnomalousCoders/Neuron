@@ -79,22 +79,22 @@ namespace Neuron.Tests.Core
 
         public override void Load()
         {
-            Logger.Information("Loaded ModuleA");
+            Logger.Info("Loaded ModuleA");
         }
 
         public override void Enable()
         {
-            Logger.Information("Enabled ModuleA");
+            Logger.Info("Enabled ModuleA");
         }
 
         public override void LateEnable()
         {
-            Logger.Information("Late Enabled ModuleA");
+            Logger.Info("Late Enabled ModuleA");
         }
 
         public override void Disable()
         {
-            Logger.Information("Disabled ModuleA");
+            Logger.Info("Disabled ModuleA");
         }
     }
 
@@ -105,12 +105,12 @@ namespace Neuron.Tests.Core
 
         public override void Enable()
         {
-            Logger.Information("Enabled ServiceA");
+            Logger.Info("Enabled ServiceA");
         }
 
         public override void Disable()
         {
-            Logger.Information("Disabled ServiceA");
+            Logger.Info("Disabled ServiceA");
         }
     } 
     
@@ -118,12 +118,12 @@ namespace Neuron.Tests.Core
     {
         public override void Enable()
         {
-            Logger.Information("Enabled ServiceA Sub");
+            Logger.Info("Enabled ServiceA Sub");
         }
 
         public override void Disable()
         {
-            Logger.Information("Disabled ServiceA Sub");
+            Logger.Info("Disabled ServiceA Sub");
         }
     } 
     
@@ -138,24 +138,24 @@ namespace Neuron.Tests.Core
 
         public override void Load()
         {
-            Logger.Information("Loaded ModuleB");
+            Logger.Info("Loaded ModuleB");
         }
 
         public override void Enable()
         {
             
-            Logger.Information("Enabled ModuleB");
+            Logger.Info("Enabled ModuleB");
         }
 
         public override void LateEnable()
         {
-            Logger.Information("Late Enabled ModuleB");
+            Logger.Info("Late Enabled ModuleB");
         }
 
         public override void Disable()
         {
             
-            Logger.Information("Disabled ModuleB");
+            Logger.Info("Disabled ModuleB");
         }
     }
     
@@ -172,12 +172,12 @@ namespace Neuron.Tests.Core
 
         public override void Enable()
         {
-            Logger.Information("Enabled ServiceB");
+            Logger.Info("Enabled ServiceB");
         }
 
         public override void Disable()
         {
-            Logger.Information("Disabled ServiceB");
+            Logger.Info("Disabled ServiceB");
         }
     }
 

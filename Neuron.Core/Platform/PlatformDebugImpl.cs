@@ -1,6 +1,6 @@
 using System.Threading;
+using Neuron.Core.Logging;
 using Neuron.Core.Scheduling;
-using Serilog.Events;
 
 namespace Neuron.Core.Platform
 {
@@ -17,7 +17,7 @@ namespace Neuron.Core.Platform
             Configuration.UseGlobals = false;
             Configuration.CoroutineReactor = CoroutineReactor;
             NeuronBase.Configuration.Logging.FileLogging = false;
-            NeuronBase.Configuration.Logging.LogLevel = LogEventLevel.Debug;
+            NeuronBase.Configuration.Logging.LogLevel = LogLevel.Debug;
         }
 
         public void Enable()
