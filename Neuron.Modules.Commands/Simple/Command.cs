@@ -1,14 +1,13 @@
-﻿namespace Neuron.Modules.Commands.Simple
+﻿namespace Neuron.Modules.Commands.Simple;
+
+public abstract class Command
 {
-    public abstract class Command
+    public CommandAttribute Meta { get; set; }
+        
+    public CommandResult PreExecute(ICommandContext context)
     {
-        public CommandAttribute Meta { get; set; }
-        
-        public virtual bool PreExecute(ICommandContext context)
-        {
-            return true;
-        }
-        
-        public abstract CommandResult Execute(ICommandContext context);
+        return null;
     }
+        
+    public abstract CommandResult Execute(ICommandContext context);
 }

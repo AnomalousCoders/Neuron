@@ -2,32 +2,31 @@
 using Neuron.Core.Events;
 using Neuron.Modules.Commands.Simple;
 
-namespace Neuron.Modules.Commands
+namespace Neuron.Modules.Commands;
+
+public class CommandReactor : EventReactor<CommandEvent>
 {
-    public class CommandReactor : EventReactor<CommandEvent>
+    public CommandHandler Handler { get; } = new CommandHandler();
+
+    public CommandReactor()
     {
-        public CommandHandler Handler { get; } = new CommandHandler();
+        Subscribe(Handler.Raise);
+    }
 
-        public CommandReactor()
-        {
-            Subscribe(Handler.Raise);
-        }
-
-        public void RegisterCommand(Type type)
-        {
-            Handler.RegisterCommand(type);
-        }
+    public void RegisterCommand(Type type)
+    {
+        Handler.RegisterCommand(type);
+    }
         
-        public void RegisterCommand<TCommand>()
-            where TCommand : Command
-        {
-            Handler.RegisterCommand<TCommand>();
-        }
+    public void RegisterCommand<TCommand>()
+        where TCommand : Command
+    {
+        Handler.RegisterCommand<TCommand>();
+    }
 
-        public void RegisterCommand<TCommand>(TCommand command)
-            where TCommand : Command
-        {
-            Handler.RegisterCommand(command);
-        }
+    public void RegisterCommand<TCommand>(TCommand command)
+        where TCommand : Command
+    {
+        Handler.RegisterCommand(command);
     }
 }

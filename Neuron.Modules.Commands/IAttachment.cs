@@ -1,4 +1,3 @@
-﻿namespace Neuron.Modules.Commands
-{
-    public interface IAttachment { }
-}
+﻿namespace Neuron.Modules.Commands;
+
+public interface IAttachment { }

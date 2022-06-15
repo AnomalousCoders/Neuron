@@ -1,20 +1,19 @@
 ﻿using Neuron.Modules.Commands.Simple;
 
-namespace Neuron.Modules.Commands
+namespace Neuron.Modules.Commands;
+
+[Command(
+    CommandName = "Example",
+    Aliases = new[] { "ex" },
+    Description = "Example Neuron Command"
+)]
+public class ExampleCommand : Command
 {
-    [Command(
-        CommandName = "Example",
-        Aliases = new[] { "ex" },
-        Description = "Example Neuron Command"
-        )]
-    public class ExampleCommand : Command
+    public override CommandResult Execute(ICommandContext context)
     {
-        public override CommandResult Execute(ICommandContext context)
+        return new CommandResult()
         {
-            return new CommandResult()
-            {
-                Response = "Example Command!"
-            };
-        }
+            Response = "Example Command!"
+        };
     }
 }

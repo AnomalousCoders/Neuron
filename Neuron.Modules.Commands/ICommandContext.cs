@@ -1,13 +1,10 @@
-﻿using Neuron.Core.Events;
+﻿namespace Neuron.Modules.Commands;
 
-namespace Neuron.Modules.Commands
+public interface ICommandContext
 {
-    public interface ICommandContext
-    {
-        string Command { get; set; }
+    string Command { get; set; }
         
-        string[] Arguments { get; set; }
+    string[] Arguments { get; set; }
         
-        string FullCommand { get; set; }
-    }
+    string FullCommand { get; set; }
 }

@@ -4,60 +4,59 @@ using System.Linq;
 using Neuron.Core.Meta;
 using Neuron.Modules.Commands.Simple;
 
-namespace Neuron.Modules.Commands
+namespace Neuron.Modules.Commands;
+
+public class CommandService : Service
 {
-    public class CommandService : Service
+    public readonly CommandReactor GlobalCommandReactor = new CommandReactor();
+
+    public readonly Dictionary<Type, CommandReactor> CommandReactors =
+        new Dictionary<Type, CommandReactor>();
+
+    public CommandResult Raise<TContext>(string message)
+        where TContext : ICommandContext
     {
-        public readonly CommandReactor GlobalCommandReactor = new CommandReactor();
-
-        public readonly Dictionary<Type, CommandReactor> CommandReactors =
-            new Dictionary<Type, CommandReactor>();
-
-        public CommandResult Raise<TContext>(string message)
-            where TContext : ICommandContext
+        var ev = new CommandEvent()
         {
-            var ev = new CommandEvent()
-            {
-                Context = (ICommandContext)Activator.CreateInstance(typeof(TContext))
-            };
+            Context = (ICommandContext)Activator.CreateInstance(typeof(TContext))
+        };
 
-            ev.Context.FullCommand = message;
-            var args = message.Split(' ').ToList();
-            ev.Context.Command = args[0];
-            args.RemoveAt(0);
-            ev.Context.Arguments = args.ToArray();
+        ev.Context.FullCommand = message;
+        var args = message.Split(' ').ToList();
+        ev.Context.Command = args[0];
+        args.RemoveAt(0);
+        ev.Context.Arguments = args.ToArray();
             
-            CommandReactors[typeof(TContext)].Raise(ev);
+        CommandReactors[typeof(TContext)].Raise(ev);
 
-            return ev.Result;
-        }
+        return ev.Result;
+    }
         
-        public CommandResult Raise<TContext>(TContext context)
-            where TContext : ICommandContext
+    public CommandResult Raise<TContext>(TContext context)
+        where TContext : ICommandContext
+    {
+        var ev = new CommandEvent()
         {
-            var ev = new CommandEvent()
-            {
-                Context = context
-            };
+            Context = context
+        };
             
-            CommandReactors[typeof(TContext)].Raise(ev);
+        CommandReactors[typeof(TContext)].Raise(ev);
 
-            return ev.Result;
-        }
+        return ev.Result;
+    }
 
-        public CommandReactor CreateCommandReactor<TContext>()
-            where TContext : ICommandContext
-        {
-            var reactor = new CommandReactor();
-            CommandReactors[typeof(TContext)] = reactor;
-            reactor.Subscribe(CallGlobalReactor);
+    public CommandReactor CreateCommandReactor<TContext>()
+        where TContext : ICommandContext
+    {
+        var reactor = new CommandReactor();
+        CommandReactors[typeof(TContext)] = reactor;
+        reactor.Subscribe(CallGlobalReactor);
             
-            return reactor;
-        }
+        return reactor;
+    }
 
-        private void CallGlobalReactor(CommandEvent context)
-        {
-            GlobalCommandReactor.Raise(context);
-        }
+    private void CallGlobalReactor(CommandEvent context)
+    {
+        GlobalCommandReactor.Raise(context);
     }
 }
