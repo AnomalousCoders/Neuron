@@ -3,13 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 
-namespace Neuron.Modules.Commands
+namespace Neuron.Modules.Commands.Simple
 {
     public class CommandHandler
     {
         public List<Command> Commands = new List<Command>();
 
-        public void EventHook(CommandEvent commandEvent)
+        public void Raise(CommandEvent commandEvent)
         {
             foreach (var command in Commands)
             {

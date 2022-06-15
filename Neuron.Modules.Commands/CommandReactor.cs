@@ -1,5 +1,6 @@
 ﻿using System;
 using Neuron.Core.Events;
+using Neuron.Modules.Commands.Simple;
 
 namespace Neuron.Modules.Commands
 {
@@ -9,7 +10,7 @@ namespace Neuron.Modules.Commands
 
         public CommandReactor()
         {
-            Subscribe(Handler.EventHook);
+            Subscribe(Handler.Raise);
         }
 
         public void RegisterCommand(Type type)

@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Neuron.Modules.Commands
+namespace Neuron.Modules.Commands.Simple
 {
     public class CommandAttribute : Attribute
     {

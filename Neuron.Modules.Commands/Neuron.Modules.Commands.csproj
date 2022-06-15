@@ -42,19 +42,19 @@
         <Reference Include="System.Xml" />
     </ItemGroup>
     <ItemGroup>
-        <Compile Include="Command.cs" />
-        <Compile Include="CommandAttribute.cs" />
         <Compile Include="CommandEvent.cs" />
-        <Compile Include="CommandManager.cs" />
         <Compile Include="CommandModule.cs" />
         <Compile Include="CommandReactor.cs" />
-        <Compile Include="CommandResult.cs" />
         <Compile Include="CommandService.cs" />
         <Compile Include="ExampleCommand.cs" />
         <Compile Include="DefaultCommandContext.cs" />
         <Compile Include="IAttachment.cs" />
         <Compile Include="ICommandContext.cs" />
         <Compile Include="Properties\AssemblyInfo.cs" />
+        <Compile Include="Simple\Command.cs" />
+        <Compile Include="Simple\CommandAttribute.cs" />
+        <Compile Include="Simple\CommandHandler.cs" />
+        <Compile Include="Simple\CommandResult.cs" />
     </ItemGroup>
     <ItemGroup>
       <ProjectReference Include="..\Neuron.Core\Neuron.Core.csproj">

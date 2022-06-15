@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace Neuron.Modules.Commands
+namespace Neuron.Modules.Commands.Simple
 {
     public class CommandResult
     {

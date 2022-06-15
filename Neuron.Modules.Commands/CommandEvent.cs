@@ -1,4 +1,5 @@
 ﻿using Neuron.Core.Events;
+using Neuron.Modules.Commands.Simple;
 
 namespace Neuron.Modules.Commands
 {

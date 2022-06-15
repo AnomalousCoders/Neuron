@@ -1,4 +1,6 @@
-﻿namespace Neuron.Modules.Commands
+﻿using Neuron.Modules.Commands.Simple;
+
+namespace Neuron.Modules.Commands
 {
     [Command(
         CommandName = "Example",

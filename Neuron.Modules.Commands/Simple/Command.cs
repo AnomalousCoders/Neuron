@@ -1,4 +1,4 @@
-﻿namespace Neuron.Modules.Commands
+﻿namespace Neuron.Modules.Commands.Simple
 {
     public abstract class Command
     {
