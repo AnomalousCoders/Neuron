@@ -43,13 +43,16 @@ namespace Neuron.Tests.Core
             _output.WriteLine(String.Join(":", KernelDependencyResolver.GetPropertyDependencies(typeof(ServiceA))));
             _output.WriteLine(String.Join(":", KernelDependencyResolver.GetPropertyDependencies(typeof(ServiceB))));
             _output.WriteLine(String.Join(":", KernelDependencyResolver.GetPropertyDependencies(typeof(ModuleB))));
-
+            _output.WriteLine(kernel.GetBindings(typeof(Random)).Any().ToString());
+            
             Assert.False(moduleManager.IsLocked);
             moduleManager.ActivateModules();
             Assert.True(moduleManager.IsLocked);
 
+            _output.WriteLine(kernel.GetBindings(typeof(Random)).Any().ToString());
             moduleManager.EnableAll();
-
+            _output.WriteLine(kernel.GetBindings(typeof(Random)).Any().ToString());
+            
             var moduleB = kernel.Get<ModuleB>();
             var serviceB = kernel.Get<ServiceB>();
             
@@ -135,6 +138,9 @@ namespace Neuron.Tests.Core
     {
         [Inject]
         public ModuleA A { get; set; }
+        
+        [Inject]
+        public Unbound Unbound { get; set; }
 
         public override void Load()
         {

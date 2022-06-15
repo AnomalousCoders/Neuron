@@ -59,7 +59,7 @@ public class ServiceManager
     }
 }
 
-public class ServiceRegistration : SimpleDependencyBase
+public class ServiceRegistration : SimpleDependencyHolderBase
 {
     public Type ServiceType { get; set; }
     public MetaType MetaType { get; set; }

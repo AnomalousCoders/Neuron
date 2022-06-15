@@ -3,7 +3,7 @@ using System.Linq;
 
 namespace Neuron.Core.Dependencies;
 
-public abstract class SimpleDependencyBase : IDependency
+public abstract class SimpleDependencyHolderBase : IDependencyHolder
 {
 
     public virtual IEnumerable<object> Dependencies { get; }

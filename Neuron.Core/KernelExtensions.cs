@@ -41,5 +41,12 @@ public static class KernelExtensions
         if (!exists) return default;
         return kernel.Get<T>();
     }
+    
+    public static object GetSafe(this IKernel kernel, Type type)
+    {
+        var exists = kernel.GetBindings(type).Any();
+        if (!exists) return default;
+        return kernel.Get(type);
+    }
 
 }

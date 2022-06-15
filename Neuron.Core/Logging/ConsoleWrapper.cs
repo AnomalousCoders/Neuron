@@ -25,7 +25,9 @@ public static class ConsoleWrapper
         var filling = Columns - len;
         return $"{message}{StringHelper.Repeat(filling, pad)}";
     }
-    
+
+    public static string WrapTextToString(int indent, string message) => string.Join("\n", WrapText(indent, message));
+
     public static List<string> WrapText(int indent, string message)
     {
         var availableWidth = Columns - indent;
@@ -109,5 +111,7 @@ public static class StringHelper {
         }
         return indentBuilder.ToString();
     }
-    
+
+    public static string TrimIndent(string str) => string.Join("\n", str.Split('\n').Select(x => x.Trim()));
+
 }

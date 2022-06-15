@@ -3,7 +3,7 @@ using System.Linq;
 
 namespace Neuron.Core.Dependencies;
 
-public class CyclicDependencyResolver<T> where T: IDependency
+public class CyclicDependencyResolver<T> where T: IDependencyHolder
 {
     private const int MaxDepth = 255;
     private readonly List<object> _dependables = new();

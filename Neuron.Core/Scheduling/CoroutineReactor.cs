@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using Neuron.Core.Logging;
+using Neuron.Core.Logging.Neuron;
 
 namespace Neuron.Core.Scheduling;
 
@@ -14,8 +16,6 @@ public abstract class CoroutineReactor
     private ConcurrentQueue<CoroutineRegistration> _addCoroutines = new();
     private ConcurrentQueue<CoroutineRegistration> _removeCoroutines = new();
 
-    private ReaderWriterLockSlim _rwLock = new();
-        
     public object StartCoroutine(IEnumerator<float> coroutine)
     {
         var registration = new CoroutineRegistration(coroutine);
@@ -52,7 +52,13 @@ public abstract class CoroutineReactor
             }
             catch (Exception e)
             {
-                Logger.Error(e);
+                var error = DiagnosticsError.FromParts(
+                    DiagnosticsError.Summary("An error occured while ticking a neuron coroutine"),
+                    DiagnosticsError.Description($"The coroutine '{pair.Enumerator}' threw {e.GetType().FullName}: {e.Message}")
+                );
+                error.Exception = e;
+                NeuronDiagnosticHinter.AddCommonHints(e, error);
+                Logger.Framework(error);
             }
         }
     }

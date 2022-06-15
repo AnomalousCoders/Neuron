@@ -3,30 +3,23 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 
-namespace Neuron.Core.Logging.Neuron;
+namespace Neuron.Core.Logging;
 
 public class DiagnosticsError
 {
-    public IDiagnosticNode[] Nodes { get; }
-    public StackTrace Trace { get; }
+    public List<IDiagnosticNode> Nodes { get; }
     public Dictionary<string, object> Properties { get; }
+    public Exception Exception { get; set; }
 
-    public DiagnosticsError(IDiagnosticNode[] nodes, StackTrace trace, Dictionary<string, object> properties)
+    public DiagnosticsError(IDiagnosticNode[] nodes, Dictionary<string, object> properties)
     {
-        Nodes = nodes;
-        Trace = trace;
+        Nodes = nodes.ToList();
         Properties = properties;
     }
 
     public static DiagnosticsError FromParts(params IDiagnosticNode[] nodes)
     {
-        var trace = new StackTrace();
-        var properties = new Dictionary<string, object>();
-        foreach (var property in nodes.OfType<DiagnosticProperty>())
-        {
-            properties[property.Key] = property.Value;
-        }
-        return new DiagnosticsError(nodes, trace, properties);
+        return new DiagnosticsError(nodes, new Dictionary<string, object>());
     }
 
     public static IDiagnosticNode Summary(string message) => new ErrorSummary(message);
@@ -38,6 +31,22 @@ public class DiagnosticsError
 public interface IDiagnosticNode
 {
     public IEnumerable<LogToken> Render();
+}
+
+public abstract class DiagnosticException : Exception
+{
+    public IEnumerable<IDiagnosticNode> Nodes { get; }
+
+    protected DiagnosticException() { }
+
+    protected DiagnosticException(string message) : base(message) { }
+
+    protected DiagnosticException(string message, IEnumerable<IDiagnosticNode> nodes) : base(message)
+    {
+        Nodes = nodes;
+    }
+
+    protected DiagnosticException(string message, Exception innerException) : base(message, innerException) {}
 }
 
 public class DiagnosticProperty : IDiagnosticNode
@@ -128,6 +137,18 @@ public class DiagnosticTokenizer
     public static void Tokenize(ObjectTokenizeEvent args)
     {
         if (args.Value is not DiagnosticsError error) return;
+        
+        if (error.Exception != null && error.Exception is DiagnosticException diagnosticException)
+        {
+            error.Nodes.AddRange(diagnosticException.Nodes);
+        }
+        
+        
+        foreach (var property in error.Nodes.OfType<DiagnosticProperty>())
+        {
+            error.Properties[property.Key] = property.Value;
+        }
+        
         var list = new List<LogToken>();
         foreach (var node in error.Nodes)
         {
@@ -138,7 +159,7 @@ public class DiagnosticTokenizer
         {
             list.Add(new LogToken()
             {
-                Message = $"\n{ConsoleWrapper.Header("Properties")}\n",
+                Message = $"{ConsoleWrapper.Header("Properties")}\n",
                 Type = "Diagnostic",
                 Style = new LogStyle(ConsoleColor.DarkGray, ConsoleColor.Black)
             });
@@ -147,13 +168,13 @@ public class DiagnosticTokenizer
                 list.Add(new LogToken()
                 {
                     Message = $"{StringHelper.Repeat(3, " ")}{pair.Key}: ",
-                    Type = "Diagnostic Trace",
+                    Type = "Property Key",
                     Style = new LogStyle(ConsoleColor.White, ConsoleColor.Black)
                 });
                 list.Add(new LogToken()
                 {
                     Message = string.Join("\n", ConsoleWrapper.WrapText(9, pair.Value?.ToString() ?? "null")).TrimStart(),
-                    Type = "Diagnostic Trace",
+                    Type = "Property Value",
                     Style = new LogStyle(ConsoleColor.Gray, ConsoleColor.Black)
                 });
             }
@@ -164,22 +185,29 @@ public class DiagnosticTokenizer
             });
         }
 
-        list.Add(new LogToken()
+        if (error.Exception != null)
         {
-            Message = $"\n{ConsoleWrapper.Header("StackTrace")}\n",
-            Type = "Diagnostic",
-            Style = new LogStyle(ConsoleColor.DarkGray, ConsoleColor.Black)
-        });
-        list.Add(new LogToken()
-        {
-            Message = string.Join("\n", ConsoleWrapper.WrapText(3,
-                string.Join("\n", error.Trace.ToString()
-                    .Split('\n')
-                    .Select(x => x.Trim()))
-            )) + "\n",
-            Type = "Diagnostic Trace",
-            Style = new LogStyle(ConsoleColor.DarkGray, ConsoleColor.Black)
-        });
+            list.Add(new LogToken()
+            {
+                Message = $"{ConsoleWrapper.Header("Exception")}\n",
+                Type = "Exception Header",
+                Style = new LogStyle(ConsoleColor.DarkGray, ConsoleColor.Black)
+            });
+            list.Add(new LogToken()
+            {
+                Message = ConsoleWrapper.WrapTextToString(3, $"{error.Exception.GetType().FullName}: {error.Exception.Message}")+ "\n",
+                Type = "Error",
+                Style = new LogStyle(ConsoleColor.Gray, ConsoleColor.Black)
+            });
+            list.Add(new LogToken()
+            {
+                Message = ConsoleWrapper.WrapTextToString(6,
+                    StringHelper.TrimIndent(error.Exception.StackTrace)
+                ) + "\n",
+                Type = "StackTrace",
+                Style = new LogStyle(ConsoleColor.DarkGray, ConsoleColor.Black)
+            });
+        }
 
         args.Tokens = list;
     }

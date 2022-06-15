@@ -16,6 +16,7 @@ namespace Neuron.Core.Platform
             Configuration.FileIo = false;
             Configuration.UseGlobals = false;
             Configuration.CoroutineReactor = CoroutineReactor;
+            Configuration.ConsoleWidth = 100;
             NeuronBase.Configuration.Logging.FileLogging = false;
             NeuronBase.Configuration.Logging.LogLevel = LogLevel.Debug;
         }

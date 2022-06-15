@@ -16,6 +16,7 @@ public class ModuleManager
     private MetaManager _metaManager;
     private ServiceManager _serviceManager;
     private NeuronLogger _neuronLogger;
+    private ILogger _logger;
 
     private List<ModuleLoadContext> _moduleBuffer;
     private List<ModuleLoadContext> _activeModules;
@@ -31,6 +32,7 @@ public class ModuleManager
         _serviceManager = serviceManager;
         _moduleBuffer = new List<ModuleLoadContext>();
         _activeModules = new List<ModuleLoadContext>();
+        _logger = _neuronLogger.GetLogger<ModuleManager>();
     }
 
     public ModuleLoadContext LoadModule(IEnumerable<Type> types)
@@ -69,23 +71,50 @@ public class ModuleManager
         moduleResolver.AddDependencies(_moduleBuffer);
         var moduleResult = moduleResolver.Resolve();
 
-        var logger = _neuronLogger.GetLogger<ModuleManager>();
-        logger.Debug("[Header] Dependency Tree\n[Tree]",LogBox.Of("Modules"), LogBox.Of(moduleResolver.BuildTree(moduleResult)));
+        _logger.Debug("[Header] Dependency Tree\n[Tree]","Modules", moduleResolver.BuildTree(moduleResult));
         
         if (!moduleResult.Successful)
         {
-            logger.Warn("Module dependencies not resolved");
+            foreach (var context in moduleResult.Unsolved)
+            {
+                var error = DiagnosticsError.FromParts(
+                    DiagnosticsError.Summary("Unsatisfied module dependencies"),
+                    DiagnosticsError.Description($"Could not resolve all module dependencies for module '{context.Attribute.Name}'.")
+                );
+
+                var missing = context.Dependencies
+                    .Where(x => !moduleResult.Dependables.Contains(x));
+                error.Nodes.Add(DiagnosticsError.Description($"The module is missing following dependencies: {string.Join(", ", missing)}"));
+                
+                error.Nodes.Add(DiagnosticsError.Property("Module Dependencies", "Tree View\n" + moduleResolver.BuildTree(moduleResult)));
+                _logger.Framework(error);
+            }
         }
         
         foreach (var context in moduleResult.Solved)
-        {;
+        {
             var batchResolved = context.Batch.Process();
             var emittedServices = batchResolved.OfType<ServiceRegistration>();
 
             context.Module = (Module)Activator.CreateInstance(context.ModuleType);
             context.Module.NeuronLoggerInjected = _neuronLogger;
             _kernel.Bind(context.ModuleType).ToConstant(context.Module).InSingletonScope();
-            context.Module.Load();
+            try
+            {
+                context.Module.Load();
+            }
+            catch (Exception e)
+            {
+                var error = DiagnosticsError.FromParts(
+                    DiagnosticsError.Summary("An error occured while executing a module load"),
+                    DiagnosticsError.Description($"Invoking the Load() method of the module {context.Attribute.Name} " +
+                                                 $"resulted in an exception of type '{e.GetType().Name}' at call site {e.TargetSite}.")
+                );
+                error.Exception = e;
+                NeuronDiagnosticHinter.AddCommonHints(e, error);
+                _logger.Framework(error);
+                throw;
+            }
 
             var serviceResolver = new CyclicDependencyResolver<ServiceRegistration>();
             foreach (var service in emittedServices)
@@ -99,10 +128,56 @@ public class ModuleManager
             }
 
             var serviceResult = serviceResolver.Resolve();
-            if (serviceResult.Successful) logger.Debug("{Module} Services:\n{Tree}", LogBox.Of(context.ModuleType.Name),
+            if (serviceResult.Successful) _logger.Debug("[Module] Services:\n[Tree]", LogBox.Of(context.ModuleType.Name),
                     LogBox.Of(serviceResolver.BuildTree(serviceResult)));
-            else logger.Error("{Module} Services [ERROR]:\n{Tree}", LogBox.Of(context.ModuleType.Name),
-                    LogBox.Of(serviceResolver.BuildTree(serviceResult)));
+            else
+            {
+                var error = DiagnosticsError.FromParts(
+                    DiagnosticsError.Summary("Unsatisfied service dependencies"),
+                    DiagnosticsError.Description($"Could not resolve all dependencies for services of module '{context.Attribute.Name}'.")
+                );
+                foreach (var registration in serviceResult.Unsolved)
+                {
+                    var missing = registration.Dependencies.Where(x => !serviceResult.Dependables.Contains(x))
+                        .Select(x => x.ToString()).ToList();
+                    error.Nodes.Add(DiagnosticsError.Description($"Service {registration.MetaType.Type.FullName} is " +
+                                                                 $"missing following bindings: {string.Join(", ", missing)}"));
+                }
+                
+                error.Nodes.Add(DiagnosticsError.Property("Service Dependencies", "Tree View\n" + serviceResolver.BuildTree(serviceResult)));
+                _logger.Framework(error);
+            }
+
+            
+            var modulePropertyResolver = new CyclicDependencyResolver<ModulePropertyDependencyHolder>();
+            var modulePropertyDeps = new List<object>();
+            foreach (var service in serviceResult.Solved)
+            {
+                modulePropertyResolver.AddDependable(service.ServiceType);
+            }
+            foreach (var type in KernelDependencyResolver.GetPropertyDependencies(context.ModuleType))
+            {
+                modulePropertyDeps.Add(type);
+                if (_kernel.GetBindings(type).Any()) modulePropertyResolver.AddDependable(type);
+            }
+
+            var moduleDep = new ModulePropertyDependencyHolder(modulePropertyDeps);
+            modulePropertyResolver.AddDependency(moduleDep);
+            var modulePropertyResult = modulePropertyResolver.Resolve();
+            if (!modulePropertyResult.Successful)
+            {
+                var error = DiagnosticsError.FromParts(
+                    DiagnosticsError.Summary("Unsatisfied module dependencies"),
+                    DiagnosticsError.Description($"Could not resolve all property dependencies for module '{context.Attribute.Name}'.")
+                );
+                
+                var missing = moduleDep.Dependencies.Where(x => !modulePropertyResult.Dependables.Contains(x))
+                    .Select(x => x.ToString()).ToList();
+                error.Nodes.Add(DiagnosticsError.Description($"The module is missing following bindings: {string.Join(", ", missing)}"));
+                
+                error.Nodes.Add(DiagnosticsError.Property("Module Dependencies", "Tree View\n" + modulePropertyResolver.BuildTree(modulePropertyResult)));
+                _logger.Framework(error);
+            }
 
             foreach (var registration in serviceResult.Solved)
             {
@@ -121,11 +196,10 @@ public class ModuleManager
 
             context.Lifecycle.Enable.Subscribe(delegate
             {
-                foreach (var dependency in KernelDependencyResolver.GetPropertyDependencies(context.ModuleType))
-                {
-                    var isResolvable = _kernel.GetBindings(dependency).Any();
-                    if (!isResolvable) throw new Exception($"Module {context.ModuleType} has unsolved dependency {dependency}");
-                }
+                // Dependency checks at this point make no sense anymore since Ninject keeps messing with the bindings,
+                // making it almost impossible to check if there is a correct binding which hasn't been created as a
+                // side object through some service. The probability of an unknown dependency problem at this stage
+                // is also very unlikely since bindings are also validated before service construction.
                 _kernel.Inject(context.Module);
             });
             
@@ -140,13 +214,29 @@ public class ModuleManager
 
     public void EnableAll()
     {
+        
         foreach (var module in _activeModules)
         {
-            module.Lifecycle.EnableSignal();
+            module.Lifecycle.EnableSignal(_logger, module);
         }
         foreach (var module in _activeModules)
         {
-            module.Lifecycle.LateEnable.Raise();
+            try
+            {
+                module.Lifecycle.LateEnable.Raise();
+            }
+            catch (Exception e)
+            {
+                var error = DiagnosticsError.FromParts(
+                    DiagnosticsError.Summary("An error occured while late enabling a module"),
+                    DiagnosticsError.Description($"Invoking the Module Late Enable Events of the module {module.Attribute.Name} " +
+                                                 $"resulted in an exception of type '{e.GetType().Name}' at call site {e.TargetSite}."),
+                    DiagnosticsError.Hint("This exception most commonly occurs when a module throws an exception in its LateEnable() method")
+                );
+                error.Exception = e;
+                NeuronDiagnosticHinter.AddCommonHints(e, error);
+                _logger.Framework(error);
+            }
         }
     }
         
@@ -154,46 +244,19 @@ public class ModuleManager
     {
         foreach (var module in _activeModules)
         {
-            module.Lifecycle.DisableSignal();
+            module.Lifecycle.DisableSignal(_logger, module);
         }
     }
-        
-    private Queue<ModuleLoadContext> SolveDependencies()
+}
+
+internal class ModulePropertyDependencyHolder : SimpleDependencyHolderBase
+{
+    public override IEnumerable<object> Dependencies { get; }
+
+    public ModulePropertyDependencyHolder(IEnumerable<object> dependencies)
     {
-        var remaining = _moduleBuffer.ToList();
-        var loadingQueue = new Queue<ModuleLoadContext>();
-
-        const int maxDepth = 255;
-        var depth = 0;
-        while (depth < maxDepth)
-        {
-            var resolved = new List<ModuleLoadContext>();
-            foreach (var context in remaining)
-            {
-                if (context.ModuleDependencies.Length == 0)
-                {
-                    resolved.Add(context);
-                    continue;
-                }
-
-                if (context.ModuleDependencies.All(dep => loadingQueue.Any(loaded => loaded.ModuleType == dep)))
-                {
-                    resolved.Add(context);
-                }
-            }
-            foreach (var context in resolved)
-            {
-                remaining.Remove(context);
-                loadingQueue.Enqueue(context);
-            }
-
-            if (resolved.Count == 0) break;
-            depth++;
-        }
-
-        if (remaining.Count == 0) return loadingQueue;
-            
-        var unsatisfiedString = string.Join(", ", remaining.Select(x => x.ModuleType.Name));
-        throw new Exception($"{unsatisfiedString} got unsatisfied dependencies!");
+        Dependencies = dependencies;
     }
+
+    public override object Dependable { get; } = new();
 }
