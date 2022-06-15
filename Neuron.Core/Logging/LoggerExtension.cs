@@ -13,6 +13,12 @@ public static class LoggerExtension
     public static void Error(this ILogger logger, Exception exception) => logger.Log(LogLevel.Error, exception);
     public static void Fatal(this ILogger logger, Exception exception) => logger.Log(LogLevel.Fatal, exception);
     
+    public static void Framework(this ILogger logger, DiagnosticsError error, LogLevel level) =>
+        logger.Log(level, "[Diagnostic]", new[] {error}, false);
+    
+    public static void Framework(this ILogger logger, DiagnosticsError error) =>
+        logger.Log(LogLevel.Error, "[Diagnostic]", new[] {error}, false);
+    
     public static void Log(this ILogger logger, LogLevel level, Exception exception) =>
         logger.Log(level, "[Exception]", new object[]{exception}, false);
 }

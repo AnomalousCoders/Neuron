@@ -9,7 +9,7 @@ namespace Neuron.Core.Logging;
 public class LoggerController
 {
     public ILogFormatter Formatter = new DefaultLogFormatter();
-    public List<ILogRender> Renderers = new ILogRender[] {new ConsoleRender()}.ToList();
+    public List<ILogRender> Renderers = new ILogRender[] {}.ToList();
     public LogLevel MinimumLevel = LogLevel.Verbose;
 
     public void Emit(LogEvent logEvent)

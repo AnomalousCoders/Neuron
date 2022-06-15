@@ -34,4 +34,14 @@ public class PlatformConfiguration
     /// The main coroutine reactor for any GameLoop related routines
     /// </summary>
     public CoroutineReactor CoroutineReactor { get; set; } = new ActionCoroutineReactor();
+
+    /// <summary>
+    /// Overrides the console width used by the default logger if bigger than -1
+    /// </summary>
+    public int ConsoleWidth = -1;
+
+    /// <summary>
+    /// Enables logging to the console
+    /// </summary>
+    public bool EnableConsoleLogging = true;
 }

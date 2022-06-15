@@ -16,14 +16,12 @@ public interface ILogger
     public void Warn(string message);
     public void Warn(string template, params object[] args);
     
-    
     public void Error(string message);
     public void Error(string template, params object[] args);
 
-    
     public void Fatal(string message);
     public void Fatal(string template, params object[] args);
-    
+
     public void Log(LogLevel level, string template, object[] args, bool isPure);
 
 }

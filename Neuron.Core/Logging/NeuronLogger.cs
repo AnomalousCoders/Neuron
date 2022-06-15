@@ -17,6 +17,10 @@ namespace Neuron.Core.Logging
             _neuronBase = neuronBase;
             _logger = new LoggerController();
             _logger.MinimumLevel = _neuronBase.Configuration.Logging.LogLevel;
+            if (_neuronBase.Platform.Configuration.EnableConsoleLogging)
+                _logger.Renderers.Add(new ConsoleRender());
+            if (_neuronBase.Platform.Configuration.ConsoleWidth != -1)
+                ConsoleWrapper.WidthOverride = _neuronBase.Platform.Configuration.ConsoleWidth;
             if (_neuronBase.Platform.Configuration.LogEventSink != null)
                 _logger.Renderers.Add(_neuronBase.Platform.Configuration.LogEventSink);
         }
