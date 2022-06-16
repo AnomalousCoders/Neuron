@@ -20,4 +20,12 @@ namespace Neuron.Core.Meta
     /// </summary>
     [Meta]
     public interface IMetaObject {}
+    
+    /// <summary>
+    /// Marks an object as universally automatic registrable.
+    /// In the context of a command, this would mean automatically subscribing
+    /// it to the command manager, for listeners this would mean automatically
+    /// registering it at the event manager.
+    /// </summary>
+    public class AutomaticAttribute : MetaAttributeBase {}
 }

@@ -2,7 +2,6 @@
 
 namespace Neuron.Modules.Commands.Command;
 
-
 public interface ICommand
 {
     public CommandAttribute Meta { get; set; }

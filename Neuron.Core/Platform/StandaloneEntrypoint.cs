@@ -31,12 +31,7 @@ namespace Neuron.Core.Platform
         
         public void Enable()
         {
-            var list = new List<string>();
-            list.Add("Hello");
-            list.Add("World");
-            var logger = NeuronBase.Kernel.Get<NeuronLogger>().GetLogger<StandaloneEntrypoint>();
-            logger.Fatal(list);
-
+            
         }
         
         public void Continue()
