@@ -34,19 +34,29 @@ namespace Neuron.Tests.Commands
         {
             var service = new CommandService(_neuron.NeuronBase.Kernel, _neuronLogger);
             var defaultReactor = service.CreateCommandReactor();
+            
             defaultReactor.RegisterCommand<ExampleCommand>();
             var result = defaultReactor.Invoke(DefaultCommandContext.Of("Example"));
-            _logger.Info("[Result]", result);
+            _logger.Info(result.ToString());
             Assert.NotNull(result);
             Assert.True(result.Successful);
+            
+            
             var result2 = defaultReactor.Invoke(DefaultCommandContext.Of("None"));
-            _logger.Info("[Result]", result2);
+            _logger.Info(result2.ToString());
             Assert.NotNull(result2);
             Assert.False(result2.Successful);
+            
+            
             var result3 = defaultReactor.Invoke(DefaultCommandContext.Of("ex"));
-            _logger.Info("[Result]", result3);
+            _logger.Info(result3.ToString());
             Assert.NotNull(result3);
             Assert.True(result3.Successful);
+
+            var customReactor = service.CreateCommandReactor();
+            customReactor.RegisterCommand<ExampleImplementation.ExampleCustomCommand>();
+            var result4 = customReactor.Invoke(ExampleImplementation.CustomContext.Of("1234"),"custom");
+            _logger.Info(result4.ToString());
         }
         
         [Fact]

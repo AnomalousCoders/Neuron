@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using Neuron.Core.Events;
 using Neuron.Core.Logging;
 using Neuron.Modules.Commands.Simple;
@@ -26,6 +27,15 @@ public class CommandReactor : EventReactor<CommandEvent>
         Handler = new CommandHandler(_kernel, _neuronLogger);
         Subscribe(Handler.Raise);
     }
+
+    public CommandResult Invoke(ICommandContext context, string message)
+    {
+        var args = message.Split(' ').ToList();
+        context.Command = args[0];
+        args.RemoveAt(0);
+        context.Arguments = args.ToArray();
+        return Invoke(context);
+    }
     
     public CommandResult Invoke(ICommandContext context)
     {
@@ -33,11 +43,12 @@ public class CommandReactor : EventReactor<CommandEvent>
         {
             Context = context,
             IsHandled = false,
+            PreExecuteFailed = false,
             Result = new CommandResult()
         };
         Raise(args);
         var result = args.Result;
-        if (!args.IsHandled) result = NotFoundAction(args);
+        if (!args.IsHandled && !args.PreExecuteFailed) result = NotFoundAction(args);
         return result;
     }
 

@@ -1,4 +1,6 @@
-﻿namespace Neuron.Modules.Commands;
+﻿using System;
+
+namespace Neuron.Modules.Commands;
 
 public interface ICommandContext
 {
@@ -9,4 +11,6 @@ public interface ICommandContext
     string FullCommand { get; set; }
     
     bool IsAdmin { get; set; }
+    
+    Type ContextType { get; }
 }

@@ -25,6 +25,8 @@ public class CommandHandler
 
     public void Raise(CommandEvent commandEvent)
     {
+        if(commandEvent.IsHandled || commandEvent.PreExecuteFailed) return;
+        
         foreach (var command in Commands)
         {
             var meta = command.Meta;
@@ -40,6 +42,7 @@ public class CommandHandler
                 if (pre != null)
                 {
                     commandEvent.Result = pre;
+                    commandEvent.PreExecuteFailed = true;
                     break;
                 }
 
