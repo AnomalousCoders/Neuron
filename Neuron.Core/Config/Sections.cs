@@ -7,7 +7,11 @@ namespace Neuron.Core.Config
     [DocumentSection("Engine")]
     public class EngineSection : IDocumentSection
     {
+        [Description("Handles missing service depdencies gracefuly, I.e. loading the service anyways, or canceling the service load")]
+        public bool GracefulMissingServiceDependencies { get; set; } = false;
         
+        [Description("Handles missing module property depdencies gracefuly, I.e. enabling the module anyays, or canceling it")]
+        public bool GracefulMissingModulePropertyDependencies { get; set; } = false;
     }
 
     [DocumentSection("Files")]

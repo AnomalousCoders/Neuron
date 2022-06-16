@@ -135,8 +135,11 @@ public class ModuleManager
             }
 
             var serviceResult = serviceResolver.Resolve();
-            if (serviceResult.Successful) _logger.Debug("[Module] Services:\n[Tree]", LogBox.Of(context.ModuleType.Name),
+            if (serviceResult.Successful)
+            {
+                _logger.Debug("[Module] Services:\n[Tree]", LogBox.Of(context.ModuleType.Name),
                     LogBox.Of(serviceResolver.BuildTree(serviceResult)));
+            }
             else
             {
                 var error = DiagnosticsError.FromParts(
@@ -154,7 +157,6 @@ public class ModuleManager
                 error.Nodes.Add(DiagnosticsError.Property("Service Dependencies", "Tree View\n" + serviceResolver.BuildTree(serviceResult)));
                 _logger.Framework(error);
             }
-
             
             var modulePropertyResolver = new CyclicDependencyResolver<ModulePropertyDependencyHolder>();
             var modulePropertyDeps = new List<object>();
@@ -184,21 +186,21 @@ public class ModuleManager
                 
                 error.Nodes.Add(DiagnosticsError.Property("Module Dependencies", "Tree View\n" + modulePropertyResolver.BuildTree(modulePropertyResult)));
                 _logger.Framework(error);
+                
+                var modHanGra = _neuronBase.Configuration.Engine.GracefulMissingServiceDependencies;
+                if (!modHanGra) continue;
             }
 
-            foreach (var registration in serviceResult.Solved)
+            var srvHanGra = _neuronBase.Configuration.Engine.GracefulMissingServiceDependencies;
+            foreach (var registration in (srvHanGra ? serviceResult.Dependencies : serviceResult.Solved))
             {
-                if (_kernel.CheckDependencies(registration.MetaType.Type))
-                {
-                    _serviceManager.BindService(registration);
-                    var serv = _kernel.Get(registration.ServiceType);
-                    context.Lifecycle.EnableComponents.SubscribeAction(serv,
-                        registration.MetaType.Type.GetMethod(nameof(Service.Enable)));
-                    context.Lifecycle.DisableComponents.SubscribeAction(serv,
-                        registration.MetaType.Type.GetMethod(nameof(Service.Disable)));
-                    context.Lifecycle.DisableComponents.Subscribe(_ => _serviceManager.UnbindService(registration));
-                }
-                else throw new Exception("Unbound Kernel Dependency");
+                _serviceManager.BindService(registration);
+                var serv = _kernel.Get(registration.ServiceType);
+                context.Lifecycle.EnableComponents.SubscribeAction(serv,
+                    registration.MetaType.Type.GetMethod(nameof(Service.Enable)));
+                context.Lifecycle.DisableComponents.SubscribeAction(serv,
+                    registration.MetaType.Type.GetMethod(nameof(Service.Disable)));
+                context.Lifecycle.DisableComponents.Subscribe(_ => _serviceManager.UnbindService(registration));
             }
 
             context.Lifecycle.Enable.Subscribe(delegate

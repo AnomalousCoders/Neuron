@@ -21,6 +21,9 @@ namespace Neuron.Core
 
         public abstract void Start();
         public abstract void Stop();
+
+        public void SaveConfig() => Configuration.Store(Platform.Configuration);
+        public void ReloadConfig() => Configuration.Load(Platform.Configuration);
         
         public string RelativePath(string sub) => Path.Combine(Platform.Configuration.BaseDirectory, sub);
 
