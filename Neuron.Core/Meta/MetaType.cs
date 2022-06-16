@@ -23,11 +23,9 @@ public class MetaType
         return true;
     }
 
-    public bool Is<T>()
-        => typeof(T).IsAssignableFrom(Type);
+    public bool Is<T>() => typeof(T).IsAssignableFrom(Type);
 
-    public object New() 
-        => Activator.CreateInstance(Type);
+    public object New() => Activator.CreateInstance(Type);
 
     protected bool Equals(MetaType other)
     {
@@ -36,12 +34,9 @@ public class MetaType
 
     public override bool Equals(object obj)
     {
-        if (ReferenceEquals(null, obj)) 
-            return false;
-        if (ReferenceEquals(this, obj)) 
-            return true;
-        if (obj.GetType() != this.GetType())
-            return false;
+        if (ReferenceEquals(null, obj)) return false;
+        if (ReferenceEquals(this, obj)) return true;
+        if (obj.GetType() != this.GetType()) return false;
         return Equals((MetaType) obj);
     }
 
@@ -193,8 +188,7 @@ public class MetaMethod
         return true;
     }
 
-    public T GetAttribute<T>() 
-        => Attributes.OfType<T>().First();
+    public T GetAttribute<T>() => Attributes.OfType<T>().First();
 }
 
 public class MetaProperty
@@ -211,6 +205,5 @@ public class MetaProperty
         return true;
     }
     
-    public T GetAttribute<T>() 
-        => Attributes.OfType<T>().First();
+    public T GetAttribute<T>() => Attributes.OfType<T>().First();
 }

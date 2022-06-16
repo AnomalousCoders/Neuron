@@ -80,6 +80,5 @@ public class ServiceRegistration : SimpleDependencyHolderBase
     public override IEnumerable<object> Dependencies => KernelDependencyResolver.GetPropertyDependencies(MetaType.Type);
     public override object Dependable => ServiceType;
 
-    public override string ToString() 
-        => ServiceType.Name;
+    public override string ToString() => ServiceType.Name;
 }

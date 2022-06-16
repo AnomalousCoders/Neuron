@@ -17,25 +17,21 @@ public class MetaBatchReference
     /// Invokes the <see cref="MetaManager"/> process event for all types included in the batch.
     /// </summary>
     /// <returns></returns>
-    public List<object> Process() 
-        => Reference.Process(Types);
+    public List<object> Process() => Reference.Process(Types);
 
     /// <summary>
     /// Releases the included types from <see cref="Reference"/>.
     /// </summary>
-    public void Untrack() 
-        => Reference.Untrack(Types);
+    public void Untrack() => Reference.Untrack(Types);
 
     /// <summary>
     /// Finds types which extend the specified type.
     /// </summary>
-    public List<MetaType> FindAlike<T>() 
-        => Types.Where(x => x.Is<T>()).ToList();
+    public List<MetaType> FindAlike<T>() => Types.Where(x => x.Is<T>()).ToList();
     
     
     /// <summary>
     /// Finds types which are annotated with the specified attribute.
     /// </summary>
-    public List<MetaType> FindAnnotated<T>() 
-        => Types.Where(x => x.TryGetAttribute<T>(out _)).ToList();
+    public List<MetaType> FindAnnotated<T>() => Types.Where(x => x.TryGetAttribute<T>(out _)).ToList();
 }

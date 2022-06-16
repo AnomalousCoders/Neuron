@@ -16,11 +16,8 @@ public class ModuleLoadContext : SimpleDependencyHolderBase
     public Module Module { get; set; }
     public ModuleLifecycle Lifecycle { get; set; }
 
-    public override IEnumerable<object> Dependencies
-        => ModuleDependencies;
-    public override object Dependable 
-        => ModuleType;
+    public override IEnumerable<object> Dependencies => ModuleDependencies;
+    public override object Dependable => ModuleType;
 
-    public override string ToString() 
-        => ModuleType.FullName;
+    public override string ToString() => ModuleType.FullName;
 }

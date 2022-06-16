@@ -33,16 +33,14 @@ namespace Neuron.Core
         /// <summary>
         /// Binds a instance using a constant based singleton ninject binding.
         /// </summary>
-        public static void Bind<T>(T instance) 
-            => Kernel.BindSimple(instance);
+        public static void Bind<T>(T instance) => Kernel.BindSimple(instance);
 
         
         /// <summary>
         /// Binds a object using a constant based singleton ninject binding.
         /// The type is created by the ninject kernel making injection usable.
         /// </summary>
-        public static T Bind<T>() 
-            => Kernel.BindSimple<T>();
+        public static T Bind<T>() => Kernel.BindSimple<T>();
 
         /// <summary>
         /// Binds a object using a constant based singleton ninject binding.
@@ -50,8 +48,7 @@ namespace Neuron.Core
         /// </summary>
         /// <typeparam name="TA">The type that should be bound to</typeparam>
         /// <typeparam name="TB">The type of the object that should be bound</typeparam>
-        public static TA Bind<TA, TB>() where TB : TA 
-            => Kernel.BindSimple<TA, TB>();
+        public static TA Bind<TA, TB>() where TB : TA => Kernel.BindSimple<TA, TB>();
 
         /// <summary>
         /// Returns an instance of the specified object by either resolving it using
@@ -59,22 +56,19 @@ namespace Neuron.Core
         /// or by creating a new instance of the type using the ninject kernel making
         /// injection usable.
         /// </summary>
-        public static T Get<T>()
-            => Kernel.Get<T>();
+        public static T Get<T>() => Kernel.Get<T>();
         
         /// <summary>
         /// Returns an instance of the specified object by resolving it using
         /// ninject bindings. If no binding is present, this will return null.
         /// </summary>
-        public static T GetSafe<T>()
-            => Kernel.GetSafe<T>();
+        public static T GetSafe<T>() => Kernel.GetSafe<T>();
 
         /// <summary>
         /// Returns an instance of the specified object by resolving it using
         /// ninject bindings. If no binding is present, this will return null.
         /// </summary>
-        public static object GetSafe(Type type) 
-            => Kernel.GetSafe(type); 
+        public static object GetSafe(Type type) => Kernel.GetSafe(type); 
         
         /// <summary>
         /// Creates a object of the specified type and performs property

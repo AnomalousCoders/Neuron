@@ -17,15 +17,14 @@ public static class ConsoleWrapper
             {
                 return (WidthOverride == -1 ? ConsoleColumns : WidthOverride) - 1;
             }
-            catch
+            catch (Exception _)
             {
-                return 100; // Default to small window size in case the console width is not resolvable, 100 because my IDE window fits this
+                return 100; // Default to small window size in case the console width is not resolvable, 100 because my IDE window fits this :3
             }
         }
     }
     
-    public static string Header(string name) 
-        => PadRight($"   ===== {name} ", "=");
+    public static string Header(string name) => PadRight($"   ===== {name} ", "=");
 
     public static string PadRight(string message, string pad)
     {
@@ -34,8 +33,7 @@ public static class ConsoleWrapper
         return $"{message}{StringHelper.Repeat(filling, pad)}";
     }
 
-    public static string WrapTextToString(int indent, string message) 
-        => string.Join("\n", WrapText(indent, message));
+    public static string WrapTextToString(int indent, string message) => string.Join("\n", WrapText(indent, message));
 
     public static List<string> WrapText(int indent, string message)
     {
@@ -78,8 +76,7 @@ public static class ConsoleWrapper
             }
         }
         
-        if (buffer.Length > 0)
-            lines.Add(buffer.ToString());
+        if (buffer.Length > 0) lines.Add(buffer.ToString());
         
         var indentString = StringHelper.Repeat(indent, " ");
         lines = lines.Select(x => $"{indentString}{x.TrimStart()}").ToList();
@@ -104,8 +101,7 @@ public static class ConsoleWrapper
                 buffer.Append(message[i]);
             }
         }
-        if (buffer.Length > 0) 
-            lines.Add(buffer.ToString());
+        if (buffer.Length > 0) lines.Add(buffer.ToString());
 
         return lines;
     }
@@ -123,6 +119,5 @@ public static class StringHelper
         return indentBuilder.ToString();
     }
 
-    public static string TrimIndent(string str) 
-        => string.Join("\n", str.Split('\n').Select(x => x.Trim()));
+    public static string TrimIndent(string str) => string.Join("\n", str.Split('\n').Select(x => x.Trim()));
 }

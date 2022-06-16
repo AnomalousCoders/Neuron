@@ -45,8 +45,7 @@ public class EventReactor<T>: IEventReactor where T: IEvent
     /// <summary>
     /// Returns the type of the generic <see cref="T"/>.
     /// </summary>
-    public Type TypeDelegate() 
-        => typeof(T);
+    public Type TypeDelegate() => typeof(T);
 
     /// <summary>
     /// Invokes the multicast event system.
