@@ -1,4 +1,5 @@
 ﻿using Neuron.Core.Logging;
+using Neuron.Core.Meta;
 using Ninject;
 
 namespace Neuron.Modules.Commands.Simple;
@@ -13,13 +14,8 @@ public interface ICommand
     internal abstract CommandResult InternalExecute(ICommandContext context);
 }
 
-public abstract class Command : ICommand
+public abstract class Command : InjectedLoggerBase, ICommand
 {
-    [Inject]
-    public NeuronLogger NeuronLoggerInjected { get; set; }
-
-    protected ILogger Logger => NeuronLoggerInjected.GetLogger(GetType());
-    
     public CommandAttribute Meta { get; set; }
     
     CommandResult ICommand.InternalPreExecute(ICommandContext context) => PreExecute(context);
@@ -38,13 +34,8 @@ public abstract class Command : ICommand
     public abstract void Execute(ICommandContext context, ref CommandResult result);
 }
 
-public abstract class Command<TContext> : ICommand where TContext: ICommandContext 
+public abstract class Command<TContext> : InjectedLoggerBase, ICommand where TContext: ICommandContext 
 {
-    [Inject]
-    public NeuronLogger NeuronLoggerInjected { get; set; }
-
-    protected ILogger Logger => NeuronLoggerInjected.GetLogger(GetType());
-    
     public CommandAttribute Meta { get; set; }
 
     CommandResult ICommand.InternalPreExecute(ICommandContext context)

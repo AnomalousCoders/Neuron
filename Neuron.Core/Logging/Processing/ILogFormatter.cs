@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 using Neuron.Core.Events;
-using Neuron.Core.Logging.Neuron;
+using Neuron.Core.Logging.Diagnostics;
 
-namespace Neuron.Core.Logging;
+namespace Neuron.Core.Logging.Processing;
 
 public interface ILogFormatter
 {
@@ -20,20 +20,20 @@ public class DefaultLogFormatter : ILogFormatter
 
     public DefaultLogFormatter()
     {
-        TokenizeEventReactor.Subscribe(StringTokenizer.Tokenize);
+        TokenizeEventReactor.Subscribe(StringWrapper.Tokenize);
         TokenizeEventReactor.Subscribe(ExceptionTokenizer.Tokenize);
         TokenizeEventReactor.Subscribe(DiagnosticTokenizer.Tokenize);
     }
 
     public IEnumerable<LogToken> RunTokenizer(object obj)
     {
-        if (obj == null) return new[] {NormalStringTokenizer.TokenizeHighlight("null")};
+        if (obj == null) return new[] {NormalStringWrapper.TokenizeHighlight("null")};
         
         var args = new ObjectTokenizeEvent();
         args.Type = obj.GetType();
         args.Value = obj;
         TokenizeEventReactor.Raise(args);
-        if (args.Tokens == null) ToStringTokenizer.Tokenize(args);
+        if (args.Tokens == null) FallbackTokenizer.Tokenize(args);
 
         return args.Tokens;
     }
@@ -44,7 +44,7 @@ public class DefaultLogFormatter : ILogFormatter
         {
             return new LogOutput(logEvent.Level, new[]
             {
-                NormalStringTokenizer.Tokenize(logEvent.Template)
+                NormalStringWrapper.Tokenize(logEvent.Template)
             }.ToList(), logEvent.Time, logEvent.Caller);
         }
         
@@ -53,11 +53,11 @@ public class DefaultLogFormatter : ILogFormatter
         var splicedTemplate = substituted.Split('\0');
         for (var i = 0; i < splicedTemplate.Length - 1; i++)
         {
-            tokens.Add(NormalStringTokenizer.Tokenize(splicedTemplate[i]));
+            tokens.Add(NormalStringWrapper.Tokenize(splicedTemplate[i]));
             if (i >= logEvent.Args.Count) tokens.AddRange(RunTokenizer(null));
             else tokens.AddRange(RunTokenizer(logEvent.Args[i]));
         }
-        tokens.Add(NormalStringTokenizer.Tokenize(splicedTemplate.Last()));
+        tokens.Add(NormalStringWrapper.Tokenize(splicedTemplate.Last()));
         return new LogOutput(logEvent.Level, tokens, logEvent.Time, logEvent.Caller);
     }
 }

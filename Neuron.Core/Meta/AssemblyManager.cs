@@ -4,7 +4,7 @@ using System.Linq;
 using System.Reflection;
 using Neuron.Core.Logging;
 
-namespace Neuron.Core;
+namespace Neuron.Core.Meta;
 
 public class AssemblyManager
 {
@@ -24,6 +24,8 @@ public class AssemblyManager
         AppDomain.CurrentDomain.AssemblyResolve += ResolveAssembly;
         _logger.Debug("Hooked ResolveAssembly() into current AppDomain");
     }
+
+    public bool IsAssemblyLoaded(string name) => AppDomain.CurrentDomain.GetAssemblies().Any(x => x.GetName().Name == name);
 
     // Refer to Stackoverflow Question https://stackoverflow.com/a/2493855 for why we do this
     private Assembly ResolveAssembly(object sender, ResolveEventArgs args) => _loadedAssemblies.FirstOrDefault(x => x.FullName == args.Name);

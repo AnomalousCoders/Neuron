@@ -3,13 +3,26 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace Neuron.Core.Logging;
+namespace Neuron.Core.Logging.Utils;
 
 public static class ConsoleWrapper
 {
     public static int WidthOverride = -1;
     private static int ConsoleColumns => Console.WindowWidth;
-    private static int Columns => (WidthOverride == -1 ? ConsoleColumns : WidthOverride) - 1; 
+    private static int Columns
+    {
+        get
+        {
+            try
+            {
+                return (WidthOverride == -1 ? ConsoleColumns : WidthOverride) - 1;
+            }
+            catch (Exception _)
+            {
+                return 100; // Default to small window size in case the console width is not resolvable, 100 because my IDE window fits this :3
+            }
+        }
+    }
 
     public static void Main()
     {

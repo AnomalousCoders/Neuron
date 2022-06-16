@@ -1,8 +1,9 @@
 ﻿using System;
+using System.Collections.Generic;
 
-namespace Neuron.Core.Logging.Neuron;
+namespace Neuron.Core.Logging.Processing;
 
-public class StringTokenizer
+public class StringWrapper
 {
     public static void Tokenize(ObjectTokenizeEvent args)
     {
@@ -17,7 +18,7 @@ public class StringTokenizer
     }
 }
 
-public class NormalStringTokenizer
+public class NormalStringWrapper
 {
     public static LogToken Tokenize(string args)
     {
@@ -40,13 +41,32 @@ public class NormalStringTokenizer
     }
 }
 
-public class ToStringTokenizer
+public class FallbackTokenizer
 {
     public static void Tokenize(ObjectTokenizeEvent args)
     {
+        if (args.Value == null)
+        {
+            args.Tokens = new[]
+            {
+                new LogToken  { Message = "null", Type = "Normal", Style = new LogStyle(ConsoleColor.White, ConsoleColor.Black) }
+            };
+            return;
+        }
+
+        string str;
+        if (args.Value is IEnumerable<object> iteratable)
+        {
+            str = $"[{string.Join(", ", iteratable)}]";
+        }
+        else
+        {
+            str = args.Value.ToString();
+        }
+
         var token = new LogToken()
         {
-            Message = args.Value?.ToString() ?? "null",
+            Message = str,
             Type = "Normal",
             Style = new LogStyle(ConsoleColor.White, ConsoleColor.Black) 
         };

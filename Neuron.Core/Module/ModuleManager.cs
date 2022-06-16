@@ -4,6 +4,8 @@ using System.Linq;
 using Neuron.Core.Dependencies;
 using Neuron.Core.Events;
 using Neuron.Core.Logging;
+using Neuron.Core.Logging.Diagnostics;
+using Neuron.Core.Logging.Utils;
 using Neuron.Core.Meta;
 using Ninject;
 
@@ -34,6 +36,11 @@ public class ModuleManager
         _activeModules = new List<ModuleLoadContext>();
         _logger = _neuronLogger.GetLogger<ModuleManager>();
     }
+
+
+    public bool HasModule(string name) => _activeModules.Any(x => string.Equals(name, x.Attribute.Name, StringComparison.OrdinalIgnoreCase));
+
+    public ModuleLoadContext Get(string name) => _activeModules.FirstOrDefault(x => string.Equals(name, x.Attribute.Name, StringComparison.OrdinalIgnoreCase));
 
     public ModuleLoadContext LoadModule(IEnumerable<Type> types)
     {

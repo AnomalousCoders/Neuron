@@ -5,13 +5,8 @@ using Ninject;
 
 namespace Neuron.Core.Module;
 
-public abstract class Module
+public abstract class Module : InjectedLoggerBase
 {
-    [Inject]
-    public NeuronLogger NeuronLoggerInjected { get; set; }
-
-    protected ILogger Logger => NeuronLoggerInjected.GetLogger(GetType());
-        
     public virtual void Load() { }
     public virtual void Enable() { }
     public virtual void LateEnable() { }

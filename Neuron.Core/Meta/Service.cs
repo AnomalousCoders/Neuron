@@ -18,14 +18,8 @@ namespace Neuron.Core.Meta
     }
 
 
-    public abstract class Service : IMetaObject
+    public abstract class Service : InjectedLoggerBase, IMetaObject
     {
-        
-        [Inject]
-        public NeuronLogger NeuronLoggerInjected { get; set; }
-
-        protected ILogger Logger => NeuronLoggerInjected.GetLogger(GetType());
-
         public virtual void Enable() { }
         public virtual void Disable() { }
     }

@@ -1,7 +1,6 @@
 using System;
-using Neuron.Core.Logging.Neuron;
 
-namespace Neuron.Core.Logging;
+namespace Neuron.Core.Logging.Processing;
 
 public interface ILogRender
 {

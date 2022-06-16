@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Text;
-using Neuron.Core.Logging.Neuron;
+using Neuron.Core.Logging.Processing;
 
-namespace Neuron.Core.Logging;
+namespace Neuron.Core.Logging.Utils;
 
 public class StringEventSink : ILogRender
 {

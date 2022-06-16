@@ -1,6 +1,7 @@
 ﻿using System;
 using Neuron.Core.Events;
 using Neuron.Core.Logging;
+using Neuron.Core.Logging.Diagnostics;
 
 namespace Neuron.Core.Module
 {

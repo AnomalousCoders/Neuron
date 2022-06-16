@@ -1,7 +1,6 @@
 ﻿using Neuron.Core.Events;
-using Neuron.Modules.Commands.Simple;
 
-namespace Neuron.Modules.Commands;
+namespace Neuron.Modules.Commands.Event;
 
 public class CommandEvent : IEvent
 {

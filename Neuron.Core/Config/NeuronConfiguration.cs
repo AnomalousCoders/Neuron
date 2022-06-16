@@ -12,6 +12,11 @@ namespace Neuron.Core.Config
 
         public SymlDocument Document { get; } = new SymlDocument();
 
+        public void GetRegion<T>() where T : IDocumentSection
+        {
+            
+        }
+
         internal void Load(PlatformConfiguration configuration)
         {
             var file = Path.Combine(configuration.BaseDirectory, "neuron.syml");
@@ -31,5 +36,7 @@ namespace Neuron.Core.Config
             var text = Document.Dump();
             File.WriteAllText(Path.Combine(configuration.BaseDirectory, "neuron.syml"), text);
         }
+        
+        
     }
 }

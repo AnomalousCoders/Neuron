@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using Neuron.Core.Logging;
 using Neuron.Core.Scheduling;
+using Ninject;
 
 namespace Neuron.Core.Platform
 {
@@ -26,7 +28,12 @@ namespace Neuron.Core.Platform
         
         public void Enable()
         {
-            
+            var list = new List<string>();
+            list.Add("Hello");
+            list.Add("World");
+            var logger = NeuronBase.Kernel.Get<NeuronLogger>().GetLogger<StandaloneEntrypoint>();
+            logger.Fatal(list);
+
         }
         
         public void Continue()

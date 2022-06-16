@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using Neuron.Core.Logging;
+using Neuron.Modules.Commands.Event;
 using Ninject;
 
 namespace Neuron.Modules.Commands.Simple;

@@ -4,8 +4,6 @@ using Neuron.Core.Meta;
 
 namespace Neuron.Core.Events;
 
-public interface IEvent { }
-
 public class EventReactor<T>: IEventReactor where T: IEvent
 {
     internal event EventHandler<T> BackingEvent;

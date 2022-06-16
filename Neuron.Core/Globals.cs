@@ -1,4 +1,5 @@
 ﻿using Neuron.Core.Logging;
+using Neuron.Core.Logging.Utils;
 using Neuron.Core.Platform;
 using Ninject;
 

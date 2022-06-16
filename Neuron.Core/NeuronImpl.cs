@@ -1,8 +1,10 @@
 using System;
 using System.IO;
 using System.Text;
+using Neuron.Core.Config;
 using Neuron.Core.Events;
 using Neuron.Core.Logging;
+using Neuron.Core.Logging.Utils;
 using Neuron.Core.Meta;
 using Neuron.Core.Module;
 using Neuron.Core.Platform;
@@ -26,6 +28,8 @@ namespace Neuron.Core
                 Globals.Hook(this);
             }
             Kernel.BindSimple<NeuronBase>(this);
+            Kernel.BindSimple(Configuration);
+            
             if (Platform.Configuration.OverrideConsoleEncoding) Console.OutputEncoding = Encoding.UTF8;
             if (Platform.Configuration.FileIo)
             {

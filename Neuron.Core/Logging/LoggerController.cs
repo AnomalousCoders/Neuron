@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using Neuron.Core.Logging.Neuron;
+using Neuron.Core.Logging.Processing;
 
 namespace Neuron.Core.Logging;
 

@@ -1,7 +1,5 @@
 ﻿namespace Neuron.Core.Dev
 {
-    public class Dev
-    {
-        
-    }
+    // Placeholder Namespace for development utilities
+    internal class Dev { }
 }

@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using Neuron.Core.Events;
 using Neuron.Core.Logging;
 
@@ -49,6 +50,8 @@ public class MetaManager
         return list;
     }
   
+    public MetaBatchReference Process(Assembly assembly) => Analyze(assembly.GetTypes());
+    
     public MetaBatchReference Analyze(IEnumerable<Type> types)
     {
         var processed = AnalyzeGroup(types);

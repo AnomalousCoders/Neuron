@@ -1,4 +1,4 @@
-﻿namespace Neuron.Core.Logging
+﻿namespace Neuron.Core.Logging.Utils
 {
     public class LogBoxes
     {

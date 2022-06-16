@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using Neuron.Core.Logging;
-using Neuron.Core.Logging.Neuron;
+using Neuron.Core.Logging.Diagnostics;
 
 namespace Neuron.Core.Scheduling;
 

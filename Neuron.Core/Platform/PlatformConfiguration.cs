@@ -1,4 +1,5 @@
 using Neuron.Core.Logging;
+using Neuron.Core.Logging.Processing;
 using Neuron.Core.Scheduling;
 
 namespace Neuron.Core.Platform;

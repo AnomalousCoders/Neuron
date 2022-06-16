@@ -1,7 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using Neuron.Core.Logging.Neuron;
+using Neuron.Core.Logging.Processing;
+using Neuron.Core.Logging.Utils;
 
 namespace Neuron.Core.Logging
 {

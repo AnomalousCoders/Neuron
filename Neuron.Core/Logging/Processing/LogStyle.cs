@@ -1,6 +1,6 @@
 using System;
 
-namespace Neuron.Core.Logging;
+namespace Neuron.Core.Logging.Processing;
 
 public struct LogStyle
 {

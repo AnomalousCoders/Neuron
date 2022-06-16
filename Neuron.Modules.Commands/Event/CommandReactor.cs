@@ -6,7 +6,7 @@ using Neuron.Modules.Commands.Simple;
 using Ninject;
 
 // ReSharper disable MemberCanBePrivate.Global
-namespace Neuron.Modules.Commands;
+namespace Neuron.Modules.Commands.Event;
 
 public class CommandReactor : EventReactor<CommandEvent>
 {
