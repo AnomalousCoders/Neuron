@@ -5,10 +5,10 @@ namespace Neuron.Core.Logging.Processing;
 
 public class LogOutput
 {
-    public LogLevel Level;
-    public List<LogToken> Tokens;
-    public DateTime Time;
-    public string Caller;
+    public LogLevel Level { get; }
+    public List<LogToken> Tokens { get; }
+    public DateTime Time { get; }
+    public string Caller { get; }
 
     public LogOutput(LogLevel level, List<LogToken> tokens, DateTime time, string caller)
     {

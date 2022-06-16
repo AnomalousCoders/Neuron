@@ -13,11 +13,15 @@ public class CyclicDependencyResolver<T> where T: IDependencyHolder
     private readonly List<object> _dependables = new();
     private readonly List<T> _dependencies = new();
 
-    public void AddDependable(object t) => _dependables.Add(t);
-    public void AddDependables(IEnumerable<object> list) => _dependables.AddRange(list);
+    public void AddDependable(object t) 
+        => _dependables.Add(t);
+    public void AddDependables(IEnumerable<object> list) 
+        => _dependables.AddRange(list);
     
-    public void AddDependency(T t) => _dependencies.Add(t);
-    public void AddDependencies(IEnumerable<T> list) => _dependencies.AddRange(list);
+    public void AddDependency(T t) 
+        => _dependencies.Add(t);
+    public void AddDependencies(IEnumerable<T> list) 
+        => _dependencies.AddRange(list);
 
     /// <summary>
     /// Runs the cyclic resolve algorithm and returns an detailed result.
@@ -62,7 +66,8 @@ public class CyclicDependencyResolver<T> where T: IDependencyHolder
     /// <summary>
     /// Constructs a tree view of the dependencies
     /// </summary>
-    public string BuildTree() => BuildTree(Resolve());
+    public string BuildTree()
+        => BuildTree(Resolve());
     
     
     /// <summary>

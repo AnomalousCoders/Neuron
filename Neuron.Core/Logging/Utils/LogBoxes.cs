@@ -2,25 +2,27 @@
 {
     public class LogBoxes
     {
-        public static LogBox Successful = new("[✓]");
-        public static LogBox Failed = new("[✖]");
-        public static LogBox Waiting = new("[⏳]");
-        public static LogBox Time = new("[🕘]");
-        public static LogBox Info = new("[⚹]");
-        public static LogBox Magic = new("[✨]");
+        public static readonly LogBox Successful = new("[✓]");
+        public static readonly LogBox Failed = new("[✖]");
+        public static readonly LogBox Waiting = new("[⏳]");
+        public static readonly LogBox Time = new("[🕘]");
+        public static readonly LogBox Info = new("[⚹]");
+        public static readonly LogBox Magic = new("[✨]");
     }
 
     public class LogBox
     {
-        public string s;
+        private readonly string _value;
 
-        public LogBox(string s)
+        public LogBox(string value)
         {
-            this.s = s;
+            this._value = value;
         }
 
-        public override string ToString() => s;
+        public override string ToString()
+            => _value;
 
-        public static LogBox Of(string s) => new LogBox(s);
+        public static LogBox Of(string s) 
+            => new LogBox(s);
     }
 }

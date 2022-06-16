@@ -38,9 +38,11 @@ public class ModuleManager
     }
 
 
-    public bool HasModule(string name) => _activeModules.Any(x => string.Equals(name, x.Attribute.Name, StringComparison.OrdinalIgnoreCase));
+    public bool HasModule(string name)
+        => _activeModules.Any(x => String.Equals(name, x.Attribute.Name, StringComparison.OrdinalIgnoreCase));
 
-    public ModuleLoadContext Get(string name) => _activeModules.FirstOrDefault(x => string.Equals(name, x.Attribute.Name, StringComparison.OrdinalIgnoreCase));
+    public ModuleLoadContext Get(string name) 
+        => _activeModules.FirstOrDefault(x => String.Equals(name, x.Attribute.Name, StringComparison.OrdinalIgnoreCase));
 
     public ModuleLoadContext LoadModule(IEnumerable<Type> types)
     {

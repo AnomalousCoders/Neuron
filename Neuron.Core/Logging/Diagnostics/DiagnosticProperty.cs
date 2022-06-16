@@ -6,8 +6,8 @@ namespace Neuron.Core.Logging.Diagnostics;
 
 public class DiagnosticProperty : IDiagnosticNode
 {
-    public string Key;
-    public object Value;
+    public string Key { get; }
+    public object Value { get; }
 
     public DiagnosticProperty(string key, object value)
     {
@@ -15,5 +15,6 @@ public class DiagnosticProperty : IDiagnosticNode
         Value = value;
     }
 
-    public IEnumerable<LogToken> Render() => Array.Empty<LogToken>();
+    public IEnumerable<LogToken> Render() 
+        => Array.Empty<LogToken>();
 }

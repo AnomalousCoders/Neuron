@@ -51,7 +51,8 @@ public class CommandReactor : EventReactor<CommandEvent>
         return result;
     }
 
-    public void RegisterCommand(Type type) => Handler.RegisterCommand(type);
+    public void RegisterCommand(Type type) 
+        => Handler.RegisterCommand(type);
 
     public void RegisterCommand<TCommand>() where TCommand : ICommand => Handler.RegisterCommand<TCommand>();
 

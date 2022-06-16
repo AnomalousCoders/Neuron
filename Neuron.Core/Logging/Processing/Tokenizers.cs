@@ -7,7 +7,8 @@ public class StringWrapper
 {
     public static void Tokenize(ObjectTokenizeEvent args)
     {
-        if (args.Value is not String) return;
+        if (args.Value is not String)
+            return;
         var token = new LogToken()
         {
             Message = args.Value.ToString(),

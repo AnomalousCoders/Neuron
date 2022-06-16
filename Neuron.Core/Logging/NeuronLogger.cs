@@ -30,26 +30,31 @@ namespace Neuron.Core.Logging
         /// <summary>
         /// Retrieves a logger which has the specified type set as its caller.
         /// </summary>
-        public ILogger GetLogger<T>() => _logger.GetLogger<T>();
+        public ILogger GetLogger<T>() 
+            => _logger.GetLogger<T>();
         
         /// <summary>
         /// Retrieves a logger which has the specified type set as its caller.
         /// </summary>
-        public ILogger GetLogger(Type callingType) => _logger.GetLogger(callingType);
+        public ILogger GetLogger(Type callingType)
+            => _logger.GetLogger(callingType);
         
         /// <summary>
         /// Retrieves a logger which has the specified object set as its caller.
         /// </summary>
-        public ILogger GetLogger(object owner) => _logger.GetLogger(owner.GetType());
+        public ILogger GetLogger(object owner)
+            => _logger.GetLogger(owner.GetType());
         
         /// <summary>
         /// Retrieves a logger using <see cref="Globals"/> which has the specified type set as its caller.
         /// </summary>
-        public static ILogger For<T>() => Globals.Get<NeuronLogger>().GetLogger<T>();
+        public static ILogger For<T>()
+            => Globals.Get<NeuronLogger>().GetLogger<T>();
         
         /// <summary>
         /// Retrieves a logger using <see cref="Globals"/> which has the specified type set as its caller.
         /// </summary>
-        public static ILogger For(Type type) => Globals.Get<NeuronLogger>().GetLogger(type);
+        public static ILogger For(Type type) 
+            => Globals.Get<NeuronLogger>().GetLogger(type);
     }
 }
