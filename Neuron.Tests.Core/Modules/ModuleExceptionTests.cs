@@ -11,7 +11,6 @@ using Xunit;
 using Xunit.Abstractions;
 
 // ReSharper disable UnusedAutoPropertyAccessor.Global
-
 namespace Neuron.Tests.Core.Modules;
 
 public class ModuleExceptionTests
@@ -76,7 +75,4 @@ public class ModuleF : Module
     Name = "Module G",
     Dependencies = new []{typeof(ModuleA)}
 )]
-public class ModuleG : Module
-{
-    
-}
+public class ModuleG : Module { }

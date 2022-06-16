@@ -11,7 +11,6 @@ using Xunit;
 using Xunit.Abstractions;
 
 // ReSharper disable UnusedAutoPropertyAccessor.Global
-
 namespace Neuron.Tests.Core.Modules;
 
 public class ServiceExceptionTests
@@ -49,17 +48,13 @@ public class ServiceExceptionTests
 )]
 public class ModuleH : Module
 {
-
     [Inject]
     public ServiceH ServiceH { get; set; }
-    
 }
 
 
 public class ServiceH : Service
 {
-
     [Inject]
     public Unbound Unbound { get; set; }
-    
 }

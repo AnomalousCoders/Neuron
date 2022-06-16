@@ -80,5 +80,4 @@ namespace Neuron.Tests.Core
             Logger.Info("The service has been disabled!");
         }
     }
-    
 }
