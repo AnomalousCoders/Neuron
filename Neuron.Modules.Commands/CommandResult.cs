@@ -33,5 +33,6 @@ public class CommandResult
 
     }
 
-    public override string ToString() => $"[{StatusCodeInt}] {Response}";
+    public override string ToString() 
+        => $"[{StatusCodeInt}] {Response}";
 }

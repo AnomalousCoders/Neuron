@@ -10,9 +10,10 @@ public static class DiagnosticTokenizer
 {
     public static void Tokenize(ObjectTokenizeEvent args)
     {
-        if (args.Value is not DiagnosticsError error) return;
+        if (args.Value is not DiagnosticsError error) 
+            return;
         
-        if (error.Exception != null && error.Exception is DiagnosticException diagnosticException)
+        if (error.Exception is DiagnosticException diagnosticException)
         {
             error.Nodes.AddRange(diagnosticException.Nodes);
         }

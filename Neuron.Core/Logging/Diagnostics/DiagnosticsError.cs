@@ -28,8 +28,12 @@ public class DiagnosticsError
         return diagnosticsError;
     }
 
-    public static IDiagnosticNode Summary(string message) => new ErrorSummary(message);
-    public static IDiagnosticNode Description(string message) => new ErrorDescription(message);
-    public static IDiagnosticNode Hint(string message) => new ErrorHint(message);
-    public static IDiagnosticNode Property(string key, object value) => new DiagnosticProperty(key, value);
+    public static IDiagnosticNode Summary(string message)
+        => new ErrorSummary(message);
+    public static IDiagnosticNode Description(string message) 
+        => new ErrorDescription(message);
+    public static IDiagnosticNode Hint(string message) 
+        => new ErrorHint(message);
+    public static IDiagnosticNode Property(string key, object value) 
+        => new DiagnosticProperty(key, value);
 }

@@ -33,10 +33,12 @@ public class AssemblyManager
     /// </summary>
     /// <param name="name">The simple name of the assembly</param>
     /// <example>name: Neuron.Core</example>
-    public bool IsAssemblyLoaded(string name) => AppDomain.CurrentDomain.GetAssemblies().Any(x => x.GetName().Name == name);
+    public bool IsAssemblyLoaded(string name) 
+        => AppDomain.CurrentDomain.GetAssemblies().Any(x => x.GetName().Name == name);
 
     // Refer to Stackoverflow Question https://stackoverflow.com/a/2493855 for why we do this
-    private Assembly ResolveAssembly(object sender, ResolveEventArgs args) => _loadedAssemblies.FirstOrDefault(x => x.FullName == args.Name);
+    private Assembly ResolveAssembly(object sender, ResolveEventArgs args)
+        => _loadedAssemblies.FirstOrDefault(x => x.FullName == args.Name);
 
     /// <summary>
     /// Loads an assembly using its raw bytes.

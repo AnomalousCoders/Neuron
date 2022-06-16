@@ -14,9 +14,9 @@ public interface ILogFormatter
 
 public class DefaultLogFormatter : ILogFormatter
 {
-    public static Regex regex = new Regex("\\[([A-Za-z0-9 ]*)]");
+    public static Regex Regex { get; } = new Regex("\\[([A-Za-z0-9 ]*)]");
 
-    public EventReactor<ObjectTokenizeEvent> TokenizeEventReactor = new();
+    public EventReactor<ObjectTokenizeEvent> TokenizeEventReactor { get; } = new();
 
     public DefaultLogFormatter()
     {
@@ -27,13 +27,15 @@ public class DefaultLogFormatter : ILogFormatter
 
     public IEnumerable<LogToken> RunTokenizer(object obj)
     {
-        if (obj == null) return new[] {NormalStringWrapper.TokenizeHighlight("null")};
-        
+        if (obj == null)
+            return new[] {NormalStringWrapper.TokenizeHighlight("null")};
+
         var args = new ObjectTokenizeEvent();
         args.Type = obj.GetType();
         args.Value = obj;
         TokenizeEventReactor.Raise(args);
-        if (args.Tokens == null) FallbackTokenizer.Tokenize(args);
+        if (args.Tokens == null)
+            FallbackTokenizer.Tokenize(args);
 
         return args.Tokens;
     }
@@ -47,16 +49,19 @@ public class DefaultLogFormatter : ILogFormatter
                 NormalStringWrapper.Tokenize(logEvent.Template)
             }.ToList(), logEvent.Time, logEvent.Caller);
         }
-        
+
         var tokens = new List<LogToken>();
-        var substituted = regex.Replace(logEvent.Template, "\0");
+        var substituted = Regex.Replace(logEvent.Template, "\0");
         var splicedTemplate = substituted.Split('\0');
         for (var i = 0; i < splicedTemplate.Length - 1; i++)
         {
             tokens.Add(NormalStringWrapper.Tokenize(splicedTemplate[i]));
-            if (i >= logEvent.Args.Count) tokens.AddRange(RunTokenizer(null));
-            else tokens.AddRange(RunTokenizer(logEvent.Args[i]));
+            if (i >= logEvent.Args.Count)
+                tokens.AddRange(RunTokenizer(null));
+            else 
+                tokens.AddRange(RunTokenizer(logEvent.Args[i]));
         }
+
         tokens.Add(NormalStringWrapper.Tokenize(splicedTemplate.Last()));
         return new LogOutput(logEvent.Level, tokens, logEvent.Time, logEvent.Caller);
     }

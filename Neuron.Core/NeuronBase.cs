@@ -28,15 +28,18 @@ namespace Neuron.Core
         /// <summary>
         /// Saves the current <see cref="NeuronConfiguration"/>.
         /// </summary>
-        public void SaveConfig() => Configuration.Store(Platform.Configuration);
+        public void SaveConfig()
+            => Configuration.Store(Platform.Configuration);
         
         
         /// <summary>
         /// Reloads the current <see cref="NeuronConfiguration"/>.
         /// </summary>
-        public void ReloadConfig() => Configuration.Load(Platform.Configuration);
+        public void ReloadConfig() 
+            => Configuration.Load(Platform.Configuration);
         
-        public string RelativePath(string sub) => Path.Combine(Platform.Configuration.BaseDirectory, sub);
+        public string RelativePath(string sub) 
+            => Path.Combine(Platform.Configuration.BaseDirectory, sub);
 
         public string PrepareRelativeDirectory(string sub)
         {

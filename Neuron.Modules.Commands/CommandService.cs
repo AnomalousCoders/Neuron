@@ -36,5 +36,6 @@ public class CommandService : Service
         return reactor;
     }
 
-    private void CallGlobalReactor(CommandEvent context) => GlobalCommandReactor.Raise(context);
+    private void CallGlobalReactor(CommandEvent context) 
+        => GlobalCommandReactor.Raise(context);
 }

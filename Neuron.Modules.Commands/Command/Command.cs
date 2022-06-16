@@ -16,7 +16,8 @@ public abstract class Command : InjectedLoggerBase, ICommand
 {
     public CommandAttribute Meta { get; set; }
     
-    CommandResult ICommand.InternalPreExecute(ICommandContext context) => PreExecute(context);
+    CommandResult ICommand.InternalPreExecute(ICommandContext context) 
+        => PreExecute(context);
     CommandResult ICommand.InternalExecute(ICommandContext context)
     {
         var result = new CommandResult();

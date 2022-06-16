@@ -23,5 +23,6 @@ public static class CommandStatusCodeHelper
         return IsSuccessful(code) ? CommandStatusCode.Ok : CommandStatusCode.Error;
     }
         
-    public static bool IsSuccessful(int code) => code is >= 200 and < 300;
+    public static bool IsSuccessful(int code) 
+        => code is >= 200 and < 300;
 }
