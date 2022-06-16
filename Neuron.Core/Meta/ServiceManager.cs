@@ -19,11 +19,11 @@ public class ServiceManager
     {
         _kernel = kernel;
         _meta = meta;
-        _meta.MetaProcess.Subscribe(MetaDelegate);
+        _meta.MetaGenerateBindings.Subscribe(MetaDelegate);
         Services = new List<ServiceRegistration>();
     }
 
-    internal void MetaDelegate(MetaProcessEvent args)
+    internal void MetaDelegate(MetaGenerateBindingsEvent args)
     {
         if (args.MetaType.Is<Service>())
         {

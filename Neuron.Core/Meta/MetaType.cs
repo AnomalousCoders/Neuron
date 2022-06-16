@@ -44,7 +44,19 @@ public class MetaType
         return (Type != null ? Type.GetHashCode() : 0);
     }
     
-    public static MetaType ExclusiveAnalyze(Type type)
+    /// <summary>
+    /// Checks if the specified type qualifies as being meta, and then parses it as <see cref="MetaType"/> or return null.
+    /// Having at least one of following properties makes an object meta:<br/><br/>
+    /// 1. Have a <see cref="MetaAttribute"/> or another Attribute extending <see cref="MetaAttributeBase"/><br/>
+    /// 2. Extend a class which is has an <see cref="MetaAttribute"/> or another attribute extending <see cref="MetaAttributeBase"/><br/>
+    /// 3. Implement the <see cref="IMetaObject"/> or derived interfaces.<br/>
+    /// 4. Have properties which have a <see cref="MetaAttribute"/> or another attribute extending <see cref="MetaAttributeBase"/><br/>
+    /// 5. Have methods which have a <see cref="MetaAttribute"/> or another attribute extending <see cref="MetaAttributeBase"/><br/>
+    /// <br/>
+    /// </summary>
+    /// <param name="type">the type to analye</param>
+    /// <returns>the analyzed MetaType or null</returns>
+    public static MetaType TryGetMetaType(Type type)
     {
         var keepType = false;
         var metaAttributesList = type.GetCustomAttributes(true)
@@ -104,7 +116,7 @@ public class MetaType
 
     public static MemoryCache _typeCache = new MemoryCache(new MemoryCacheOptions());
     
-    public static MetaType Analyze(Type type)
+    public static MetaType WrapMetaType(Type type)
     {
         if (_typeCache.TryGetValue(type, out var cached)) 
             return (MetaType) cached;
@@ -163,38 +175,4 @@ public class MetaType
         _typeCache.Set(type, meta, TimeSpan.FromSeconds(30));
         return meta;
     }
-}
-
-public class MetaMethod
-{
-    public MethodInfo Method { get; set; }
-    public object[] Attributes { get; set; }
-    
-    public bool TryGetAttribute<T>(out T output)
-    {
-        output = default;
-        var matching = Attributes.OfType<T>().ToArray();
-        if (matching.Length == 0) return false;
-        output = matching[0];
-        return true;
-    }
-
-    public T GetAttribute<T>() => Attributes.OfType<T>().First();
-}
-
-public class MetaProperty
-{
-    public PropertyInfo Property { get; set; }
-    public object[] Attributes { get; set; }
-    
-    public bool TryGetAttribute<T>(out T output)
-    {
-        output = default;
-        var matching = Attributes.OfType<T>().ToArray();
-        if (matching.Length == 0) return false;
-        output = matching[0];
-        return true;
-    }
-
-    public T GetAttribute<T>() => Attributes.OfType<T>().First();
 }

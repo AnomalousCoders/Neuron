@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -12,7 +11,7 @@ public class MetaManager
 {
 
     public EventReactor<MetaLoadedEvent> MetaLoad = new();
-    public EventReactor<MetaProcessEvent> MetaProcess = new();
+    public EventReactor<MetaGenerateBindingsEvent> MetaGenerateBindings = new();
     public readonly HashSet<MetaType> MetaTypes = new();
     
     private ILogger _logger;
@@ -34,12 +33,12 @@ public class MetaManager
     public MetaType Resolve(Type type) 
         => MetaTypes.First(x => x.Type == type);
 
-    public List<object> Process(List<MetaType> types)
+    public List<object> GenerateBindings(List<MetaType> types)
     {
         var list = new List<object>();
         foreach (var type in types)
         {
-            MetaProcess.Raise(new MetaProcessEvent
+            MetaGenerateBindings.Raise(new MetaGenerateBindingsEvent
             {
                 MetaType = type,
                 Outputs = list
@@ -75,7 +74,7 @@ public class MetaManager
         };
     }
 
-    private static List<MetaType> AnalyzeGroup(IEnumerable<Type> types) => types.Select(MetaType.ExclusiveAnalyze).Where(selected => selected != null).ToList();
+    private static List<MetaType> AnalyzeGroup(IEnumerable<Type> types) => types.Select(MetaType.TryGetMetaType).Where(selected => selected != null).ToList();
 }
 
 public class MetaLoadedEvent : IEvent
@@ -83,7 +82,7 @@ public class MetaLoadedEvent : IEvent
     public MetaType Type { get; internal set; }
 }
 
-public class MetaProcessEvent : IEvent
+public class MetaGenerateBindingsEvent : IEvent
 {
     public MetaType MetaType { get; internal set; }
     public List<object> Outputs { get; internal set; }

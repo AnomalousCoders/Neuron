@@ -15,6 +15,7 @@ public class ModuleLoadContext : SimpleDependencyHolderBase
     public Type ModuleType { get; set; }
     public Module Module { get; set; }
     public ModuleLifecycle Lifecycle { get; set; }
+    public List<object> MetaBindings { get; set; }
 
     public override IEnumerable<object> Dependencies => ModuleDependencies;
     public override object Dependable => ModuleType;

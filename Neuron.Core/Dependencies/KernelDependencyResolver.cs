@@ -20,7 +20,7 @@ public static class KernelDependencyResolver
     {
         if (DependencyCache.TryGetValue(type, out var cached)) return cached;
         
-        var meta = MetaType.Analyze(type);
+        var meta = MetaType.WrapMetaType(type);
         var list = new List<Type>();
         foreach (var property in meta.Properties)
         {

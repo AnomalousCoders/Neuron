@@ -44,6 +44,8 @@ public class ModuleManager
     public ModuleLoadContext Get(string name) 
         => _activeModules.FirstOrDefault(x => String.Equals(name, x.Attribute.Name, StringComparison.OrdinalIgnoreCase));
 
+    public IEnumerable<ModuleLoadContext> GetAllModules() => _activeModules;
+
     public ModuleLoadContext LoadModule(IEnumerable<Type> types)
     {
         var batch = _metaManager.Analyze(types);
@@ -102,18 +104,21 @@ public class ModuleManager
         
         foreach (var context in moduleResult.Solved)
         {
-            var batchResolved = context.Batch.Process();
-            var emittedServices = batchResolved.OfType<ServiceRegistration>();
+            var batchGeneratedBindings = context.Batch.GenerateBindings();
+            var emittedServices = batchGeneratedBindings.OfType<ServiceRegistration>();
 
-            context.Module = (Module)Activator.CreateInstance(context.ModuleType);
-            context.Module.NeuronLoggerInjected = _neuronLogger;
-            _kernel.Bind(context.ModuleType).ToConstant(context.Module).InSingletonScope();
+            context.MetaBindings = batchGeneratedBindings; // Make bindings permanently accessible
+            context.Module = (Module)Activator.CreateInstance(context.ModuleType); // Create un-injected module instance
+            context.Module.NeuronLoggerInjected = _neuronLogger; // Manually inject logger
+            _kernel.Bind(context.ModuleType).ToConstant(context.Module).InSingletonScope(); // Make module available for kernel without injecting
+            
             try
             {
                 context.Module.Load();
             }
-            catch (Exception e)
+            catch (Exception e) // Output exception as framework error
             {
+                #region Framework Error
                 var error = DiagnosticsError.FromParts(
                     DiagnosticsError.Summary("An error occured while executing a module load"),
                     DiagnosticsError.Description($"Invoking the Load() method of the module {context.Attribute.Name} " +
@@ -123,8 +128,10 @@ public class ModuleManager
                 NeuronDiagnosticHinter.AddCommonHints(e, error);
                 _logger.Framework(error);
                 throw;
+                #endregion
             }
 
+            #region Resolve Services and Service Dependencies
             var serviceResolver = new CyclicDependencyResolver<ServiceRegistration>();
             foreach (var service in emittedServices)
             {
@@ -142,8 +149,9 @@ public class ModuleManager
                 _logger.Debug("[Module] Services:\n[Tree]", LogBox.Of(context.ModuleType.Name),
                     LogBox.Of(serviceResolver.BuildTree(serviceResult)));
             }
-            else
+            else  // Output dependency problem as framework error
             {
+                #region Framework Error
                 var error = DiagnosticsError.FromParts(
                     DiagnosticsError.Summary("Unsatisfied service dependencies"),
                     DiagnosticsError.Description($"Could not resolve all dependencies for services of module '{context.Attribute.Name}'.")
@@ -158,8 +166,11 @@ public class ModuleManager
                 
                 error.Nodes.Add(DiagnosticsError.Property("Service Dependencies", "Tree View\n" + serviceResolver.BuildTree(serviceResult)));
                 _logger.Framework(error);
+                #endregion
             }
-            
+            #endregion
+
+            #region Resolve Module Dependencies
             var modulePropertyResolver = new CyclicDependencyResolver<ModulePropertyDependencyHolder>();
             var modulePropertyDeps = new List<object>();
             foreach (var service in serviceResult.Solved)
@@ -171,12 +182,15 @@ public class ModuleManager
                 modulePropertyDeps.Add(type);
                 if (_kernel.GetBindings(type).Any()) modulePropertyResolver.AddDependable(type);
             }
+            #endregion
 
+            #region Resolve Module Property Dependencies
             var moduleDep = new ModulePropertyDependencyHolder(modulePropertyDeps);
             modulePropertyResolver.AddDependency(moduleDep);
             var modulePropertyResult = modulePropertyResolver.Resolve();
-            if (!modulePropertyResult.Successful)
+            if (!modulePropertyResult.Successful) // Output module dependency problem as framework error
             {
+                #region Framework Error
                 var error = DiagnosticsError.FromParts(
                     DiagnosticsError.Summary("Unsatisfied module property dependencies"),
                     DiagnosticsError.Description($"Could not resolve all property dependencies for module '{context.Attribute.Name}'.")
@@ -191,13 +205,17 @@ public class ModuleManager
                 
                 var modHanGra = _neuronBase.Configuration.Engine.GracefulMissingServiceDependencies;
                 if (!modHanGra) continue;
+                #endregion
             }
+            #endregion
 
             var srvHanGra = _neuronBase.Configuration.Engine.GracefulMissingServiceDependencies;
             foreach (var registration in (srvHanGra ? serviceResult.Dependencies : serviceResult.Solved))
             {
                 _serviceManager.BindService(registration);
-                var serv = _kernel.Get(registration.ServiceType);
+                var serv = _kernel.Get(registration.ServiceType); // Create service using kernel
+                
+                // Hook service lifecycle to module lifecycle
                 context.Lifecycle.EnableComponents.SubscribeAction(serv,
                     registration.MetaType.Type.GetMethod(nameof(Service.Enable)));
                 context.Lifecycle.DisableComponents.SubscribeAction(serv,
@@ -214,11 +232,13 @@ public class ModuleManager
                 _kernel.Inject(context.Module);
             });
             
+            // Hook module class lifecycle to module lifecycle
             context.Lifecycle.Enable.SubscribeAction(context.Module, context.ModuleType.GetMethod(nameof(Module.Enable)));
             context.Lifecycle.LateEnable.SubscribeAction(context.Module, context.ModuleType.GetMethod(nameof(Module.LateEnable)));
             context.Lifecycle.Disable.SubscribeAction(context.Module, context.ModuleType.GetMethod(nameof(Module.Disable)));
             context.Lifecycle.Disable.Subscribe(_ => _kernel.Unbind(context.ModuleType));
 
+            // Save context reference
             _activeModules.Add(context);
         }
     }

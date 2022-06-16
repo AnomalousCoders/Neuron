@@ -14,9 +14,10 @@ public class MetaBatchReference
 
     /// <summary>
     /// Invokes the <see cref="MetaManager"/> process event for all types included in the batch.
+    /// Generates a list of bindings and registrations which can then be used for final registration.
     /// </summary>
     /// <returns></returns>
-    public List<object> Process() => Reference.Process(Types);
+    public List<object> GenerateBindings() => Reference.GenerateBindings(Types);
 
     /// <summary>
     /// Releases the included types from <see cref="Reference"/>.

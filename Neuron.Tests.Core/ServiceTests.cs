@@ -35,7 +35,7 @@ namespace Neuron.Tests.Core
             
             Assert.Equal(0, kernel.GetBindings(typeof(ExampleService)).ToArray().Length);
             Assert.Equal(0, serviceManager.Services.Count);
-            var processed = batch.Process();
+            var processed = batch.GenerateBindings();
             Assert.Equal(0, kernel.GetBindings(typeof(ExampleService)).ToArray().Length);
             Assert.Equal(0, serviceManager.Services.Count);
             foreach (var o in processed)
