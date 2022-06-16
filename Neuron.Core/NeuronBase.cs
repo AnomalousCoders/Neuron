@@ -5,6 +5,9 @@ using Ninject;
 
 namespace Neuron.Core
 {
+    /// <summary>
+    /// Base class of the neuron system.
+    /// </summary>
     public abstract class NeuronBase
     {
         public IPlatform Platform { get; set; }
@@ -22,7 +25,15 @@ namespace Neuron.Core
         public abstract void Start();
         public abstract void Stop();
 
+        /// <summary>
+        /// Saves the current <see cref="NeuronConfiguration"/>.
+        /// </summary>
         public void SaveConfig() => Configuration.Store(Platform.Configuration);
+        
+        
+        /// <summary>
+        /// Reloads the current <see cref="NeuronConfiguration"/>.
+        /// </summary>
         public void ReloadConfig() => Configuration.Load(Platform.Configuration);
         
         public string RelativePath(string sub) => Path.Combine(Platform.Configuration.BaseDirectory, sub);

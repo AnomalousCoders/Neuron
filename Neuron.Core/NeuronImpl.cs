@@ -13,6 +13,9 @@ using Ninject;
 
 namespace Neuron.Core
 {
+    /// <summary>
+    /// Standard implementation of <see cref="NeuronBase"/>.
+    /// </summary>
     public class NeuronImpl : NeuronBase 
     {
         private ILogger _logger;
