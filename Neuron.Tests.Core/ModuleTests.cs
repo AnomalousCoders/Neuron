@@ -138,9 +138,6 @@ namespace Neuron.Tests.Core
     {
         [Inject]
         public ModuleA A { get; set; }
-        
-        [Inject]
-        public Unbound Unbound { get; set; }
 
         public override void Load()
         {

@@ -6,7 +6,7 @@ using Neuron.Core.Meta;
 using Neuron.Core.Modules;
 using Neuron.Core.Platform;
 using Neuron.Modules.Commands;
-using Neuron.Modules.Commands.Simple;
+using Neuron.Modules.Commands.Command;
 using Ninject;
 using Xunit;
 using Xunit.Abstractions;

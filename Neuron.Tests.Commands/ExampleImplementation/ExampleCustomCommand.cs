@@ -1,5 +1,4 @@
 ﻿using Neuron.Modules.Commands;
-using Neuron.Modules.Commands.Simple;
 
 namespace Neuron.Tests.Commands.ExampleImplementation;
 

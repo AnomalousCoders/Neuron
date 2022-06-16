@@ -6,7 +6,7 @@ using Neuron.Core.Logging;
 using Neuron.Modules.Commands.Event;
 using Ninject;
 
-namespace Neuron.Modules.Commands.Simple;
+namespace Neuron.Modules.Commands.Command;
 
 public class CommandHandler
 {
@@ -25,7 +25,7 @@ public class CommandHandler
 
     public void Raise(CommandEvent commandEvent)
     {
-        if(commandEvent.IsHandled || commandEvent.PreExecuteFailed) return;
+        if(commandEvent.IsHandled) return;
         
         foreach (var command in Commands)
         {
@@ -42,11 +42,13 @@ public class CommandHandler
                 if (pre != null)
                 {
                     commandEvent.Result = pre;
-                    commandEvent.PreExecuteFailed = true;
-                    break;
+                    continue;
                 }
 
-                commandEvent.Result = command.InternalExecute(commandEvent.Context);
+                var handled = command.InternalExecute(commandEvent.Context);
+                if (handled == null) continue;
+
+                commandEvent.Result = handled;
                 commandEvent.IsHandled = true;
                 break;
             }

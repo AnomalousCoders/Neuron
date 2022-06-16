@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using Neuron.Modules.Commands.Simple;
+using Neuron.Modules.Commands.Command;
 
 namespace Neuron.Modules.Commands;
 

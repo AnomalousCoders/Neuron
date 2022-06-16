@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using Neuron.Core.Logging;
 using Neuron.Core.Meta;
+using Neuron.Modules.Commands.Command;
 using Neuron.Modules.Commands.Event;
-using Neuron.Modules.Commands.Simple;
 using Ninject;
 
 // ReSharper disable MemberCanBePrivate.Global

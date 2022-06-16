@@ -6,9 +6,7 @@ public class CommandEvent : IEvent
 {
     public ICommandContext Context { get; set; }
 
-    public CommandResult Result { get; set; } = new CommandResult();
+    public CommandResult Result { get; set; } = new();
 
     public bool IsHandled { get; set; } = false;
-
-    public bool PreExecuteFailed { get; set; } = false;
 }

@@ -1,8 +1,6 @@
-﻿using Neuron.Core.Logging;
-using Neuron.Core.Meta;
-using Ninject;
+﻿using Neuron.Core.Meta;
 
-namespace Neuron.Modules.Commands.Simple;
+namespace Neuron.Modules.Commands.Command;
 
 
 public interface ICommand

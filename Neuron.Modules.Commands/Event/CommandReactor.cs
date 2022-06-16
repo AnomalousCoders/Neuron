@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Neuron.Core.Events;
 using Neuron.Core.Logging;
-using Neuron.Modules.Commands.Simple;
+using Neuron.Modules.Commands.Command;
 using Ninject;
 
 // ReSharper disable MemberCanBePrivate.Global
@@ -17,9 +17,7 @@ public class CommandReactor : EventReactor<CommandEvent>
 
     public CommandHandler Handler { get; }
 
-    public OnException ExceptionAction = DefaultNotFound;
-
-    public OnException NullAction = DefaultNull;
+    public FallbackHandler NotFoundFallbackHandler = DefaultNotFound;
     
     public CommandReactor(IKernel kernel, NeuronLogger neuronLogger)
     {
@@ -45,13 +43,11 @@ public class CommandReactor : EventReactor<CommandEvent>
         {
             Context = context,
             IsHandled = false,
-            PreExecuteFailed = false,
             Result = new CommandResult()
         };
         Raise(args);
         var result = args.Result;
-        if (!args.IsHandled && !args.PreExecuteFailed) result = ExceptionAction(args);
-        if (result == null) result = NullAction(args);
+        if (!args.IsHandled || result == null) result = NotFoundFallbackHandler(args);
         return result;
     }
 
@@ -70,14 +66,5 @@ public class CommandReactor : EventReactor<CommandEvent>
         return result;
     }
 
-    private static CommandResult DefaultNull(CommandEvent args)
-    {
-        var result = new CommandResult();
-        result.Response = "Null Response";
-        result.StatusCode = CommandStatusCode.BadSyntax;
-        result.Attachments = new List<IAttachment>();
-        return result;
-    }
-    
-    public delegate CommandResult OnException(CommandEvent args);
+    public delegate CommandResult FallbackHandler(CommandEvent args);
 }
