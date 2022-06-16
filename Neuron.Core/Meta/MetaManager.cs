@@ -50,7 +50,7 @@ public class MetaManager
         return list;
     }
   
-    public MetaBatchReference Process(Assembly assembly) => Analyze(assembly.GetTypes());
+    public MetaBatchReference Analyze(Assembly assembly) => Analyze(assembly.GetTypes());
     
     public MetaBatchReference Analyze(IEnumerable<Type> types)
     {
@@ -75,7 +75,7 @@ public class MetaManager
         };
     }
 
-    private static List<MetaType> AnalyzeGroup(IEnumerable<Type> types) => types.Select(MetaType.Analyze).Where(selected => selected != null).ToList();
+    private static List<MetaType> AnalyzeGroup(IEnumerable<Type> types) => types.Select(MetaType.ExclusiveAnalyze).Where(selected => selected != null).ToList();
 }
 
 public class MetaLoadedEvent : IEvent

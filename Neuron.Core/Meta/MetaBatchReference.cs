@@ -1,5 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 
 namespace Neuron.Core.Meta;
@@ -27,11 +26,10 @@ public class MetaBatchReference
     /// <summary>
     /// Finds types which extend the specified type.
     /// </summary>
-    public List<MetaType> FindAlike<T>() => Types.Where(x => x.Is<T>()).ToList();
-    
-    
+    public List<MetaType> WhereIs<T>() => Types.Where(x => x.Is<T>()).ToList();
+
     /// <summary>
     /// Finds types which are annotated with the specified attribute.
     /// </summary>
-    public List<MetaType> FindAnnotated<T>() => Types.Where(x => x.TryGetAttribute<T>(out _)).ToList();
+    public List<MetaType> WhereAttribute<T>() => Types.Where(x => x.TryGetAttribute<T>(out _)).ToList();
 }

@@ -11,6 +11,11 @@
         <PackageId>Neuron.Tests.Core</PackageId>
     </PropertyGroup>
 
+    <PropertyGroup>
+        <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+        <GenerateBindingRedirectsOutputType>true</GenerateBindingRedirectsOutputType>
+    </PropertyGroup>
+    
     <ItemGroup>
         <PackageReference Include="xunit" Version="2.1.0" />
     </ItemGroup>

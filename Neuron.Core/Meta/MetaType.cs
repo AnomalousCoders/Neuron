@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using Microsoft.Extensions.Caching.Memory;
 
 namespace Neuron.Core.Meta;
 
@@ -11,8 +12,6 @@ public class MetaType
     public object[] Attributes { get; set; }
     public MetaMethod[] Methods { get; set; }
     public MetaProperty[] Properties { get; set; }
-
-    public static Dictionary<Type, MetaType> TypeCache = new();
 
     public bool TryGetAttribute<T>(out T output)
     {
@@ -45,7 +44,7 @@ public class MetaType
         return (Type != null ? Type.GetHashCode() : 0);
     }
     
-    public static MetaType Analyze(Type type)
+    public static MetaType ExclusiveAnalyze(Type type)
     {
         var keepType = false;
         var metaAttributesList = type.GetCustomAttributes(true)
@@ -103,16 +102,13 @@ public class MetaType
         };
     }
 
-    public static MetaType Analyze(Type type, bool ignoreMeta)
+    public static MemoryCache _typeCache = new MemoryCache(new MemoryCacheOptions());
+    
+    public static MetaType Analyze(Type type)
     {
-        if (ignoreMeta)
-        {
-            if (TypeCache.TryGetValue(type, out var cached))
-            {
-                return cached;
-            }
-        }
-        
+        if (_typeCache.TryGetValue(type, out var cached)) 
+            return (MetaType) cached;
+
         var keepType = false;
         var metaAttributesList = type.GetCustomAttributes(true)
             .OfType<MetaAttributeBase>().ToList();
@@ -159,17 +155,12 @@ public class MetaType
             });
         }
             
-        if (!keepType && !ignoreMeta) return null;
         var meta = new MetaType();
         meta.Type = type;
         meta.Attributes = allAttributesList.ToArray();
         meta.Methods = metaMethods.ToArray();
         meta.Properties = metaProperties.ToArray();
-
-        if (ignoreMeta)
-        {
-            TypeCache[type] = meta;
-        }
+        _typeCache.Set(type, meta, TimeSpan.FromSeconds(30));
         return meta;
     }
 }
@@ -204,6 +195,6 @@ public class MetaProperty
         output = matching[0];
         return true;
     }
-    
+
     public T GetAttribute<T>() => Attributes.OfType<T>().First();
 }
