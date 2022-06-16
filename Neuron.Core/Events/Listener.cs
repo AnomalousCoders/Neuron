@@ -5,6 +5,10 @@ using System.Reflection;
 
 namespace Neuron.Core.Events;
 
+/// <summary>
+/// Extendable class for easily wrapping methods to event reactor delegates.
+/// Can be registered via <see cref="EventManager.RegisterListener"/>
+/// </summary>
 public abstract class Listener
 {
     private Dictionary<Type, object> _subscriptions = new();
@@ -24,6 +28,10 @@ public abstract class Listener
         }
     }
 
+    /// <summary>
+    /// Unregisters all handlers of the listener.
+    /// </summary>
+    /// <exception cref="Exception">if the listener is not linked</exception>
     public void UnregisterAll()
     {
         if (_managerReference != null)
