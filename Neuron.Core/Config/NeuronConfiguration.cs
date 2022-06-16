@@ -4,17 +4,39 @@ using Syml;
 
 namespace Neuron.Core.Config
 {
+    /// <summary>
+    /// Configurations for neuron and modules
+    /// </summary>
     public class NeuronConfiguration
     {
+        /// <summary>
+        /// Engine related configurations
+        /// </summary>
         public EngineSection Engine { get; internal set; } = new EngineSection();
+        
+        /// <summary>
+        /// File related configurations
+        /// </summary>
         public FilesSection Files { get; internal set; } = new FilesSection();
+        
+        /// <summary>
+        /// Logging related configurations
+        /// </summary>
         public LoggingSection Logging { get; internal set; } = new LoggingSection();
 
+        /// <summary>
+        /// The backing SYML Document
+        /// </summary>
         public SymlDocument Document { get; } = new SymlDocument();
 
         private PlatformConfiguration _configuration;
 
-        public T GetRegion<T>() where T : IDocumentSection, new()
+        /// <summary>
+        /// Retrieves a section and stores defaults if not already existing.
+        /// </summary>
+        /// <typeparam name="T">the type of the document</typeparam>
+        /// <returns>the parsed document section</returns>
+        public T GetSection<T>() where T : IDocumentSection, new()
         {
             if (Document.Has<T>())
             {
@@ -48,7 +70,5 @@ namespace Neuron.Core.Config
             var text = Document.Dump();
             File.WriteAllText(Path.Combine(configuration.BaseDirectory, "neuron.syml"), text);
         }
-        
-        
     }
 }
