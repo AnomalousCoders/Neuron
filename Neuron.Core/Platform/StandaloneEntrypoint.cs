@@ -7,6 +7,9 @@ using Ninject;
 
 namespace Neuron.Core.Platform
 {
+    /// <summary>
+    /// Platform Implementation for basic standalone environments.
+    /// </summary>
     public class StandaloneEntrypoint : IPlatform
     {
         public static void Main()
