@@ -57,10 +57,8 @@ public class CyclicDependencyResolver<T> where T: IDependencyHolder
             Dependables = temporaryDependables
         };
     }
-
-
+    
     #region DependencyTree
-
     /// <summary>
     /// Constructs a tree view of the dependencies
     /// </summary>
@@ -133,6 +131,5 @@ public class CyclicDependencyResolver<T> where T: IDependencyHolder
             builder.Decrement();
         }
     }
-
     #endregion
 }

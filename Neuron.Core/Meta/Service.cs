@@ -48,5 +48,4 @@ namespace Neuron.Core.Meta
         /// </summary>
         public virtual void Disable() { }
     }
-
 }

@@ -78,5 +78,4 @@ public static class KernelExtensions
         if (!exists) return default;
         return kernel.Get(type);
     }
-
 }

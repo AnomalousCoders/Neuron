@@ -111,7 +111,6 @@ public static class VoidEventExtension
         reactor.Subscribe(handler);
         return handler;
     }
-
 }
 
 public delegate void EventHandler<in T>(T args) where T: IEvent;

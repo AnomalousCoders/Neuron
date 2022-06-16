@@ -19,5 +19,4 @@ public class ModuleAttribute : MetaAttributeBase
     public string Name { get; set; } = "Unnamed";
     public string Description { get; set; } = "";
     public Type[] Dependencies { get; set; } = Type.EmptyTypes;
-
 }

@@ -4,7 +4,6 @@ namespace Neuron.Core.Dependencies;
 
 public interface IDependencyHolder
 {
-
     /// <summary>
     /// Checks if the dependency holder is satisfied by the given dependables.
     /// </summary>
@@ -20,5 +19,4 @@ public interface IDependencyHolder
     /// </summary>
     /// <returns></returns>
     public IEnumerable<object> Publications();
-
 }

@@ -23,13 +23,7 @@ public static class ConsoleWrapper
             }
         }
     }
-
-    public static void Main()
-    {
-        var lines = WrapText(8, "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua.  At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.");
-        Console.WriteLine(string.Join("\n", lines));
-    }
-
+    
     public static string Header(string name) => PadRight($"   ===== {name} ", "=");
 
     public static string PadRight(string message, string pad)
@@ -113,8 +107,8 @@ public static class ConsoleWrapper
     }
 }
 
-public static class StringHelper {
-
+public static class StringHelper
+{
     public static string Repeat(int amount, string str)
     {
         var indentBuilder = new StringBuilder();
@@ -126,5 +120,4 @@ public static class StringHelper {
     }
 
     public static string TrimIndent(string str) => string.Join("\n", str.Split('\n').Select(x => x.Trim()));
-
 }

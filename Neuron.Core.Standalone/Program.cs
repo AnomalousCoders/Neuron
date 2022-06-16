@@ -58,7 +58,6 @@ namespace Neuron.Core.Standalone
             var main = entrypoint.GetMethod("Main", BindingFlags.Public | BindingFlags.Static);
             if (main == null) throw new Exception("StandaloneEntrypoint.Main() is null");
             main.Invoke(null, Array.Empty<object>());
-
         }
     }
 }
