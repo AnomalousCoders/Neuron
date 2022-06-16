@@ -5,10 +5,17 @@ using Ninject;
 
 namespace Neuron.Core.Dependencies;
 
-public class KernelDependencyResolver
+/// <summary>
+/// Utility class for analyzing Ninject-Bindings.
+/// </summary>
+public static class KernelDependencyResolver
 {
-    public static Dictionary<Type, List<Type>> DependencyCache = new();
+    private static readonly Dictionary<Type, List<Type>> DependencyCache = new();
 
+    /// <summary>
+    /// Retrieves all Ninject-Binding types which are defined via [Inject] Attributes
+    /// for the given type.
+    /// </summary>
     public static IEnumerable<Type> GetPropertyDependencies(Type type)
     {
         if (DependencyCache.TryGetValue(type, out var cached)) return cached;

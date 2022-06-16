@@ -3,6 +3,9 @@ using System.Linq;
 
 namespace Neuron.Core.Dependencies;
 
+/// <summary>
+/// Simplifies the usage of <see cref="IDependencyHolder"/>
+/// </summary>
 public abstract class SimpleDependencyHolderBase : IDependencyHolder
 {
 

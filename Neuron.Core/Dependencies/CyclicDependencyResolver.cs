@@ -3,6 +3,10 @@ using System.Linq;
 
 namespace Neuron.Core.Dependencies;
 
+/// <summary>
+/// Abstract utility for resolving nested dependency trees
+/// </summary>
+/// <typeparam name="T">type of the dependency holder</typeparam>
 public class CyclicDependencyResolver<T> where T: IDependencyHolder
 {
     private const int MaxDepth = 255;
@@ -15,6 +19,10 @@ public class CyclicDependencyResolver<T> where T: IDependencyHolder
     public void AddDependency(T t) => _dependencies.Add(t);
     public void AddDependencies(IEnumerable<T> list) => _dependencies.AddRange(list);
 
+    /// <summary>
+    /// Runs the cyclic resolve algorithm and returns an detailed result.
+    /// All dependencies, even if nested, have to be registered as dependencies.
+    /// </summary>
     // Really ReSharper? This isn't even that complex ~HelightDev
     // ReSharper disable once CognitiveComplexity
     public DependencyResult<T> Resolve()
@@ -53,8 +61,15 @@ public class CyclicDependencyResolver<T> where T: IDependencyHolder
 
     #region DependencyTree
 
+    /// <summary>
+    /// Constructs a tree view of the dependencies
+    /// </summary>
     public string BuildTree() => BuildTree(Resolve());
     
+    
+    /// <summary>
+    /// Constructs a tree view of the dependencies
+    /// </summary>
     public string BuildTree(DependencyResult<T> result)
     {
         var builder = new TreeBuilder();

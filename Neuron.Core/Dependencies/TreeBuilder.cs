@@ -2,6 +2,9 @@
 
 namespace Neuron.Core.Dependencies;
 
+/// <summary>
+/// Utility for building dependency trees
+/// </summary>
 public class TreeBuilder
 {
     private const string IndentString = "-";
