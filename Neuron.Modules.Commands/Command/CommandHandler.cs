@@ -42,6 +42,7 @@ public class CommandHandler
                 if (pre != null)
                 {
                     commandEvent.Result = pre;
+                    commandEvent.IsHandled = true;
                     continue;
                 }
 
