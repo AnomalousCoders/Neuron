@@ -69,7 +69,6 @@ namespace Neuron.Core
             Directory.CreateDirectory(Platform.Configuration.BaseDirectory);
 
             var moduleDirectory = PrepareRelativeDirectory(Configuration.Files.ModuleDirectory);
-            var configDirectory = PrepareRelativeDirectory(Configuration.Files.ConfigDirectory);
             var dependenciesDirectory = PrepareRelativeDirectory(Configuration.Files.DependenciesDirectory);
 
             var assemblies = Kernel.Get<AssemblyManager>();
