@@ -7,6 +7,9 @@ using Neuron.Core.Logging;
 
 namespace Neuron.Core.Meta;
 
+/// <summary>
+/// Neuron service for reflection based meta analysis of types.
+/// </summary>
 public class MetaManager
 {
 
@@ -21,7 +24,10 @@ public class MetaManager
         _logger = neuronLogger.GetLogger<MetaManager>();
     }
     
-
+    /// <summary>
+    /// Removes the specified types from the meta types set,
+    /// making them no longer resolvable via <see cref="Resolve"/>.
+    /// </summary>
     public void Untrack(List<MetaType> list)
     {
         foreach (var type in list)
@@ -30,9 +36,18 @@ public class MetaManager
         }
     }
     
-    public MetaType Resolve(Type type) 
-        => MetaTypes.First(x => x.Type == type);
+    /// <summary>
+    /// Resolves the specified type using the <see cref="MetaTypes"/> set.
+    /// </summary>
+    /// <returns>Correlated MetaType or null if not present</returns>
+    public MetaType Resolve(Type type) => MetaTypes.FirstOrDefault(x => x.Type == type);
 
+    /// <summary>
+    /// Generates bindings for specified types using the <see cref="MetaGenerateBindings"/> event.
+    /// Bindings are intermediate data-holders which are later used by the framework or modules,
+    /// and are publicly available if related with an module. Can be retrieved via <see cref="Modules.ModuleManager"/>
+    /// as a property of <see cref="Modules.ModuleLoadContext"/>.
+    /// </summary>
     public List<object> GenerateBindings(List<MetaType> types)
     {
         var list = new List<object>();
@@ -49,8 +64,16 @@ public class MetaManager
         return list;
     }
   
+    /// <summary>
+    /// Performs <see cref="MetaType.TryGetMetaType"/> on all types of the assembly and returns
+    /// the resulting MetaTypes in an <see cref="MetaBatchReference"/> wrapper.
+    /// </summary>
     public MetaBatchReference Analyze(Assembly assembly) => Analyze(assembly.GetTypes());
     
+    /// <summary>
+    /// Performs <see cref="MetaType.TryGetMetaType"/> on the specified types and returns
+    /// the resulting MetaTypes in an <see cref="MetaBatchReference"/> wrapper.
+    /// </summary>
     public MetaBatchReference Analyze(IEnumerable<Type> types)
     {
         var processed = AnalyzeGroup(types);
@@ -74,7 +97,10 @@ public class MetaManager
         };
     }
 
-    private static List<MetaType> AnalyzeGroup(IEnumerable<Type> types) => types.Select(MetaType.TryGetMetaType).Where(selected => selected != null).ToList();
+    private static List<MetaType> AnalyzeGroup(IEnumerable<Type> types) => types
+        .Select(MetaType.TryGetMetaType)
+        .Where(selected => selected != null)
+        .ToList();
 }
 
 public class MetaLoadedEvent : IEvent
