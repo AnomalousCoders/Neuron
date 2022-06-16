@@ -6,7 +6,7 @@ namespace Neuron.Tests.Commands.ExampleImplementation;
     Aliases = new[] { "cc" },
     CommandName = "Custom",
     Description = "Test Command",
-    Permission = "*"
+    Permission = "gashd"
     )]
 public class ExampleCustomCommand : CustomCommand
 {
