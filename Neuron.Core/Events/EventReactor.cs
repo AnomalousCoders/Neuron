@@ -34,7 +34,7 @@ public class EventReactor<T>: IEventReactor where T: IEvent
     }
 
     /// <summary>
-    /// Unsubscribes a delegate from the backing event
+    /// Unsubscribes a delegate from the backing event.
     /// </summary>
     /// <param name="handler">the delegate to unsubscribe</param>
     public void Unsubscribe(EventHandler<T> handler)
@@ -43,7 +43,7 @@ public class EventReactor<T>: IEventReactor where T: IEvent
     }
 
     /// <summary>
-    /// Returns the type of the generic <see cref="T"/>
+    /// Returns the type of the generic <see cref="T"/>.
     /// </summary>
     public Type TypeDelegate() => typeof(T);
 
