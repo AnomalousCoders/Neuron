@@ -23,7 +23,7 @@ namespace Neuron.Tests.Core
         }
 
         [Fact]
-        public void Test()
+        public void MetaFilterTests()
         {
             var logger = _neuron.NeuronBase.Kernel.Get<NeuronLogger>();;
             var metaManager = new MetaManager(logger);
