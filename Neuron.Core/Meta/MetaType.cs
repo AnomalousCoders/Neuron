@@ -54,7 +54,7 @@ public class MetaType
     /// 5. Have methods which have a <see cref="MetaAttribute"/> or another attribute extending <see cref="MetaAttributeBase"/><br/>
     /// <br/>
     /// </summary>
-    /// <param name="type">the type to analye</param>
+    /// <param name="type">the type to analyze</param>
     /// <returns>the analyzed MetaType or null</returns>
     public static MetaType TryGetMetaType(Type type)
     {
