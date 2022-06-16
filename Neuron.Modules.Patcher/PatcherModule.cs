@@ -1,5 +1,5 @@
 ﻿using Neuron.Core;
-using Neuron.Core.Module;
+using Neuron.Core.Modules;
 using Ninject;
 
 namespace Neuron.Modules.Patcher

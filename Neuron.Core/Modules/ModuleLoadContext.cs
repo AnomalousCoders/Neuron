@@ -4,7 +4,7 @@ using System.Reflection;
 using Neuron.Core.Dependencies;
 using Neuron.Core.Meta;
 
-namespace Neuron.Core.Module;
+namespace Neuron.Core.Modules;
 
 public class ModuleLoadContext : SimpleDependencyHolderBase
 {

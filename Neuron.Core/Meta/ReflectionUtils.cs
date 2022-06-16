@@ -4,6 +4,10 @@ using System.Reflection;
 
 namespace Neuron.Core.Meta
 {
+    
+    /// <summary>
+    /// Utilities for working with reflections.
+    /// </summary>
     public static class ReflectionUtils
     {
         public static T CreateDelegate<T>(MethodInfo info) where T : Delegate

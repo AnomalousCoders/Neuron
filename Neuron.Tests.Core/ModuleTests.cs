@@ -4,7 +4,7 @@ using Neuron.Core;
 using Neuron.Core.Dependencies;
 using Neuron.Core.Logging;
 using Neuron.Core.Meta;
-using Neuron.Core.Module;
+using Neuron.Core.Modules;
 using Neuron.Core.Platform;
 using Ninject;
 using Ninject.Planning.Bindings.Resolvers;

@@ -5,6 +5,9 @@ using Ninject;
 
 namespace Neuron.Core.Meta;
 
+/// <summary>
+/// Neuron service system.
+/// </summary>
 public class ServiceManager
 {
 
@@ -20,7 +23,7 @@ public class ServiceManager
         Services = new List<ServiceRegistration>();
     }
 
-    public void MetaDelegate(MetaProcessEvent args)
+    internal void MetaDelegate(MetaProcessEvent args)
     {
         if (args.MetaType.Is<Service>())
         {
@@ -38,7 +41,10 @@ public class ServiceManager
         }
     }
 
-    //TODO: Fix Services depending on each other
+    
+    /// <summary>
+    /// Binds the service registration to the ninject kernel and the local registry.
+    /// </summary>
     public ServiceRegistration BindService(ServiceRegistration registration)
     {
         _kernel.Bind(registration.ServiceType).To(registration.MetaType.Type).InSingletonScope();
@@ -47,6 +53,10 @@ public class ServiceManager
         return registration;
     }
 
+    
+    /// <summary>
+    /// Unbinds the service registration from the ninject kernel and the local registry.
+    /// </summary>
     public void UnbindService(ServiceRegistration service)
     {
         if (Services.Contains(service)) Services.Remove(service);
@@ -59,6 +69,9 @@ public class ServiceManager
     }
 }
 
+/// <summary>
+/// Data-Holder for service registrations.
+/// </summary>
 public class ServiceRegistration : SimpleDependencyHolderBase
 {
     public Type ServiceType { get; set; }

@@ -9,7 +9,7 @@ using Neuron.Core.Logging.Utils;
 using Neuron.Core.Meta;
 using Ninject;
 
-namespace Neuron.Core.Module;
+namespace Neuron.Core.Modules;
 
 public class ModuleManager
 {

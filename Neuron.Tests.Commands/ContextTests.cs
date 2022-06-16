@@ -4,7 +4,7 @@ using System.Runtime.InteropServices;
 using Neuron.Core;
 using Neuron.Core.Logging;
 using Neuron.Core.Meta;
-using Neuron.Core.Module;
+using Neuron.Core.Modules;
 using Neuron.Core.Platform;
 using Neuron.Modules.Commands;
 using Neuron.Modules.Commands.Simple;

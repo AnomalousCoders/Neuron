@@ -3,7 +3,7 @@ using Neuron.Core.Logging;
 using Neuron.Core.Meta;
 using Ninject;
 
-namespace Neuron.Core.Module;
+namespace Neuron.Core.Modules;
 
 public abstract class Module : InjectedLoggerBase
 {

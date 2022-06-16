@@ -6,7 +6,7 @@ using Neuron.Core.Events;
 using Neuron.Core.Logging;
 using Neuron.Core.Logging.Utils;
 using Neuron.Core.Meta;
-using Neuron.Core.Module;
+using Neuron.Core.Modules;
 using Neuron.Core.Platform;
 using Neuron.Core.Scheduling;
 using Ninject;
