@@ -17,7 +17,7 @@ public class MetaBatchReference
     /// Invokes the <see cref="MetaManager"/> process event for all types included in the batch.
     /// </summary>
     /// <returns></returns>
-    public ArrayList Process() 
+    public List<object> Process() 
         => Reference.Process(Types);
 
     /// <summary>

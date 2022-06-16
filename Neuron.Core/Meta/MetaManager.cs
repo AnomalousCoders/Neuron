@@ -34,9 +34,9 @@ public class MetaManager
     public MetaType Resolve(Type type) 
         => MetaTypes.First(x => x.Type == type);
 
-    public ArrayList Process(List<MetaType> types)
+    public List<object> Process(List<MetaType> types)
     {
-        var list = new ArrayList();
+        var list = new List<object>();
         foreach (var type in types)
         {
             MetaProcess.Raise(new MetaProcessEvent
@@ -88,5 +88,5 @@ public class MetaLoadedEvent : IEvent
 public class MetaProcessEvent : IEvent
 {
     public MetaType MetaType { get; internal set; }
-    public ArrayList Outputs { get; internal set; }
+    public List<object> Outputs { get; internal set; }
 }
