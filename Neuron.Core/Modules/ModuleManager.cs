@@ -176,7 +176,7 @@ public class ModuleManager
             if (!modulePropertyResult.Successful)
             {
                 var error = DiagnosticsError.FromParts(
-                    DiagnosticsError.Summary("Unsatisfied module dependencies"),
+                    DiagnosticsError.Summary("Unsatisfied module property dependencies"),
                     DiagnosticsError.Description($"Could not resolve all property dependencies for module '{context.Attribute.Name}'.")
                 );
                 
