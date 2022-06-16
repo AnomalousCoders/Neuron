@@ -8,6 +8,10 @@ using Neuron.Core.Logging.Diagnostics;
 
 namespace Neuron.Core.Scheduling;
 
+/// <summary>
+/// Neuron implementation of a MEC like coroutine which is meant to be
+/// easily hookable into a lot of environments.
+/// </summary>
 public abstract class CoroutineReactor
 {
     public ILogger Logger { get; set; }
@@ -16,19 +20,27 @@ public abstract class CoroutineReactor
     private ConcurrentQueue<CoroutineRegistration> _addCoroutines = new();
     private ConcurrentQueue<CoroutineRegistration> _removeCoroutines = new();
 
+    /// <summary>
+    /// Starts a new coroutine defined by the enumerator.
+    /// </summary>
+    /// <param name="coroutine">the coroutine</param>
+    /// <returns>the coroutine handle</returns>
     public object StartCoroutine(IEnumerator<float> coroutine)
     {
         var registration = new CoroutineRegistration(coroutine);
         _addCoroutines.Enqueue(registration);
         return registration;
     }
-        
-           
+    
+    /// <summary>
+    /// Stops the coroutine identified by the handle.
+    /// </summary>
+    /// <param name="handle">the coroutine handle</param>
     public void StopCoroutine(object handle)
     {
         _removeCoroutines.Enqueue((CoroutineRegistration)handle);
     }
-        
+    
     protected void Tick()
     {
         while (_addCoroutines.TryDequeue(out var routine)) _coroutines.Add(routine);

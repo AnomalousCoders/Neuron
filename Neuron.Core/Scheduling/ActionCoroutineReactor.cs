@@ -2,6 +2,9 @@ using System;
 
 namespace Neuron.Core.Scheduling;
 
+/// <summary>
+/// Coroutine reactor which is based on <see cref="Action"/> delegates.
+/// </summary>
 public class ActionCoroutineReactor : CoroutineReactor
 {
 
