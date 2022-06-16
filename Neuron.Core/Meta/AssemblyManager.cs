@@ -6,6 +6,9 @@ using Neuron.Core.Logging;
 
 namespace Neuron.Core.Meta;
 
+/// <summary>
+/// Neuron service for loading assemblies.
+/// </summary>
 public class AssemblyManager
 {
     private NeuronLogger _neuronLogger;
@@ -25,11 +28,20 @@ public class AssemblyManager
         _logger.Debug("Hooked ResolveAssembly() into current AppDomain");
     }
 
+    /// <summary>
+    /// Checks if an assembly is loaded and accessible in the current <see cref="AppDomain"/>
+    /// </summary>
+    /// <param name="name">The simple name of the assembly</param>
+    /// <example>name: Neuron.Core</example>
     public bool IsAssemblyLoaded(string name) => AppDomain.CurrentDomain.GetAssemblies().Any(x => x.GetName().Name == name);
 
     // Refer to Stackoverflow Question https://stackoverflow.com/a/2493855 for why we do this
     private Assembly ResolveAssembly(object sender, ResolveEventArgs args) => _loadedAssemblies.FirstOrDefault(x => x.FullName == args.Name);
 
+    /// <summary>
+    /// Loads an assembly using its raw bytes.
+    /// </summary>
+    /// <returns>the loaded assembly</returns>
     public Assembly LoadAssembly(byte[] bytes)
     {
         var assembly = AppDomain.CurrentDomain.Load(bytes);
