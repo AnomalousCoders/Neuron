@@ -12,6 +12,9 @@ public class LoggerController
     public List<ILogRender> Renderers = new ILogRender[] {}.ToList();
     public LogLevel MinimumLevel = LogLevel.Verbose;
 
+    /// <summary>
+    /// Emits a log event.
+    /// </summary>
     public void Emit(LogEvent logEvent)
     {
         if (logEvent.Level < MinimumLevel) return;
@@ -22,9 +25,20 @@ public class LoggerController
             logRender.Render(output);
         }
     }
-
+    
+    /// <summary>
+    /// Gets a new child logger.
+    /// </summary>
     public ILogger GetLogger() => new DelegateLogger(this, Assembly.GetCallingAssembly().GetName().Name);
+    
+    /// <summary>
+    /// Gets a new child logger which has the referenced type set as its caller.
+    /// </summary>
     public ILogger GetLogger<T>() => new DelegateLogger(this, typeof(T).Name);
+    
+    /// <summary>
+    /// Gets a new child logger which has the referenced type set as its caller.
+    /// </summary>
     public ILogger GetLogger(Type type) => new DelegateLogger(this, type.Name);
 }
 
