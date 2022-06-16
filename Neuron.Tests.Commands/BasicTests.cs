@@ -57,6 +57,9 @@ namespace Neuron.Tests.Commands
             customReactor.RegisterCommand<ExampleImplementation.ExampleCustomCommand>();
             var result4 = customReactor.Invoke(ExampleImplementation.CustomContext.Of("1234"),"custom");
             _logger.Info(result4.ToString());
+
+            var result5 = customReactor.Invoke(DefaultCommandContext.Of("custom"));
+            _logger.Info(result5.ToString());
         }
         
         [Fact]

@@ -17,7 +17,9 @@ public class CommandReactor : EventReactor<CommandEvent>
 
     public CommandHandler Handler { get; }
 
-    public OnNotFound NotFoundAction = DefaultNotFound;
+    public OnException ExceptionAction = DefaultNotFound;
+
+    public OnException NullAction = DefaultNull;
     
     public CommandReactor(IKernel kernel, NeuronLogger neuronLogger)
     {
@@ -48,7 +50,8 @@ public class CommandReactor : EventReactor<CommandEvent>
         };
         Raise(args);
         var result = args.Result;
-        if (!args.IsHandled && !args.PreExecuteFailed) result = NotFoundAction(args);
+        if (!args.IsHandled && !args.PreExecuteFailed) result = ExceptionAction(args);
+        if (result == null) result = NullAction(args);
         return result;
     }
 
@@ -66,6 +69,15 @@ public class CommandReactor : EventReactor<CommandEvent>
         result.Attachments = new List<IAttachment>();
         return result;
     }
+
+    private static CommandResult DefaultNull(CommandEvent args)
+    {
+        var result = new CommandResult();
+        result.Response = "Null Response";
+        result.StatusCode = CommandStatusCode.BadSyntax;
+        result.Attachments = new List<IAttachment>();
+        return result;
+    }
     
-    public delegate CommandResult OnNotFound(CommandEvent args);
+    public delegate CommandResult OnException(CommandEvent args);
 }
