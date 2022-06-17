@@ -33,6 +33,16 @@ public static class KernelExtensions
         kernel.Bind<T>().To<T>().InSingletonScope();
         return kernel.Get<T>();
     }
+    
+    /// <summary>
+    /// Binds a object using a constant based singleton ninject binding.
+    /// The type is created by the ninject kernel making injection usable.
+    /// </summary>
+    public static object BindSimple(this IKernel kernel, Type type)
+    {
+        kernel.Bind(type).To(type).InSingletonScope();
+        return kernel.Get(type);
+    }
 
     /// <summary>
     /// Binds a object using a constant based singleton ninject binding.

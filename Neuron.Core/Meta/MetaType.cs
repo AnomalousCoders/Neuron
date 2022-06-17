@@ -114,22 +114,12 @@ public class MetaType
         };
     }
 
-    public static MemoryCache _typeCache = new MemoryCache(new MemoryCacheOptions());
+    public static MemoryCache _typeCache = new(new MemoryCacheOptions());
     
     public static MetaType WrapMetaType(Type type)
     {
         if (_typeCache.TryGetValue(type, out var cached)) 
             return (MetaType) cached;
-
-        var keepType = false;
-        var metaAttributesList = type.GetCustomAttributes(true)
-            .OfType<MetaAttributeBase>().ToList();
-        var interfaceAttributes = ReflectionUtils
-            .ResolveInterfaceAttributes(type)
-            .OfType<MetaAttributeBase>();
-        metaAttributesList.AddRange(interfaceAttributes);
-        var metaAttributes = metaAttributesList.ToArray();
-        if (metaAttributes.Length != 0) keepType = true;
         
         var allAttributesList = type.GetCustomAttributes(true).ToList();
         var allInterfaceAttributes = ReflectionUtils
@@ -141,11 +131,6 @@ public class MetaType
                         
         foreach (var x in type.GetRuntimeMethods())
         {
-            var methodMetaAttributes = x
-                .GetCustomAttributes(true).OfType<MetaAttributeBase>().ToArray();
-            
-            if (methodMetaAttributes.Length != 0) keepType = true;
-                            
             metaMethods.Add(new MetaMethod
             {
                 Method = x,
@@ -155,11 +140,6 @@ public class MetaType
                         
         foreach (var x in type.GetRuntimeProperties())
         {
-            var propertyMetaAttributes = x
-                .GetCustomAttributes(true).OfType<MetaAttributeBase>().ToArray();
-                            
-            if (propertyMetaAttributes.Length != 0) keepType = true;
-                            
             metaProperties.Add(new MetaProperty
             {
                 Property = x,
@@ -167,11 +147,13 @@ public class MetaType
             });
         }
             
-        var meta = new MetaType();
-        meta.Type = type;
-        meta.Attributes = allAttributesList.ToArray();
-        meta.Methods = metaMethods.ToArray();
-        meta.Properties = metaProperties.ToArray();
+        var meta = new MetaType
+        {
+            Type = type,
+            Attributes = allAttributesList.ToArray(),
+            Methods = metaMethods.ToArray(),
+            Properties = metaProperties.ToArray()
+        };
         _typeCache.Set(type, meta, TimeSpan.FromSeconds(30));
         return meta;
     }

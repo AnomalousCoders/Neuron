@@ -1,4 +1,6 @@
-﻿using HarmonyLib;
+﻿using System;
+using System.Collections.Generic;
+using HarmonyLib;
 using Neuron.Core;
 using Neuron.Core.Events;
 using Neuron.Core.Meta;
@@ -8,15 +10,24 @@ namespace Neuron.Modules.Patcher;
 
 public class PatcherService : Service
 {
-    
-    [Inject]
-    public EventManager EventManager { get; set; }
-    
-    public Harmony Harmony { get; private set; }
+    private Dictionary<Type, Harmony> TypeIdentifiedPatchers { get; set; }
+
+    public void PatchBinding(PatchClassBinding binding)
+    {
+        TypeIdentifiedPatchers[binding.Type] = new Harmony(binding.Type.FullName);
+    }
+
+    public void UnpatchBinding(PatchClassBinding binding)
+    {
+        var key = binding.Type;
+        var harmony = TypeIdentifiedPatchers[key];
+        harmony.UnpatchSelf();
+        TypeIdentifiedPatchers.Remove(key);
+    }
 
     public override void Enable()
     {
-        Harmony = new Harmony("Neuron Patcher");
+        TypeIdentifiedPatchers = new Dictionary<Type, Harmony>();
     }
 
     public override void Disable()

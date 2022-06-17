@@ -8,6 +8,7 @@ using Neuron.Core.Logging.Utils;
 using Neuron.Core.Meta;
 using Neuron.Core.Modules;
 using Neuron.Core.Platform;
+using Neuron.Core.Plugins;
 using Neuron.Core.Scheduling;
 using Ninject;
 
@@ -48,6 +49,7 @@ namespace Neuron.Core
             var meta = Kernel.BindSimple<MetaManager>();
             var services = Kernel.BindSimple<ServiceManager>();
             var modules = Kernel.BindSimple<ModuleManager>();
+            var plugins = Kernel.BindSimple<PluginManager>();
             var assemblies = Kernel.BindSimple<AssemblyManager>();
             
             Platform.Configuration.CoroutineReactor.Logger = neuronLogger.GetLogger<CoroutineReactor>();
@@ -58,6 +60,8 @@ namespace Neuron.Core
             Platform.Enable();
             modules.EnableAll();
 
+            if (Platform.Configuration.FileIo) LoadIoPlugins();
+
             _logger.Info("Neuron started successfully [Box]", LogBoxes.Successful);
             
             Platform.Continue();
@@ -65,7 +69,7 @@ namespace Neuron.Core
 
         private void LoadIoModules()
         {
-            _logger.Debug("Neuron.Core I/O tasks [Box]", LogBoxes.Waiting);
+            _logger.Info("Loading neuron modules");
             Directory.CreateDirectory(Platform.Configuration.BaseDirectory);
 
             var moduleDirectory = PrepareRelativeDirectory(Configuration.Files.ModuleDirectory);
@@ -73,6 +77,7 @@ namespace Neuron.Core
 
             var assemblies = Kernel.Get<AssemblyManager>();
             var moduleManager = Kernel.Get<ModuleManager>();
+            var pluginManager = Kernel.Get<PluginManager>();
             assemblies.SetupManager();
             
             foreach (var file in Directory.GetFiles(dependenciesDirectory, "*.dll"))
@@ -92,11 +97,28 @@ namespace Neuron.Core
             moduleManager.ActivateModules();
         }
 
+        public void LoadIoPlugins()
+        {
+            _logger.Info("Loading neuron plugins");
+            var pluginsDirectory = PrepareRelativeDirectory(Configuration.Files.PluginDirectory);
+            
+            var assemblies = Kernel.Get<AssemblyManager>();
+            var pluginManager = Kernel.Get<PluginManager>();
+            
+            foreach (var file in Directory.GetFiles(pluginsDirectory, "*.dll"))
+            {
+                var pluginBytes = File.ReadAllBytes(file);
+                var assembly = assemblies.LoadAssembly(pluginBytes);
+                var context = pluginManager.LoadPlugin(assembly.GetTypes(), assembly);
+            }
+        }
+        
         public override void Stop()
         {
+            Kernel.Get<PluginManager>().UnloadAll();
+            Kernel.Get<ModuleManager>().DisableAll();
             Platform.Disable();
             Configuration.Store(Platform.Configuration); // Save latest updates
-            Kernel.Get<ModuleManager>().DisableAll();
         }
     }
 }

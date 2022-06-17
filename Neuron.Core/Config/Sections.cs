@@ -20,10 +20,13 @@ namespace Neuron.Core.Config
         [Description("Location for neuron module assemblies")]
         public string ModuleDirectory { get; set; } = "Modules/";
 
+        [Description("Location for neuron plugin assemblies")]
+        public string PluginDirectory { get; set; } = "Plugins/";
+
         [Description("Location for non neuron related assemblies")]
         public string DependenciesDirectory { get; set; } = "Dependencies/";
     }
-    
+
     [DocumentSection("Logging")]
     public class LoggingSection : IDocumentSection
     {

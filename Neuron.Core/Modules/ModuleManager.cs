@@ -25,6 +25,8 @@ public class ModuleManager
 
     public bool IsLocked { get; private set; } = false;
 
+    private readonly EventReactor<ModuleLoadEvent> ModuleLoad = new();
+
     public ModuleManager(NeuronBase neuronBase, MetaManager metaManager, NeuronLogger neuronLogger, IKernel kernel, ServiceManager serviceManager)
     {
         _neuronBase = neuronBase;
@@ -36,8 +38,7 @@ public class ModuleManager
         _activeModules = new List<ModuleLoadContext>();
         _logger = _neuronLogger.GetLogger<ModuleManager>();
     }
-
-
+    
     public bool HasModule(string name)
         => _activeModules.Any(x => String.Equals(name, x.Attribute.Name, StringComparison.OrdinalIgnoreCase));
 
@@ -49,15 +50,15 @@ public class ModuleManager
     public ModuleLoadContext LoadModule(IEnumerable<Type> types)
     {
         var batch = _metaManager.Analyze(types);
-        var modules = batch.Types.Where(x => x.TryGetAttribute<ModuleAttribute>(out _)).Select(meta =>
+        var moduleAttributes = batch.Types.Where(x => x.TryGetAttribute<ModuleAttribute>(out _)).Select(meta =>
         {
             meta.TryGetAttribute<ModuleAttribute>(out var attribute);
             return (attribute, meta);
         }).ToArray();
 
-        if (modules.Length != 1) throw new Exception($"Expected single module but got {modules.Length}");
+        if (moduleAttributes.Length != 1) throw new Exception($"Expected single module but got {moduleAttributes.Length}");
             
-        var first = modules.FirstOrDefault();
+        var first = moduleAttributes.FirstOrDefault();
         var instance = first.meta.New();
 
         var context = new ModuleLoadContext()
@@ -65,9 +66,9 @@ public class ModuleManager
             Attribute = first.attribute,
             Batch = batch,
             ModuleDependencies = first!.attribute.Dependencies,
-            ModuleType = instance.GetType(),
-            Lifecycle = new ModuleLifecycle()
+            ModuleType = instance.GetType()
         };
+        context.Lifecycle = new ModuleLifecycle(context, _logger);
             
         _moduleBuffer.Add(context);
         return context;
@@ -222,7 +223,26 @@ public class ModuleManager
                     registration.MetaType.Type.GetMethod(nameof(Service.Disable)));
                 context.Lifecycle.DisableComponents.Subscribe(_ => _serviceManager.UnbindService(registration));
             }
-
+            
+            try {
+                var loadEvent = new ModuleLoadEvent { Context = context };
+                ModuleLoad.Raise(loadEvent);
+            }
+            catch (Exception e) // Output exception as framework error
+            {
+                #region Framework Error
+                var error = DiagnosticsError.FromParts(
+                    DiagnosticsError.Summary("An error occured while executing a module load event"),
+                    DiagnosticsError.Description($"Invoking the ModuleLoad event for the module {context.Attribute.Name} " +
+                                                 $"resulted in an exception of type '{e.GetType().Name}' at call site {e.TargetSite}.")
+                );
+                error.Exception = e;
+                NeuronDiagnosticHinter.AddCommonHints(e, error);
+                _logger.Framework(error);
+                throw;
+                #endregion
+            }
+            
             context.Lifecycle.Enable.Subscribe(delegate
             {
                 // Dependency checks at this point make no sense anymore since Ninject keeps messing with the bindings,
@@ -231,7 +251,7 @@ public class ModuleManager
                 // is also very unlikely since bindings are also validated before service construction.
                 _kernel.Inject(context.Module);
             });
-            
+
             // Hook module class lifecycle to module lifecycle
             context.Lifecycle.Enable.SubscribeAction(context.Module, context.ModuleType.GetMethod(nameof(Module.Enable)));
             context.Lifecycle.LateEnable.SubscribeAction(context.Module, context.ModuleType.GetMethod(nameof(Module.LateEnable)));
@@ -245,10 +265,9 @@ public class ModuleManager
 
     public void EnableAll()
     {
-        
         foreach (var module in _activeModules)
         {
-            module.Lifecycle.EnableSignal(_logger, module);
+            module.Lifecycle.EnableSignal();
         }
         foreach (var module in _activeModules)
         {
@@ -275,7 +294,7 @@ public class ModuleManager
     {
         foreach (var module in _activeModules)
         {
-            module.Lifecycle.DisableSignal(_logger, module);
+            module.Lifecycle.DisableSignal();
         }
     }
 }
@@ -290,4 +309,9 @@ internal class ModulePropertyDependencyHolder : SimpleDependencyHolderBase
     }
 
     public override object Dependable { get; } = new();
+}
+
+public class ModuleLoadEvent : IEvent
+{
+    public ModuleLoadContext Context { get; set; }
 }

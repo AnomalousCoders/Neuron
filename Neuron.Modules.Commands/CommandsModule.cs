@@ -4,10 +4,10 @@ using Ninject;
 namespace Neuron.Modules.Commands;
 
 [Module(
-    Name = "Command",
-    Description = "Neuron Command Module"
+    Name = "Commands",
+    Description = "Neuron Commands Module"
 )]
-public class CommandModule : Module
+public class CommandsModule : Module
 {
     [Inject]
     public CommandService Command { get; set; }
