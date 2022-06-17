@@ -7,7 +7,7 @@ namespace Neuron.Core.Modules;
 
 public abstract class Module : InjectedLoggerBase
 {
-    public virtual void Load() { }
+    public virtual void Load(IKernel kernel) { }
     public virtual void Enable() { }
     public virtual void LateEnable() { }
     public virtual void Disable() { }

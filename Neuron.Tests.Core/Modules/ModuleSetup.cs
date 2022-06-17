@@ -10,7 +10,7 @@ namespace Neuron.Tests.Core.Modules;
 )]
 public class ModuleA : Module
 {
-    public override void Load()
+    public override void Load(IKernel kernel)
     {
         Logger.Info("Loaded ModuleA");
     }
@@ -67,7 +67,7 @@ public class ModuleB : Module
 {
     [Inject] public ModuleA A { get; set; }
 
-    public override void Load()
+    public override void Load(IKernel kernel)
     {
         Logger.Info("Loaded ModuleB");
     }

@@ -25,7 +25,7 @@ public class ModuleManager
 
     public bool IsLocked { get; private set; } = false;
 
-    private readonly EventReactor<ModuleLoadEvent> ModuleLoad = new();
+    public readonly EventReactor<ModuleLoadEvent> ModuleLoad = new();
 
     public ModuleManager(NeuronBase neuronBase, MetaManager metaManager, NeuronLogger neuronLogger, IKernel kernel, ServiceManager serviceManager)
     {
@@ -115,7 +115,7 @@ public class ModuleManager
             
             try
             {
-                context.Module.Load();
+                context.Module.Load(_kernel);
             }
             catch (Exception e) // Output exception as framework error
             {

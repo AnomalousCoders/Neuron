@@ -1,8 +1,13 @@
 ﻿using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
 using HarmonyLib;
 using Neuron.Core;
+using Neuron.Core.Events;
 using Neuron.Core.Meta;
 using Neuron.Core.Modules;
+using Neuron.Core.Plugins;
 using Ninject;
 
 namespace Neuron.Modules.Patcher
@@ -19,33 +24,68 @@ namespace Neuron.Modules.Patcher
         
         [Inject]
         public MetaManager MetaManager { get; set; }
+        
+        [Inject]
+        public ModuleManager ModuleManager { get; set; }
+        
+        [Inject]
+        public PluginManager PluginManager { get; set; }
 
-        public override void Load()
+        internal Queue<PatchClassBinding> ModuleBindingQueue = new(); 
+
+        public override void Load(IKernel kernel)
         {
             Logger.Info("Loading PatcherModule");
+            var metaManager = kernel.GetSafe<MetaManager>();
+            var pluginManager = kernel.GetSafe<PluginManager>();
+            var moduleManager = kernel.GetSafe<ModuleManager>();
+            metaManager.MetaGenerateBindings.Subscribe(OnGenerateBinding);
+            pluginManager.PluginLoad.Subscribe(OnPluginLoad);
+            pluginManager.PluginUnload.Subscribe(OnPluginUnload);
+            moduleManager.ModuleLoad.Subscribe(OnModuleLoad);
         }
 
         public override void Enable()
         {
-            MetaManager.MetaGenerateBindings.Subscribe(GenerateBinding);
             Logger.Info("Enabling PatcherModule");
-        }
-
-        public void GenerateBinding(MetaGenerateBindingsEvent args)
-        {
-            if (args.MetaType.TryGetAttribute<PatchesAttribute>(out var patchesAttribute))
-            {
-                args.Outputs.Add(new PatchClassBinding()
-                {
-                    Type= args.MetaType.Type
-                });
-            }
         }
 
         public override void Disable()
         {
             Logger.Info("Disabling PatcherModule");
         }
+
+        #region Event Subscriptions
+        
+        private void OnModuleLoad(ModuleLoadEvent args) => args.Context.MetaBindings
+            .OfType<PatchClassBinding>()
+            .ToList().ForEach(binding =>
+            {
+                Logger.Debug("Enqueue module binding");
+                ModuleBindingQueue.Enqueue(binding);
+            });
+
+        private void OnPluginUnload(PluginUnloadEvent args) => args.Context.MetaBindings
+            .OfType<PatchClassBinding>()
+            .ToList().ForEach(Patcher.UnpatchBinding);
+
+        private void OnPluginLoad(PluginLoadEvent args) => args.Context.MetaBindings
+            .OfType<PatchClassBinding>()
+            .ToList().ForEach(Patcher.PatchBinding);
+
+        private void OnGenerateBinding(MetaGenerateBindingsEvent args)
+        {
+            if (args.MetaType.TryGetAttribute<PatchesAttribute>(out var patchesAttribute))
+            {
+                Logger.Debug($"* {args.MetaType.Type} [PatchBinding]");
+                args.Outputs.Add(new PatchClassBinding()
+                {
+                    Type= args.MetaType.Type
+                });
+            }
+        }
+        
+        #endregion
     }
 }
 

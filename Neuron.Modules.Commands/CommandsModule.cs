@@ -12,7 +12,7 @@ public class CommandsModule : Module
     [Inject]
     public CommandService Command { get; set; }
         
-    public override void Load()
+    public override void Load(IKernel kernel)
     {
         Logger.Info("Loading CommandModule");
     }
