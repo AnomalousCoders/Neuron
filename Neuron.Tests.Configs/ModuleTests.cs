@@ -7,6 +7,7 @@ using Neuron.Core.Meta;
 using Neuron.Core.Modules;
 using Neuron.Core.Platform;
 using Neuron.Modules.Configs;
+using Neuron.Modules.Configs.Localization;
 using Ninject;
 using Syml;
 using Xunit;

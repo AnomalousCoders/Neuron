@@ -2,7 +2,7 @@ using System;
 using Syml;
 using YamlDotNet.Serialization;
 
-namespace Neuron.Modules.Configs;
+namespace Neuron.Modules.Configs.Localization;
 
 public abstract class Translations<T> : IDocumentSection, ITranslationsUnsafeInterface where T: Translations<T>, new()
 {

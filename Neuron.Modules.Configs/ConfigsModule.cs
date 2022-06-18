@@ -4,6 +4,7 @@ using Neuron.Core;
 using Neuron.Core.Meta;
 using Neuron.Core.Modules;
 using Neuron.Core.Plugins;
+using Neuron.Modules.Configs.Localization;
 using Ninject;
 using Syml;
 

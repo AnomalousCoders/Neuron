@@ -1,4 +1,4 @@
-namespace Neuron.Modules.Configs;
+namespace Neuron.Modules.Configs.Localization;
 
 internal interface ITranslationsUnsafeInterface
 {

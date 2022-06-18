@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Linq;
 
-namespace Neuron.Modules.Configs;
+namespace Neuron.Modules.Configs.Localization;
 
 public class TranslationContainer
 {

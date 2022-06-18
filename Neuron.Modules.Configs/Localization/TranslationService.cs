@@ -4,7 +4,7 @@ using Neuron.Core.Logging;
 using Neuron.Core.Meta;
 using Ninject;
 
-namespace Neuron.Modules.Configs;
+namespace Neuron.Modules.Configs.Localization;
 
 public class TranslationService : Service
 {

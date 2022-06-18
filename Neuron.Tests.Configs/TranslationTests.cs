@@ -6,6 +6,7 @@ using Neuron.Core.Dev;
 using Neuron.Core.Logging;
 using Neuron.Core.Platform;
 using Neuron.Modules.Configs;
+using Neuron.Modules.Configs.Localization;
 using Ninject;
 using Syml;
 using Xunit;
