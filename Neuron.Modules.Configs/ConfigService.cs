@@ -13,6 +13,7 @@ public class ConfigService : Service
     private NeuronLogger _neuronLogger;
     private IKernel _kernel;
     private ConfigsModule _module;
+    private ILogger _logger;
 
     public ConfigService(NeuronBase neuronBase, NeuronLogger neuronLogger, IKernel kernel, ConfigsModule module)
     {
@@ -20,6 +21,7 @@ public class ConfigService : Service
         _neuronLogger = neuronLogger;
         _kernel = kernel;
         _module = module;
+        _logger = neuronLogger.GetLogger<ConfigService>();
     }
 
     public Dictionary<string, ConfigContainer> Documents = new();
@@ -29,10 +31,8 @@ public class ConfigService : Service
     
     public override void Enable()
     {
-        ModuleConfigs = GetContainer(_neuronBase.RelativePath("modules.syml"));
-        PluginConfigs = GetContainer(_neuronBase.RelativePath("plugins.syml"));
-        ModuleConfigs.Load();
-        PluginConfigs.Load();
+        ModuleConfigs = GetContainer("modules.syml");
+        PluginConfigs = GetContainer("plugins.syml");
         while (_module.ModuleConfigBindingQueue.Count != 0)
         {
             var binding = _module.ModuleConfigBindingQueue.Dequeue();
@@ -44,7 +44,7 @@ public class ConfigService : Service
     {
         if (!path.EndsWith(".syml")) path += ".syml";
         if (Documents.TryGetValue(path, out var container)) return container;
-        var newContainer = new ConfigContainer(_neuronBase, path);
+        var newContainer = new ConfigContainer(_neuronBase, _neuronLogger, path);
         Documents[path] = newContainer;
         return newContainer;
     }
@@ -53,7 +53,9 @@ public class ConfigService : Service
     {
         var section = (IDocumentSection)container.Get(binding.Type);
         binding.Section = section;
-        _kernel.BindSimple(section);
+        _kernel.Unbind(binding.Type);
+        _kernel.Bind(binding.Type).ToConstant(section).InSingletonScope().ToString();
+        _logger.Verbose("Bound config section [Section] with [Type]", section, binding.Type);
     }
 
     public override void Disable()

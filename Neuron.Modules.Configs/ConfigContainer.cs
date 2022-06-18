@@ -3,21 +3,24 @@ using System.IO;
 using System.Reflection;
 using System.Text;
 using Neuron.Core;
+using Neuron.Core.Logging;
 using Syml;
 
 namespace Neuron.Modules.Configs;
 
 public class ConfigContainer
 {
-    public string Path { get; set; }
+    public string FilePath { get; set; }
     public SymlDocument Document { get; set; } = new();
 
     private NeuronBase _neuronBase;
+    private ILogger _logger;
 
-    public ConfigContainer(NeuronBase neuronBase, string path)
+    public ConfigContainer(NeuronBase neuronBase, NeuronLogger logger, string filePath)
     {
         _neuronBase = neuronBase;
-        Path = path;
+        _logger = logger.GetLogger<ConfigContainer>();
+        FilePath = Path.ChangeExtension(filePath, ".syml");
         Load();
     }
 
@@ -48,7 +51,8 @@ public class ConfigContainer
             Store();
             return section;
         }
-
+        
+        _logger.Verbose($"Returning default instance for configuration container [Path]", FilePath);
         var newSection = Activator.CreateInstance(type);
         Document.Set(newSection);
         Store();
@@ -59,15 +63,17 @@ public class ConfigContainer
     public void Load()
     {
         if (!_neuronBase.Platform.Configuration.FileIo) return;
-        var file = _neuronBase.RelativePath(Path);
+        var file = _neuronBase.RelativePath(FilePath);
         if (!File.Exists(file)) Store();
+        _logger.Verbose($"Loading file [File]", file);
         Document.Load(File.ReadAllText(file, Encoding.UTF8));
     }
 
     public void Store()
     {        
         if (!_neuronBase.Platform.Configuration.FileIo) return;
-        var file = _neuronBase.RelativePath(Path);
+        var file = _neuronBase.RelativePath(FilePath);
+        _logger.Verbose($"Storing file [File]", file);
         File.WriteAllText(file, Document.Dump(), Encoding.UTF8);
     }
     

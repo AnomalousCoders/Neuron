@@ -18,16 +18,22 @@ public class TranslationContainer
         {
             var defaultValue = new T();
             _container.Document.Set(defaultValue.DefaultLanguage, defaultValue);
+            _container.Store();
+            defaultValue.SetContainerReference(this);
             return defaultValue;
         }
         
         if (locale != null && _container.Document.Sections.ContainsKey(locale))
         {
-            return _container.Document.Get<T>(locale);
+            var translations = _container.Document.Get<T>(locale);
+            translations.SetContainerReference(this);
+            return translations;
         }
 
         var fallback = _container.Document.Sections.FirstOrDefault();
-        return fallback.Value.Export<T>();
+        var export = fallback.Value.Export<T>();
+        export.SetContainerReference(this);
+        return export;
     }
     
     public object Get(Type type, string locale = null)
@@ -39,6 +45,7 @@ public class TranslationContainer
             var defaultLanguage = unsafeInterface.GetDefaultLanguage();
             unsafeInterface.SetContainerReference(this);
             _container.Document.Set(defaultLanguage, defaultValue);
+            _container.Store();
             return defaultValue;
         }
         

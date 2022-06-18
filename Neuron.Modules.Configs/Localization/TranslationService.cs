@@ -1,5 +1,6 @@
 ﻿using System.IO;
 using Neuron.Core;
+using Neuron.Core.Dev;
 using Neuron.Core.Logging;
 using Neuron.Core.Meta;
 using Ninject;
@@ -11,6 +12,7 @@ public class TranslationService : Service
     private ConfigService _configService;
     private NeuronBase _neuronBase;
     private NeuronLogger _neuronLogger;
+    private ILogger _logger;
     private IKernel _kernel;
     private ConfigsModule _module;
 
@@ -21,6 +23,7 @@ public class TranslationService : Service
         _neuronLogger = neuronLogger;
         _kernel = kernel;
         _module = module;
+        _logger = neuronLogger.GetLogger<TranslationService>();
     }
 
     public override void Enable()
@@ -42,11 +45,12 @@ public class TranslationService : Service
 
     public void LoadBinding(TranslationBinding binding, string name)
     {
-        _neuronLogger.GetLogger<TranslationService>().Info("Loading Translation Binding");
-        var container = GetContainer($"{name}.syml");
+        var container = GetContainer($"{name.Recase(StringCasing.Snake)}.syml");
         var translations = container.Get(binding.Type);
         binding.Translations = translations;
-        _kernel.BindSimple(translations);
+        _kernel.Unbind(binding.Type);
+        _kernel.Bind(binding.Type).ToConstant(translations).InSingletonScope().ToString();
+        _logger.Verbose($"Bound translation file [Name] to [Type]", name, binding.Type);
     }
 
     public override void Disable()
