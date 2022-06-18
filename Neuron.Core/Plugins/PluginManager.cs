@@ -23,6 +23,7 @@ public class PluginManager
     private List<PluginContext> _plugins;
 
     public readonly EventReactor<PluginLoadEvent> PluginLoad = new();
+    public readonly EventReactor<PluginLoadEvent> PluginLoadLate = new();
     public readonly EventReactor<PluginUnloadEvent> PluginUnload = new();
 
     public PluginManager(NeuronBase neuronBase, IKernel kernel, MetaManager metaManager, EventManager eventManager, NeuronLogger neuronLogger)
@@ -94,6 +95,7 @@ public class PluginManager
         try {
             var loadEvent = new PluginLoadEvent { Context = context };
             PluginLoad.Raise(loadEvent);
+            PluginLoadLate.Raise(loadEvent);
         }
         catch (Exception e) // Output exception as framework error
         {

@@ -26,6 +26,7 @@ public class ModuleManager
     public bool IsLocked { get; private set; } = false;
 
     public readonly EventReactor<ModuleLoadEvent> ModuleLoad = new();
+    public readonly EventReactor<ModuleLoadEvent> ModuleLoadLate = new();
 
     public ModuleManager(NeuronBase neuronBase, MetaManager metaManager, NeuronLogger neuronLogger, IKernel kernel, ServiceManager serviceManager)
     {
@@ -228,6 +229,7 @@ public class ModuleManager
             try {
                 var loadEvent = new ModuleLoadEvent { Context = context };
                 ModuleLoad.Raise(loadEvent);
+                ModuleLoadLate.Raise(loadEvent);
             }
             catch (Exception e) // Output exception as framework error
             {
