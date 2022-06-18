@@ -77,9 +77,9 @@ public class ServiceRegistration : SimpleDependencyHolderBase, IMetaBinding
     public Type ServiceType { get; set; }
     public MetaType MetaType { get; set; }
 
-    public override IEnumerable<object> Dependencies => KernelDependencyResolver.GetPropertyDependencies(MetaType.Type);
+    public override IEnumerable<object> Dependencies => KernelDependencyResolver.GetTypeDependencies(MetaType.Type);
     public override object Dependable => ServiceType;
 
     public override string ToString() => ServiceType.Name;
-    public IEnumerable<Type> PromisedServices => new[] {ServiceType};
+    public IEnumerable<Type> PromisedServices => new Type[] {};
 }

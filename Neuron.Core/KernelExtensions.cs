@@ -22,7 +22,7 @@ public static class KernelExtensions
     /// Checks if all ninject injected properties of the specified type are bound.
     /// </summary>
     public static bool CheckDependencies(this IKernel kernel, Type type) 
-        => KernelDependencyResolver.GetPropertyDependencies(type).All(dependency => kernel.GetBindings(dependency).Any());
+        => KernelDependencyResolver.GetTypeDependencies(type).All(dependency => kernel.GetBindings(dependency).Any());
 
     /// <summary>
     /// Binds a object using a constant based singleton ninject binding.

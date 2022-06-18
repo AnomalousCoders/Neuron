@@ -39,9 +39,9 @@ public class ModuleTests
         moduleManager.LoadModule(new []{typeof(ModuleD)});
         moduleManager.LoadModule(new []{typeof(ModuleA), typeof(ServiceA), typeof(ServiceASub)}); // Out of order for test reasons
             
-        _output.WriteLine(String.Join(":", KernelDependencyResolver.GetPropertyDependencies(typeof(ServiceA))));
-        _output.WriteLine(String.Join(":", KernelDependencyResolver.GetPropertyDependencies(typeof(ServiceB))));
-        _output.WriteLine(String.Join(":", KernelDependencyResolver.GetPropertyDependencies(typeof(ModuleB))));
+        _output.WriteLine(String.Join(":", KernelDependencyResolver.GetTypeDependencies(typeof(ServiceA))));
+        _output.WriteLine(String.Join(":", KernelDependencyResolver.GetTypeDependencies(typeof(ServiceB))));
+        _output.WriteLine(String.Join(":", KernelDependencyResolver.GetTypeDependencies(typeof(ModuleB))));
         _output.WriteLine(kernel.GetBindings(typeof(Random)).Any().ToString());
             
         Assert.False(moduleManager.IsLocked);

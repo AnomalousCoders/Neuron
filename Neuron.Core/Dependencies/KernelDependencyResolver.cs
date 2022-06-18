@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using Neuron.Core.Meta;
 using Ninject;
 
@@ -16,7 +17,7 @@ public static class KernelDependencyResolver
     /// Retrieves all Ninject-Binding types which are defined via [Inject] Attributes
     /// for the given type.
     /// </summary>
-    public static IEnumerable<Type> GetPropertyDependencies(Type type)
+    public static IEnumerable<Type> GetTypeDependencies(Type type)
     {
         if (DependencyCache.TryGetValue(type, out var cached)) return cached;
         
@@ -29,6 +30,15 @@ public static class KernelDependencyResolver
                 list.Add(property.Property.PropertyType);
             }
         }
+
+        var constructor = meta.Type.GetConstructors()
+            .OrderBy(x => x.GetParameters().Length)
+            .FirstOrDefault();
+
+        if (constructor != null) list
+            .AddRange(constructor.GetParameters()
+                .Select(x => x.ParameterType));
+
         DependencyCache[type] = list;
         return list;
     }

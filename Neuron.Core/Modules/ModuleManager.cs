@@ -181,7 +181,7 @@ public class ModuleManager
             {
                 modulePropertyResolver.AddDependable(service.ServiceType);
             }
-            foreach (var type in KernelDependencyResolver.GetPropertyDependencies(context.ModuleType))
+            foreach (var type in KernelDependencyResolver.GetTypeDependencies(context.ModuleType))
             {
                 modulePropertyDeps.Add(type);
                 if (_kernel.GetBindings(type).Any()) modulePropertyResolver.AddDependable(type);
