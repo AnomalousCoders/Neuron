@@ -13,7 +13,7 @@ public class PluginContext
     public Type PluginType { get; set; }
     public Plugin Plugin { get; set; }
     public PluginLifecycle Lifecycle { get; set; }
-    public List<object> MetaBindings { get; set; }
+    public List<IMetaBinding> MetaBindings { get; set; }
 
     public override string ToString() => PluginType.FullName;
 }

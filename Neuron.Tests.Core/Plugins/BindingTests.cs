@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Neuron.Core;
 using Neuron.Core.Events;
@@ -105,7 +106,8 @@ public class BoundClass
 
 public class BindableMetaAttribute : MetaAttributeBase { }
 
-public class BindableMetaRegistration
+public class BindableMetaRegistration : IMetaBinding
 {
     public Type Type { get; set; }
+    public IEnumerable<Type> PromisedServices => new []{Type};
 }

@@ -48,9 +48,9 @@ public class MetaManager
     /// and are publicly available if related with an module. Can be retrieved via <see cref="Modules.ModuleManager"/>
     /// as a property of <see cref="Modules.ModuleLoadContext"/>.
     /// </summary>
-    public List<object> GenerateBindings(List<MetaType> types)
+    public List<IMetaBinding> GenerateBindings(List<MetaType> types)
     {
-        var list = new List<object>();
+        var list = new List<IMetaBinding>();
         foreach (var type in types)
         {
             MetaGenerateBindings.Raise(new MetaGenerateBindingsEvent
@@ -103,6 +103,11 @@ public class MetaManager
         .ToList();
 }
 
+public interface IMetaBinding
+{
+    public IEnumerable<Type> PromisedServices { get; }
+}
+
 public class MetaLoadedEvent : IEvent
 {
     public MetaType Type { get; internal set; }
@@ -111,5 +116,5 @@ public class MetaLoadedEvent : IEvent
 public class MetaGenerateBindingsEvent : IEvent
 {
     public MetaType MetaType { get; internal set; }
-    public List<object> Outputs { get; internal set; }
+    public List<IMetaBinding> Outputs { get; internal set; }
 }

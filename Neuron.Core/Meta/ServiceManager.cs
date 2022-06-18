@@ -72,7 +72,7 @@ public class ServiceManager
 /// <summary>
 /// Data-Holder for service registrations.
 /// </summary>
-public class ServiceRegistration : SimpleDependencyHolderBase
+public class ServiceRegistration : SimpleDependencyHolderBase, IMetaBinding
 {
     public Type ServiceType { get; set; }
     public MetaType MetaType { get; set; }
@@ -81,4 +81,5 @@ public class ServiceRegistration : SimpleDependencyHolderBase
     public override object Dependable => ServiceType;
 
     public override string ToString() => ServiceType.Name;
+    public IEnumerable<Type> PromisedServices => new[] {ServiceType};
 }

@@ -107,7 +107,8 @@ public class ModuleManager
         {
             var batchGeneratedBindings = context.Batch.GenerateBindings();
             var emittedServices = batchGeneratedBindings.OfType<ServiceRegistration>();
-
+            var promisedServices = batchGeneratedBindings.SelectMany(x => x.PromisedServices).ToList();
+            
             context.MetaBindings = batchGeneratedBindings; // Make bindings permanently accessible
             context.Module = (Module)Activator.CreateInstance(context.ModuleType); // Create un-injected module instance
             context.Module.NeuronLoggerInjected = _neuronLogger; // Manually inject logger
@@ -134,6 +135,7 @@ public class ModuleManager
 
             #region Resolve Services and Service Dependencies
             var serviceResolver = new CyclicDependencyResolver<ServiceRegistration>();
+            serviceResolver.AddDependables(promisedServices);
             foreach (var service in emittedServices)
             {
                 serviceResolver.AddDependency(service);
@@ -171,8 +173,9 @@ public class ModuleManager
             }
             #endregion
 
-            #region Resolve Module Dependencies
+            #region Resolve Module Property Dependencies
             var modulePropertyResolver = new CyclicDependencyResolver<ModulePropertyDependencyHolder>();
+            modulePropertyResolver.AddDependables(promisedServices);
             var modulePropertyDeps = new List<object>();
             foreach (var service in serviceResult.Solved)
             {
@@ -183,9 +186,7 @@ public class ModuleManager
                 modulePropertyDeps.Add(type);
                 if (_kernel.GetBindings(type).Any()) modulePropertyResolver.AddDependable(type);
             }
-            #endregion
 
-            #region Resolve Module Property Dependencies
             var moduleDep = new ModulePropertyDependencyHolder(modulePropertyDeps);
             modulePropertyResolver.AddDependency(moduleDep);
             var modulePropertyResult = modulePropertyResolver.Resolve();

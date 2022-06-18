@@ -92,9 +92,10 @@ namespace Neuron.Modules.Patcher
 /// <summary>
 /// Meta registration for patch classes
 /// </summary>
-public class PatchClassBinding
+public class PatchClassBinding : IMetaBinding
 {
     public Type Type { get; set; }
+    public IEnumerable<Type> PromisedServices => new[] {Type};
 }
 
 /// <summary>

@@ -17,7 +17,7 @@ public class MetaBatchReference
     /// Generates a list of bindings and registrations which can then be used for final registration.
     /// </summary>
     /// <returns></returns>
-    public List<object> GenerateBindings() => Reference.GenerateBindings(Types);
+    public List<IMetaBinding> GenerateBindings() => Reference.GenerateBindings(Types);
 
     /// <summary>
     /// Releases the included types from <see cref="Reference"/>.
