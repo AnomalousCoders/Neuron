@@ -1,5 +1,7 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Reflection;
 using System.Text;
 using Neuron.Core.Config;
 using Neuron.Core.Events;
@@ -85,11 +87,17 @@ namespace Neuron.Core
                 var moduleBytes = File.ReadAllBytes(file);
                 var assembly = assemblies.LoadAssembly(moduleBytes);
             }
-            
+
+            var moduleAssemblies = new List<Assembly>();
             foreach (var file in Directory.GetFiles(moduleDirectory, "*.dll"))
             {
                 var moduleBytes = File.ReadAllBytes(file);
                 var assembly = assemblies.LoadAssembly(moduleBytes);
+                moduleAssemblies.Add(assembly);
+            }
+
+            foreach (var assembly in moduleAssemblies)
+            {
                 var context = moduleManager.LoadModule(assembly.GetTypes());
                 context.Assembly = assembly;
             }

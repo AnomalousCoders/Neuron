@@ -211,6 +211,25 @@ public class ModuleManager
                 #endregion
             }
             #endregion
+            
+            try {
+                var loadEvent = new ModuleLoadEvent { Context = context };
+                ModuleLoad.Raise(loadEvent);
+            }
+            catch (Exception e) // Output exception as framework error
+            {
+                #region Framework Error
+                var error = DiagnosticsError.FromParts(
+                    DiagnosticsError.Summary("An error occured while executing a module load event"),
+                    DiagnosticsError.Description($"Invoking the ModuleLoad event for the module {context.Attribute.Name} " +
+                                                 $"resulted in an exception of type '{e.GetType().Name}' at call site {e.TargetSite}.")
+                );
+                error.Exception = e;
+                NeuronDiagnosticHinter.AddCommonHints(e, error);
+                _logger.Framework(error);
+                throw;
+                #endregion
+            }
 
             var srvHanGra = _neuronBase.Configuration.Engine.GracefulMissingServiceDependencies;
             foreach (var registration in (srvHanGra ? serviceResult.Dependencies : serviceResult.Solved))
@@ -228,15 +247,14 @@ public class ModuleManager
             
             try {
                 var loadEvent = new ModuleLoadEvent { Context = context };
-                ModuleLoad.Raise(loadEvent);
                 ModuleLoadLate.Raise(loadEvent);
             }
             catch (Exception e) // Output exception as framework error
             {
                 #region Framework Error
                 var error = DiagnosticsError.FromParts(
-                    DiagnosticsError.Summary("An error occured while executing a module load event"),
-                    DiagnosticsError.Description($"Invoking the ModuleLoad event for the module {context.Attribute.Name} " +
+                    DiagnosticsError.Summary("An error occured while executing a module late load event"),
+                    DiagnosticsError.Description($"Invoking the ModuleLoadLate event for the module {context.Attribute.Name} " +
                                                  $"resulted in an exception of type '{e.GetType().Name}' at call site {e.TargetSite}.")
                 );
                 error.Exception = e;
