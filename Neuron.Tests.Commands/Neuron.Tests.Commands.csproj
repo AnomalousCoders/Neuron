@@ -8,7 +8,8 @@
         <Configurations>Debug;Release</Configurations>
         <Platforms>AnyCPU</Platforms>
         <RootNamespace>Neuron.Tests.Commands</RootNamespace>
-        <PackageId>Neuron.Tests.Commands</PackageId>
+        <PackageId>NeuronModding.Tests.Commands</PackageId>
+        <PackageLicenseExpression>MIT</PackageLicenseExpression>
     </PropertyGroup>
 
     <ItemGroup>

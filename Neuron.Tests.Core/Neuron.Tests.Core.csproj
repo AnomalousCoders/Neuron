@@ -8,7 +8,7 @@
         <Configurations>Debug;Release</Configurations>
         <Platforms>AnyCPU</Platforms>
         <RootNamespace>Neuron.Tests.Core</RootNamespace>
-        <PackageId>Neuron.Tests.Core</PackageId>
+        <PackageId>NeuronModding.Tests.Core</PackageId>
     </PropertyGroup>
 
     <PropertyGroup>

@@ -1,17 +1,16 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <TargetFramework>net472</TargetFramework>
-        <PlatformTarget>x64</PlatformTarget>
-        <LangVersion>10.0</LangVersion>
-        <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
         <OutputType>Exe</OutputType>
         <Configurations>Debug;Release</Configurations>
         <Platforms>AnyCPU</Platforms>
         <RootNamespace>Neuron.Core.Standalone</RootNamespace>
-        <PackageId>Neuron.Core.Standalone</PackageId>
+        <PackageId>NeuronModding.Core.Standalone</PackageId>
         <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     </PropertyGroup>
+
+
+    <Import Project="../Neuron.props"/>
 
     <PropertyGroup Condition="'$(Configuration)' == 'Release'">
         <TreatWarningsAsErrors>True</TreatWarningsAsErrors>

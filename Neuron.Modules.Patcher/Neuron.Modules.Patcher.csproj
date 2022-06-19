@@ -1,17 +1,16 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <TargetFramework>netstandard2.0</TargetFramework>
-        <LangVersion>10.0</LangVersion>
-        <PlatformTarget>x64</PlatformTarget>
-        <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
         <OutputType>Library</OutputType>
         <Configurations>Debug;Release</Configurations>
         <Platforms>AnyCPU</Platforms>
         <RootNamespace>Neuron.Modules.Patcher</RootNamespace>
-        <PackageId>Neuron.Modules.Patcher</PackageId>
+        <PackageId>NeuronModding.Modules.Patcher</PackageId>
     </PropertyGroup>
 
+
+    <Import Project="../Neuron.props"/>
+    
     <ItemGroup>
         <PackageReference Include="HarmonyX" Version="2.10.0" />
         <PackageReference Include="Ninject" Version="3.3.6" />

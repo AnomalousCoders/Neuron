@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+    
+    <PropertyGroup>
+        <TargetFramework>netstandard2.0</TargetFramework>
+        <LangVersion>10.0</LangVersion>
+        <PlatformTarget>x64</PlatformTarget>
+        <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
+    </PropertyGroup>
+    
+    <PropertyGroup>
+        <SupportUrl>https://discord.gg/G6XvXzscxR</SupportUrl>
+        <RepositoryUrl>https://github.com/AnomalousCoders/Neuron</RepositoryUrl>
+        <Authors>AnomalousCoders</Authors>
+        <Version>1.0.0.1</Version>
+        <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    </PropertyGroup>
+    
+</Project>

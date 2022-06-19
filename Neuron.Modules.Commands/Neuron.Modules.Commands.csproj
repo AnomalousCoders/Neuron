@@ -1,16 +1,14 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <TargetFramework>netstandard2.0</TargetFramework>
-        <LangVersion>10.0</LangVersion>
-        <PlatformTarget>x64</PlatformTarget>
-        <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
         <OutputType>Library</OutputType>
         <Configurations>Debug;Release</Configurations>
         <Platforms>AnyCPU</Platforms>
         <RootNamespace>Neuron.Modules.Commands</RootNamespace>
-        <PackageId>Neuron.Modules.Commands</PackageId>
+        <PackageId>NeuronModding.Modules.Commands</PackageId>
     </PropertyGroup>
+
+    <Import Project="../Neuron.props"/>
 
     <ItemGroup>
         <PackageReference Include="Ninject" Version="3.3.6" />
