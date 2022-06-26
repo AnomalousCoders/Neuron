@@ -10,7 +10,7 @@ public interface ICommandContext
         
     string FullCommand { get; set; }
     
-    bool IsAdmin { get; set; }
+    bool IsAdmin { get; }
     
     Type ContextType { get; }
 }
