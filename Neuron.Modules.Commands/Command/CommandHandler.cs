@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Reflection;
 using Neuron.Core.Logging;
@@ -21,7 +22,8 @@ public class CommandHandler
         _logger = _neuronLogger.GetLogger<CommandHandler>();
     }
 
-    public List<ICommand> Commands = new();
+    private List<ICommand> _commands = new();
+    public ReadOnlyCollection<ICommand> Commands => _commands.AsReadOnly();
 
     public void Raise(CommandEvent commandEvent)
     {
@@ -61,7 +63,7 @@ public class CommandHandler
         if (!typeof(ICommand).IsAssignableFrom(type)) return;
         var command = (ICommand)_kernel.Get(type);
         command.Meta = type.GetCustomAttribute<CommandAttribute>();
-        Commands.Add(command);
+        _commands.Add(command);
     }
         
     public void RegisterCommand<TCommand>() where TCommand : ICommand => RegisterCommand(typeof(TCommand));
@@ -69,11 +71,11 @@ public class CommandHandler
     public void RegisterCommand<TCommand>(TCommand command) where TCommand : ICommand
     {
         command.Meta = typeof(TCommand).GetCustomAttribute<CommandAttribute>();
-        Commands.Add(command);
+        _commands.Add(command);
     }
 
     public void UnregisterAllCommands()
     {
-        Commands.Clear();
+        _commands.Clear();
     }
 }

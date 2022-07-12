@@ -38,6 +38,17 @@ namespace Neuron.Core
         
         public string RelativePath(string sub) => Path.Combine(Platform.Configuration.BaseDirectory, sub);
 
+        public string RelativePath(params string[] subs)
+        {
+            var path = Platform.Configuration.BaseDirectory;
+            foreach (var sub in subs)
+            {
+                path = Path.Combine(path, sub);
+            }
+
+            return path;
+        }
+
         public string PrepareRelativeDirectory(string sub)
         {
             var dir = RelativePath(sub);
