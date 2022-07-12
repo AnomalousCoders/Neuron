@@ -20,7 +20,7 @@ public class PluginManager
     private NeuronLogger _neuronLogger;
     private ILogger _logger;
 
-    private List<PluginContext> _plugins;
+    public List<PluginContext> Plugins { get; }
 
     public readonly EventReactor<PluginLoadEvent> PluginLoad = new();
     public readonly EventReactor<PluginLoadEvent> PluginLoadLate = new();
@@ -38,10 +38,10 @@ public class PluginManager
         _eventManager.RegisterEvent(PluginLoad);
         _eventManager.RegisterEvent(PluginUnload);
 
-        _plugins = new List<PluginContext>();
+        Plugins = new List<PluginContext>();
     }
 
-    public void UnloadAll() => _plugins.ToList().ForEach(UnloadPlugin);
+    public void UnloadAll() => Plugins.ToList().ForEach(UnloadPlugin);
     
     public PluginContext LoadPlugin(IEnumerable<Type> types, Assembly assembly)
     {
@@ -68,7 +68,7 @@ public class PluginManager
             Assembly = assembly
         };
         context.Lifecycle = new PluginLifecycle(context, _logger);
-        _plugins.Add(context);
+        Plugins.Add(context);
 
         try
         {
@@ -122,9 +122,16 @@ public class PluginManager
         return context;
     }
 
+    public void ReloadPlugin(PluginContext context)
+    {
+        // Closest I can get to a reload with the current system
+        context.Lifecycle.DisableSignal();
+        context.Lifecycle.EnableSignal();
+    }
+
     public void UnloadPlugin(PluginContext context)
     {
-        _plugins.Remove(context);
+        Plugins.Remove(context);
         _kernel.Unbind(context.PluginType);
         context.Lifecycle.DisableSignal();
         
