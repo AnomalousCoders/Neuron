@@ -62,6 +62,7 @@ public class CommandHandler
     {
         if (!typeof(ICommand).IsAssignableFrom(type)) return;
         var command = (ICommand)_kernel.Get(type);
+        _kernel.Bind(type).ToConstant(command).InSingletonScope();
         command.Meta = type.GetCustomAttribute<CommandAttribute>();
         _commands.Add(command);
     }
