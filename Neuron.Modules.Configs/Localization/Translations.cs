@@ -20,7 +20,7 @@ public abstract class Translations<T> : IDocumentSection, ITranslationsUnsafeInt
 
     private TranslationContainer _container;
 
-    public T WithLocale(string locale) => _container.Get<T>(locale);
+    public T WithLocale(params string[] locale) => _container.Get<T>(locale);
 
     public void SetContainerReference(TranslationContainer container) => _container = container;
     public string GetDefaultLanguage() => DefaultLanguage;
