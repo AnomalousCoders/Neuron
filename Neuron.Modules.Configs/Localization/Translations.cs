@@ -14,6 +14,9 @@ public abstract class Translations<T> : IDocumentSection, ITranslationsUnsafeInt
 
     [YamlIgnore]
     public virtual string DefaultLanguage { get; set; } = "ENGLISH";
+    
+    [YamlIgnore]
+    public string CurrentLanguage { get; private set; }
 
     private TranslationContainer _container;
 
@@ -21,4 +24,11 @@ public abstract class Translations<T> : IDocumentSection, ITranslationsUnsafeInt
 
     public void SetContainerReference(TranslationContainer container) => _container = container;
     public string GetDefaultLanguage() => DefaultLanguage;
+
+    public void SetLanguage(string language) => CurrentLanguage = language;
+
+    public void AddLanguage(string language, T translations)
+    {
+        _container.AddLanguage(language, translations);
+    }
 }
