@@ -1,7 +1,11 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using Neuron.Core;
 using Neuron.Core.Logging;
 using Neuron.Core.Meta;
+using Neuron.Core.Modules;
+using Neuron.Core.Plugins;
 using Ninject;
 using Syml;
 
@@ -56,6 +60,32 @@ public class ConfigService : Service
         _kernel.Unbind(binding.Type);
         _kernel.Bind(binding.Type).ToConstant(section).InSingletonScope().ToString();
         _logger.Verbose("Bound config section [Section] with [Type]", section, binding.Type);
+    }
+
+    public void ReloadModuleConfigs()
+    {
+        ModuleConfigs.Load();
+        var modules = _kernel.Get<ModuleManager>();
+        foreach (var context in modules.GetAllModules())
+        {
+            foreach (var binding in context.MetaBindings.OfType<ConfigBinding>())
+            {
+                LoadBinding(binding, ModuleConfigs);
+            }
+        }
+    }
+
+    public void ReloadPluginConfigs()
+    {
+        PluginConfigs.Load();
+        var modules = _kernel.Get<PluginManager>();
+        foreach (var context in modules.Plugins)
+        {
+            foreach (var binding in context.MetaBindings.OfType<ConfigBinding>())
+            {
+                LoadBinding(binding, PluginConfigs);
+            }
+        }
     }
 
     public override void Disable()
