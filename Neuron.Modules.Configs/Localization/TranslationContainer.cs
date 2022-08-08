@@ -12,33 +12,46 @@ public class TranslationContainer
         _container = container;
     }
 
-    public T Get<T>(string locale = null) where T: Translations<T>, new()
+    public T Get<T>(params string[] locale) where T: Translations<T>, new()
     {
         if (_container.Document.Sections.Count == 0)
         {
-            var defaultValue = new T();
-            _container.Document.Set(defaultValue.DefaultLanguage, defaultValue);
-            _container.Store();
+            return GetDefault<T>();
+        }
+
+        foreach (var local in locale)
+        {
+            if (local != null && _container.Document.Sections.ContainsKey(local))
+            {
+                var translations = _container.Document.Get<T>(local);
+                translations.SetContainerReference(this);
+                translations.SetLanguage(local);
+                return translations;
+            }   
+        }
+
+        return GetDefault<T>();
+    }
+
+    private T GetDefault<T>() where T : Translations<T>, new()
+    {
+        var defaultValue = new T();
+
+        if (_container.Document.Sections.ContainsKey(defaultValue.DefaultLanguage))
+        {
+            defaultValue = _container.Document.Get<T>(defaultValue.DefaultLanguage);
             defaultValue.SetContainerReference(this);
             defaultValue.SetLanguage(defaultValue.DefaultLanguage);
             return defaultValue;
         }
         
-        if (locale != null && _container.Document.Sections.ContainsKey(locale))
-        {
-            var translations = _container.Document.Get<T>(locale);
-            translations.SetContainerReference(this);
-            translations.SetLanguage(locale);
-            return translations;
-        }
-
-        var fallback = _container.Document.Sections.FirstOrDefault();
-        var export = fallback.Value.Export<T>();
-        export.SetContainerReference(this);
-        export.SetLanguage(fallback.Key);
-        return export;
+        _container.Document.Set(defaultValue.DefaultLanguage, defaultValue);
+        _container.Store();
+        defaultValue.SetContainerReference(this);
+        defaultValue.SetLanguage(defaultValue.DefaultLanguage);
+        return defaultValue;
     }
-    
+
     public object Get(Type type, string locale = null)
     {
         if (_container.Document.Sections.Count == 0)
@@ -71,25 +84,6 @@ public class TranslationContainer
         return fallbackExport;
     }
 
-    public T AddLanguage<T>(string language, T translation) where T: Translations<T>, new()
-    {
-        if (_container.Document.Sections.Any(x => language == x.Key))
-        {
-            var translations = _container.Document.Get<T>(language);
-            _container.Document.Set(language, translations);
-            _container.Store();
-            translations.SetContainerReference(this);
-            translations.SetLanguage(language);
-            return translations;
-        }
-
-        _container.Document.Set(language.ToUpper(), translation);
-        _container.Store();
-        translation.SetContainerReference(this);
-        translation.SetLanguage(language.ToUpper());
-        return translation;
-    }
-    
     public void LoadString(string content) => _container.LoadString(content);
     public string StoreString() => _container.StoreString();
 }

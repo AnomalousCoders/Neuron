@@ -26,9 +26,4 @@ public abstract class Translations<T> : IDocumentSection, ITranslationsUnsafeInt
     public string GetDefaultLanguage() => DefaultLanguage;
 
     public void SetLanguage(string language) => CurrentLanguage = language;
-
-    public void AddLanguage(string language, T translations)
-    {
-        _container.AddLanguage(language, translations);
-    }
 }
