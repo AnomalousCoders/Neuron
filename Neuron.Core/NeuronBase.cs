@@ -55,5 +55,12 @@ namespace Neuron.Core
             Directory.CreateDirectory(dir);
             return dir;
         }
+
+        public string PrepareRelativeDirectory(params string[] sub)
+        {
+            var dir = RelativePath(sub);
+            Directory.CreateDirectory(dir);
+            return dir;
+        }
     }
 }

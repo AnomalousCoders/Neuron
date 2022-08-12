@@ -21,13 +21,12 @@ public class TranslationContainer
 
         foreach (var local in locale)
         {
-            if (local != null && _container.Document.Sections.ContainsKey(local))
-            {
-                var translations = _container.Document.Get<T>(local);
-                translations.SetContainerReference(this);
-                translations.SetLanguage(local);
-                return translations;
-            }   
+            if (local == null || !_container.Document.Sections.ContainsKey(local)) continue;
+            
+            var translations = _container.Document.Get<T>(local);
+            translations.SetContainerReference(this);
+            translations.SetLanguage(local);
+            return translations;
         }
 
         return GetDefault<T>();
@@ -52,36 +51,35 @@ public class TranslationContainer
         return defaultValue;
     }
 
-    public object Get(Type type, string locale = null)
+    private object GetDefault(Type type)
     {
-        if (_container.Document.Sections.Count == 0)
+        var defaultValue = (ITranslationsUnsafeInterface)Activator.CreateInstance(type);
+
+        if (_container.Document.Sections.ContainsKey(defaultValue.GetDefaultLanguage()))
         {
-            var defaultValue = Activator.CreateInstance(type);
-            var unsafeInterface = (ITranslationsUnsafeInterface)defaultValue;
-            var defaultLanguage = unsafeInterface.GetDefaultLanguage();
-            unsafeInterface.SetContainerReference(this);
-            unsafeInterface.SetLanguage(defaultLanguage);
-            _container.Document.Set(defaultLanguage, defaultValue);
-            _container.Store();
+            defaultValue = (ITranslationsUnsafeInterface)_container.Document.Sections[defaultValue.GetDefaultLanguage()].Export(type);
+            defaultValue.SetContainerReference(this);
+            defaultValue.SetLanguage(defaultValue.GetDefaultLanguage());
             return defaultValue;
         }
-        
-        if (locale != null)
-        {
-            if (_container.Document.Sections.ContainsKey(locale))
-            {
-                var export = (ITranslationsUnsafeInterface)_container.Document.Sections[locale].Export(type);
-                export.SetContainerReference(this);
-                export.SetLanguage(locale);
-                return export;   
-            }
-        }
 
-        var fallback = _container.Document.Sections.FirstOrDefault();
-        var fallbackExport = (ITranslationsUnsafeInterface)fallback.Value.Export(type);
-        fallbackExport.SetContainerReference(this);
-        fallbackExport.SetLanguage(fallback.Key);
-        return fallbackExport;
+        _container.Document.Set(defaultValue.GetDefaultLanguage(), defaultValue);
+        _container.Store();
+        defaultValue.SetContainerReference(this);
+        defaultValue.SetLanguage(defaultValue.GetDefaultLanguage());
+        return defaultValue;
+    }
+
+    public object Get(Type type, string locale = null)
+    {
+        if (_container.Document.Sections.Count == 0 || locale == null ||
+            !_container.Document.Sections.ContainsKey(locale)) return GetDefault(type);
+
+        var export = (ITranslationsUnsafeInterface)_container.Document.Sections[locale].Export(type);
+        export.SetContainerReference(this);
+        export.SetLanguage(locale);
+        return export;
+
     }
 
     public void Load() => _container.Load();
