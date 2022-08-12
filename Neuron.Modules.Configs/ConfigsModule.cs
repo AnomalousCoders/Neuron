@@ -44,7 +44,7 @@ public class ConfigsModule : Module
         
     private void OnGenerateConfigBinding(MetaGenerateBindingsEvent args)
     {
-        if (!args.MetaType.TryGetAttribute<AutomaticAttribute>(out var automaticAttribute)) return;
+        if (!args.MetaType.TryGetAttribute<AutomaticAttribute>(out _)) return;
         if (!args.MetaType.TryGetAttribute<DocumentSectionAttribute>(out var documentSectionAttribute)) return;
         if (!args.MetaType.Is<IDocumentSection>()) return;
             
@@ -58,7 +58,7 @@ public class ConfigsModule : Module
         
     private void OnGenerateTranslationsBinding(MetaGenerateBindingsEvent args)
     {
-        if (!args.MetaType.TryGetAttribute<AutomaticAttribute>(out var automaticAttribute)) return;
+        if (!args.MetaType.TryGetAttribute<AutomaticAttribute>(out _)) return;
         if (!args.MetaType.Is<ITranslationsUnsafeInterface>()) return;
             
         Logger.Debug($"* {args.MetaType.Type} [TranslationBinding]");

@@ -84,6 +84,7 @@ public class TranslationContainer
         return fallbackExport;
     }
 
+    public void Load() => _container.Load();
     public void LoadString(string content) => _container.LoadString(content);
     public string StoreString() => _container.StoreString();
 }
