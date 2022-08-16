@@ -1,8 +1,12 @@
-﻿using System.IO;
+﻿using System.Collections.Generic;
+using System.IO;
+using System.Linq;
 using Neuron.Core;
 using Neuron.Core.Dev;
 using Neuron.Core.Logging;
 using Neuron.Core.Meta;
+using Neuron.Core.Modules;
+using Neuron.Core.Plugins;
 using Ninject;
 
 namespace Neuron.Modules.Configs.Localization;
@@ -15,6 +19,9 @@ public class TranslationService : Service
     private ILogger _logger;
     private IKernel _kernel;
     private ConfigsModule _module;
+
+    public Dictionary<string, TranslationContainer> Translations = new();
+
 
     public TranslationService(ConfigService configService, NeuronBase neuronBase, NeuronLogger neuronLogger, IKernel kernel, ConfigsModule module)
     {
@@ -40,12 +47,20 @@ public class TranslationService : Service
         }
     }
 
-    public TranslationContainer GetContainer(string fileName) =>
-        new(_configService.GetContainer(Path.Combine("Translations", fileName)));
+    public TranslationContainer GetContainer(string name)
+    {
+        if (Translations.ContainsKey(name))
+            return Translations[name];
+
+        var container = new TranslationContainer(_configService.GetContainer(Path.Combine("Translations",
+            name.Recase(StringCasing.Snake) + ".syml")));
+        Translations[name] = container;
+        return container;
+    }
 
     public void LoadBinding(TranslationBinding binding, string name)
     {
-        var container = GetContainer($"{name.Recase(StringCasing.Snake)}.syml");
+        var container = GetContainer(name);
         var translations = container.Get(binding.Type);
         binding.Translations = translations;
         _kernel.Unbind(binding.Type);
@@ -56,5 +71,31 @@ public class TranslationService : Service
     public override void Disable()
     {
         
+    }
+    
+    public void ReloadTranslation()
+    {
+        foreach (var translation in Translations)
+        {
+            translation.Value.Load();
+        }
+        
+        var modules = _kernel.Get<ModuleManager>();
+        foreach (var context in modules.GetAllModules())
+        {
+            foreach (var binding in context.MetaBindings.OfType<TranslationBinding>())
+            {
+                LoadBinding(binding, context.Attribute.Name.ToLowerInvariant());
+            }
+        }
+        
+        var plugins = _kernel.Get<PluginManager>().Plugins;
+        foreach (var context in plugins)
+        {
+            foreach (var binding in context.MetaBindings.OfType<TranslationBinding>())
+            {
+                LoadBinding(binding, context.Attribute.Name.ToLowerInvariant());
+            }
+        }
     }
 }
