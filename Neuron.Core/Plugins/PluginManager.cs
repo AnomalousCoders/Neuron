@@ -52,7 +52,7 @@ public class PluginManager
             return (attribute, meta);
         }).ToArray();
 
-        if (pluginAttributes.Length != 1) throw new Exception($"Expected single plugin but got {pluginAttributes.Length}");
+        if (pluginAttributes.Length != 1) throw new IndefiniteExtensionPointException($"Expected single plugin but got {pluginAttributes.Length}");
         var first = pluginAttributes.First();
 
         var instance = (Plugin) first.meta.New();

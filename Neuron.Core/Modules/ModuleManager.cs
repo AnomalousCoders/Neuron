@@ -57,7 +57,7 @@ public class ModuleManager
             return (attribute, meta);
         }).ToArray();
 
-        if (moduleAttributes.Length != 1) throw new Exception($"Expected single module but got {moduleAttributes.Length}");
+        if (moduleAttributes.Length != 1) throw new IndefiniteExtensionPointException($"Expected single module but got {moduleAttributes.Length}");
             
         var first = moduleAttributes.FirstOrDefault();
         var instance = first.meta.New();

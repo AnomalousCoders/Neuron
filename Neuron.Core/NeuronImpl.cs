@@ -6,6 +6,7 @@ using System.Text;
 using Neuron.Core.Config;
 using Neuron.Core.Events;
 using Neuron.Core.Logging;
+using Neuron.Core.Logging.Diagnostics;
 using Neuron.Core.Logging.Utils;
 using Neuron.Core.Meta;
 using Neuron.Core.Modules;
@@ -115,9 +116,23 @@ namespace Neuron.Core
             
             foreach (var file in Directory.GetFiles(pluginsDirectory, "*.dll"))
             {
-                var pluginBytes = File.ReadAllBytes(file);
-                var assembly = assemblies.LoadAssembly(pluginBytes);
-                var context = pluginManager.LoadPlugin(assembly.GetTypes(), assembly);
+                try
+                {
+                    var pluginBytes = File.ReadAllBytes(file);
+                    var assembly = assemblies.LoadAssembly(pluginBytes);
+                    var context = pluginManager.LoadPlugin(assembly.GetTypes(), assembly);
+                }
+                catch (Exception e)
+                {
+                    var error = DiagnosticsError.FromParts(
+                        DiagnosticsError.Summary("An error occured while loading a plugin"),
+                        DiagnosticsError.Description($"Performing the initial load and type analysis for '${file}'" +
+                                                     $"resulted in an exception of type '{e.GetType().Name}' at call site {e.TargetSite}."),
+                        DiagnosticsError.Hint("This exception most commonly occurs when your project setup is wrong or the assembly is corrupt.")
+                    );
+                    error.Exception = e;
+                    _logger.Framework(error);
+                }
             }
         }
         
