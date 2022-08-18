@@ -99,8 +99,22 @@ namespace Neuron.Core
 
             foreach (var assembly in moduleAssemblies)
             {
-                var context = moduleManager.LoadModule(assembly.GetTypes());
-                context.Assembly = assembly;
+                try
+                {
+                    var context = moduleManager.LoadModule(assembly.GetTypes());
+                    context.Assembly = assembly;
+                }
+                catch (Exception e)
+                {
+                    var error = DiagnosticsError.FromParts(
+                        DiagnosticsError.Summary("An error occured while loading a module"),
+                        DiagnosticsError.Description($"Performing the initial load and type analysis for assembly '${assembly.FullName}'" +
+                                                     $"resulted in an exception of type '{e.GetType().Name}' at call site {e.TargetSite}."),
+                        DiagnosticsError.Hint("This exception most commonly occurs when your module setup is wrong or the assembly is corrupt.")
+                    );
+                    error.Exception = e;
+                    _logger.Framework(error);
+                }
             }
             
             moduleManager.ActivateModules();
