@@ -1,17 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using HarmonyLib;
-using HarmonyLib.Public.Patching;
-using Neuron.Core;
-using Neuron.Core.Events;
 using Neuron.Core.Meta;
-using Ninject;
 
 namespace Neuron.Modules.Patcher;
 
 public class PatcherService : Service
 {
-
     private PatcherModule _patcherModule;
 
     public PatcherService(PatcherModule patcherModule)
@@ -25,7 +20,7 @@ public class PatcherService : Service
     {
         Logger.Debug($"Applied patches from {binding.Type}");
         var harmonyInstance = new Harmony(binding.Type.FullName);
-        harmonyInstance.PatchAll(binding.Type);
+        harmonyInstance.CreateClassProcessor(binding.Type).Patch();
         TypeIdentifiedPatchers[binding.Type] = harmonyInstance;
     }
 
@@ -34,7 +29,7 @@ public class PatcherService : Service
         Logger.Debug($"Undo patches from {binding.Type}");
         var key = binding.Type;
         var harmony = TypeIdentifiedPatchers[key];
-        harmony.UnpatchSelf();
+        harmony.UnpatchAll(harmony.Id);
         TypeIdentifiedPatchers.Remove(key);
     }
 
@@ -63,7 +58,7 @@ public class PatcherService : Service
 
     public override void Disable()
     {
-        Harmony.UnpatchAll();
+        GetPatcherInstance().UnpatchAll();
         TypeIdentifiedPatchers.Clear();
     }
 }

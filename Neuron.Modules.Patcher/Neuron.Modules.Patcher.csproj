@@ -9,10 +9,10 @@
     </PropertyGroup>
 
 
-    <Import Project="../Neuron.props"/>
+    <Import Project="../Neuron.props" />
     
     <ItemGroup>
-        <PackageReference Include="HarmonyX" Version="2.10.0" />
+        <PackageReference Include="Lib.Harmony" Version="2.2.2" />
         <PackageReference Include="Ninject" Version="3.3.6" />
         <PackageReference Include="SYML" Version="1.0.2" />
         <PackageReference Include="YamlDotNet" Version="11.2.1" />

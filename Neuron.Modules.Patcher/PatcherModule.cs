@@ -65,24 +65,23 @@ namespace Neuron.Modules.Patcher
                 ModuleBindingQueue.Enqueue(binding);
             });
 
-        private void OnPluginUnload(PluginUnloadEvent args) => args.Context.MetaBindings
-            .OfType<PatchClassBinding>()
-            .ToList().ForEach(Patcher.UnpatchBinding);
-
         private void OnPluginLoad(PluginLoadEvent args) => args.Context.MetaBindings
             .OfType<PatchClassBinding>()
             .ToList().ForEach(Patcher.PatchBinding);
-
+        
+        private void OnPluginUnload(PluginUnloadEvent args) => args.Context.MetaBindings
+            .OfType<PatchClassBinding>()
+            .ToList().ForEach(Patcher.UnpatchBinding);
+        
         private void OnGenerateBinding(MetaGenerateBindingsEvent args)
         {
-            if (args.MetaType.TryGetAttribute<PatchesAttribute>(out var patchesAttribute))
+            if (!args.MetaType.TryGetAttribute<PatchesAttribute>(out _)) return;
+            
+            Logger.Debug($"* {args.MetaType.Type} [PatchBinding]");
+            args.Outputs.Add(new PatchClassBinding()
             {
-                Logger.Debug($"* {args.MetaType.Type} [PatchBinding]");
-                args.Outputs.Add(new PatchClassBinding()
-                {
-                    Type= args.MetaType.Type
-                });
-            }
+                Type= args.MetaType.Type
+            });
         }
         
         #endregion
@@ -99,6 +98,6 @@ public class PatchClassBinding : IMetaBinding
 }
 
 /// <summary>
-/// Marks a class as a HarmonyX patch class
+/// Marks a class as a Harmony patch class
 /// </summary>
 public class PatchesAttribute : MetaAttributeBase { }
