@@ -75,6 +75,7 @@ namespace Neuron.Modules.Patcher
         
         private void OnGenerateBinding(MetaGenerateBindingsEvent args)
         {
+            if (!args.MetaType.TryGetAttribute<AutomaticAttribute>(out _)) return;
             if (!args.MetaType.TryGetAttribute<HarmonyPatch>(out _)) return;
             
             Logger.Debug($"* {args.MetaType.Type} [PatchBinding]");
