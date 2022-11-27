@@ -75,7 +75,7 @@ namespace Neuron.Modules.Patcher
         
         private void OnGenerateBinding(MetaGenerateBindingsEvent args)
         {
-            if (!args.MetaType.TryGetAttribute<PatchesAttribute>(out _)) return;
+            if (!args.MetaType.TryGetAttribute<HarmonyPatch>(out _)) return;
             
             Logger.Debug($"* {args.MetaType.Type} [PatchBinding]");
             args.Outputs.Add(new PatchClassBinding()
@@ -96,8 +96,3 @@ public class PatchClassBinding : IMetaBinding
     public Type Type { get; set; }
     public IEnumerable<Type> PromisedServices => new[] {Type};
 }
-
-/// <summary>
-/// Marks a class as a Harmony patch class
-/// </summary>
-public class PatchesAttribute : MetaAttributeBase { }
