@@ -14,24 +14,7 @@ public class PatcherService : Service
         _patcherModule = patcherModule;
     }
     
-    private Dictionary<Type, Harmony> TypeIdentifiedPatchers { get; set; }
-
-    public void PatchBinding(PatchClassBinding binding)
-    {
-        Logger.Debug($"Applied patches from {binding.Type}");
-        var harmonyInstance = new Harmony(binding.Type.FullName);
-        harmonyInstance.CreateClassProcessor(binding.Type).Patch();
-        TypeIdentifiedPatchers[binding.Type] = harmonyInstance;
-    }
-
-    public void UnpatchBinding(PatchClassBinding binding)
-    {
-        Logger.Debug($"Undo patches from {binding.Type}");
-        var key = binding.Type;
-        var harmony = TypeIdentifiedPatchers[key];
-        harmony.UnpatchAll(harmony.Id);
-        TypeIdentifiedPatchers.Remove(key);
-    }
+    public Dictionary<Type, Harmony> TypeIdentifiedPatchers { get; set; }
 
     public Harmony GetPatcherInstance(string name)
     {
@@ -44,6 +27,20 @@ public class PatcherService : Service
         var guid = Guid.NewGuid();
         var harmony = new Harmony(guid.ToString());
         return harmony;
+    }
+
+    public void PatchType(Type type)
+    {
+        var harmonyInstance = GetPatcherInstance(type.FullName);
+        harmonyInstance.CreateClassProcessor(type).Patch();
+        TypeIdentifiedPatchers[type] = harmonyInstance;
+    }
+
+    public void UnPatchType(Type type)
+    {
+        var harmony = TypeIdentifiedPatchers[type];
+        harmony.UnpatchAll(harmony.Id);
+        TypeIdentifiedPatchers.Remove(type);
     }
 
     public override void Enable()
@@ -60,5 +57,17 @@ public class PatcherService : Service
     {
         GetPatcherInstance().UnpatchAll();
         TypeIdentifiedPatchers.Clear();
+    }
+    
+    internal void PatchBinding(PatchClassBinding binding)
+    {
+        Logger.Debug($"Applied patches from {binding.Type}");
+        PatchType(binding.Type);
+    }
+
+    internal void UnpatchBinding(PatchClassBinding binding)
+    {
+        Logger.Debug($"Undo patches from {binding.Type}");
+        UnPatchType(binding.Type);
     }
 }
