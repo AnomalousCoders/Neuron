@@ -19,12 +19,12 @@ public class DelegateTests : IClassFixture<EventSetup>
     {
         const string text = "Hello World!";
         _setup.EventManager.RegisterEvent<ExampleEvent>();
-        Assert.NotNull(_setup.EventManager.Get<ExampleEvent>());
+        Assert.NotNull(_setup.EventManager.GetSafe<ExampleEvent>());
         Assert.True(_setup.EventManager.Reactors.TryGetValue(typeof(ExampleEvent), out _));
         _setup.EventManager.UnregisterEvent<ExampleEvent>();
         Assert.False(_setup.EventManager.Reactors.TryGetValue(typeof(ExampleEvent), out _));
         _setup.EventManager.RegisterEvent(new EventReactor<ExampleEvent>());
-        _setup.EventManager.Get<ExampleEvent>().Subscribe(HandleEvent);
+        _setup.EventManager.GetSafe<ExampleEvent>().Subscribe(HandleEvent);
         _setup.EventManager.Raise(new ExampleEvent
         {
             Text = text

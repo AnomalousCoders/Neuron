@@ -11,9 +11,20 @@ public class EventManager
     /// Registers an event reactor.
     /// </summary>
     /// <typeparam name="T">type of the reactor which shall be subscribed</typeparam>
-    public EventReactor<T> RegisterEvent<T>() where T: IEvent
+    public ISafeEventReactor<T> RegisterEvent<T>() where T: IEvent
     {
         var reactor = new EventReactor<T>();
+        Reactors[typeof(T)] = reactor;
+        return reactor;
+    }
+
+    /// <summary>
+    /// Registers an event prioritized reactor.
+    /// </summary>
+    /// <typeparam name="T">type of the reactor which shall be subscribed</typeparam>
+    public IPrioritizedEventReactor<T> RegisterPrioritizedEvent<T>() where T : IEvent
+    {
+        var reactor = new PrioritizedEventReactor<T>();
         Reactors[typeof(T)] = reactor;
         return reactor;
     }
@@ -51,14 +62,23 @@ public class EventManager
     {
         Reactors.Remove(typeof(T));
     }
-        
+
     /// <summary>
-    /// Retrieves an event reactor.
+    /// Retrieves an prioritized event reactor.
     /// </summary>
     /// <typeparam name="T">type of the reactor</typeparam>
-    public EventReactor<T> Get<T>() where T: IEvent
+    public IPrioritizedEventReactor<T> GetPrioritize<T>() where T : IEvent
     {
-        return (EventReactor<T>)Reactors[typeof(T)];
+        return (IPrioritizedEventReactor<T>)Reactors[typeof(T)];
+    }
+
+    /// <summary>
+    ///  Retrieves an safe event reactor.
+    /// </summary>
+    /// <typeparam name="T">type of the reactor</typeparam>
+    public ISafeEventReactor<T> GetSafe<T>() where T : IEvent
+    {
+        return (ISafeEventReactor<T>)Reactors[typeof(T)];
     }
 
     /// <summary>
