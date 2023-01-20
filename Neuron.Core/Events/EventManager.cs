@@ -76,7 +76,7 @@ public class EventManager
     ///  Retrieves an safe event reactor.
     /// </summary>
     /// <typeparam name="T">type of the reactor</typeparam>
-    public ISafeEventReactor<T> GetSafe<T>() where T : IEvent
+    public ISafeEventReactor<T> Get<T>() where T : IEvent
     {
         return (ISafeEventReactor<T>)Reactors[typeof(T)];
     }

@@ -19,7 +19,7 @@ public class ListenerTests : IClassFixture<EventSetup>
         const string text = "Hello World!"; 
             
         _setup.EventManager.RegisterEvent<ExampleEvent>();
-        Assert.NotNull(_setup.EventManager.GetSafe<ExampleEvent>());
+        Assert.NotNull(_setup.EventManager.Get<ExampleEvent>());
         _setup.EventManager.UnregisterEvent<ExampleEvent>();
         Assert.False(_setup.EventManager.Reactors.TryGetValue(typeof(ExampleEvent), out _));
         _setup.EventManager.RegisterEvent(new EventReactor<ExampleEvent>());
