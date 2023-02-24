@@ -19,12 +19,14 @@ public abstract class Listener
         _managerReference = manger;
         foreach (var methodInfo in GetType().GetMethods().Where(method => method.GetCustomAttribute<EventHandlerAttribute>() is not null))
         {
+            var attribute = methodInfo.GetCustomAttribute<EventHandlerAttribute>();
             var parameters = methodInfo.GetParameters();
             if (parameters.Length != 1) throw new Exception("EventHandler must have a single Event parameter");
             var eventParameter = parameters[0];
             var eventType = eventParameter.ParameterType;
             var reactor = manger.GetUnsafe(eventType);
-            _subscriptions[eventType] = reactor.SubscribeUnsafe(this, methodInfo);
+            var subscribeUnsafe = reactor.SubscribeUnsafe(this, methodInfo, attribute.Priority);
+            _subscriptions[eventType] = subscribeUnsafe;
         }
     }
 
@@ -50,4 +52,6 @@ public abstract class Listener
     }
 }
 
-public class EventHandlerAttribute : Attribute { }
+public class EventHandlerAttribute : Attribute {
+    public int Priority { get; set; } = 0;
+}

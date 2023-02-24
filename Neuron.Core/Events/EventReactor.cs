@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Reflection;
 using Neuron.Core.Meta;
 
@@ -12,7 +13,9 @@ namespace Neuron.Core.Events;
 /// <typeparam name="T">type of the event</typeparam>
 public class EventReactor<T>: IEventReactor where T: IEvent
 {
-    internal event EventHandler<T> BackingEvent;
+
+    private readonly List<HandlerRegistration<T>> _registrations = new();
+    private readonly HandlerRegistrationComparer<T> _comparer = new (); 
 
     /// <summary>
     /// Invokes the multicast event system.
@@ -21,16 +24,27 @@ public class EventReactor<T>: IEventReactor where T: IEvent
     /// <param name="evt">the event argument object</param>
     public void Raise(T evt)
     {
-        BackingEvent?.Invoke(evt);
+        lock (this)
+        {
+            foreach (var registration in _registrations)
+            {
+                registration.Handler.Invoke(evt);
+            }    
+        }
     }
 
     /// <summary>
     /// Subscribes a delegate to the backing event.
     /// </summary>
     /// <param name="handler">the delegate to subscribe</param>
-    public void Subscribe(EventHandler<T> handler)
+    /// <param name="priority">the priority of the subscription</param>
+    public void Subscribe(EventHandler<T> handler, int priority = 0)
     {
-        BackingEvent += handler;
+        lock (this)
+        {
+            _registrations.Add(new HandlerRegistration<T>(priority, handler));
+            _registrations.Sort(_comparer);
+        }
     }
 
     /// <summary>
@@ -39,7 +53,10 @@ public class EventReactor<T>: IEventReactor where T: IEvent
     /// <param name="handler">the delegate to unsubscribe</param>
     public void Unsubscribe(EventHandler<T> handler)
     {
-        BackingEvent -= handler;
+        lock (this)
+        { 
+            _registrations.RemoveAll(x => x.Handler == handler);
+        }
     }
 
     /// <summary>
@@ -64,10 +81,10 @@ public class EventReactor<T>: IEventReactor where T: IEvent
     /// </summary>
     /// <param name="obj">the instance of object which method shall be hooked</param>
     /// <param name="info">the method which shall be hooked</param>
-    public object SubscribeUnsafe(object obj, MethodInfo info)
+    public object SubscribeUnsafe(object obj, MethodInfo info, int priority = 0)
     {
-        var handler = ReflectionUtils.CreateDelegate<EventHandler<T>>(obj, info);
-        BackingEvent += handler;
+        var handler = DelegateUtils.CreateDelegate<EventHandler<T>>(obj, info);
+        Subscribe(handler, priority);
         return handler;
     }
     
@@ -77,10 +94,47 @@ public class EventReactor<T>: IEventReactor where T: IEvent
     /// <param name="subscription">the delegate boxed as an object</param>
     public void UnsubscribeUnsafe(object subscription)
     {
-        BackingEvent -= subscription as EventHandler<T>;
+        Unsubscribe(subscription as EventHandler<T>);
     }
 }
-    
+
+internal class DelegateUtils
+{
+    public static T CreateDelegate<T>(MethodInfo info) where T : Delegate
+    {
+        var delegateType = typeof(T);
+        var delegated = info.CreateDelegate(delegateType);
+        return (T)delegated;   
+    }
+        
+    public static T CreateDelegate<T>(object instance, MethodInfo info) where T : Delegate
+    {
+        var delegateType = typeof(T);
+        var delegated = info.CreateDelegate(delegateType, instance);
+        return (T)delegated;
+    }
+}
+
+public struct HandlerRegistration<T> where T: IEvent
+{
+    public int Priority { get; }
+    public EventHandler<T> Handler { get; }
+
+    public HandlerRegistration(int priority, EventHandler<T> handler)
+    {
+        Priority = priority;
+        Handler = handler;
+    }
+}
+
+public class HandlerRegistrationComparer<T> : IComparer<HandlerRegistration<T>> where T: IEvent
+{
+    public int Compare(HandlerRegistration<T> x, HandlerRegistration<T> y)
+    {
+        return x.Priority.CompareTo(y.Priority);
+    }
+}
+
 public static class VoidEventExtension
 {
 
@@ -106,7 +160,7 @@ public static class VoidEventExtension
     /// <param name="info">the method which shall be hooked</param>
     public static object SubscribeAction(this EventReactor<VoidEvent> reactor, object obj, MethodInfo info)
     {
-        var action = ReflectionUtils.CreateDelegate<Action>(obj, info);
+        var action = DelegateUtils.CreateDelegate<Action>(obj, info);
         EventHandler<VoidEvent> handler = _ => action.Invoke();
         reactor.Subscribe(handler);
         return handler;
@@ -121,6 +175,6 @@ public interface IEventReactor
 {
     Type TypeDelegate();
     void RaiseUnsafe(object obj);
-    object SubscribeUnsafe(object obj, MethodInfo info);
+    object SubscribeUnsafe(object obj, MethodInfo info, int priority = 0);
     void UnsubscribeUnsafe(object subscription);
 }
