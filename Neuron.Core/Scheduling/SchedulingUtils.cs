@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Net.Http;
 using System.Threading.Tasks;
 
@@ -11,7 +12,9 @@ public static class SchedulingUtils
 
 public static class CoroutineUtils
 {
-
+    /// <summary>
+    /// Waits until task is Completed, Canceled or Faulted.
+    /// </summary>
     public static IEnumerator<float> AwaitTask<T>(Task<T> task)
     {
         while (!task.IsCompleted || !task.IsCanceled || !task.IsFaulted)
@@ -20,10 +23,15 @@ public static class CoroutineUtils
         }
     }
 
-    public static IEnumerator<float> Test()
+    /// <summary>
+    /// Wait until <paramref name="condition"/> return <see langword="true"/>.
+    /// </summary>
+    /// <param name="condition">The blocking condition</param>
+    public static IEnumerator<float> AwaitFor(Func<bool> condition)
     {
-        var task = new HttpClient().GetStringAsync("https://google.de");
-        return AwaitTask(task);
+        while (!condition())
+        {
+            yield return 0f; // Check each tick
+        }
     }
-    
 }

@@ -133,7 +133,7 @@ public interface ILogger
     /// Logs an object using the default object tokenizer
     /// </summary>
     public void Fatal(object obj);
-    
+
     /// <summary>
     /// Adds a log entry.
     /// The message template uses square brackets for variables. I.e.
@@ -141,7 +141,7 @@ public interface ILogger
     /// template strings can still use string interpolation. I.e.
     /// <code>$"The value of {myField.Name} is [Value]"</code>
     /// substituted template variables have to be passed using the
-    /// <see cref="args"/> object array
+    /// <paramref name="args"/> object array
     /// </summary>
     /// <param name="level">the log severity</param>
     /// <param name="template">the message template</param>

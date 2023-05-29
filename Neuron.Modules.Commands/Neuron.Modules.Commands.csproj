@@ -1,12 +1,14 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <OutputType>Library</OutputType>
+		<TargetFrameworks>net472;net48;net6.0</TargetFrameworks>
+		<OutputType>Library</OutputType>
         <Configurations>Debug;Release</Configurations>
         <Platforms>AnyCPU</Platforms>
         <RootNamespace>Neuron.Modules.Commands</RootNamespace>
         <PackageId>NeuronModding.Modules.Commands</PackageId>
-    </PropertyGroup>
+		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+	</PropertyGroup>
 
     <Import Project="../Neuron.props"/>
 
@@ -17,9 +19,11 @@
     </ItemGroup>
 
     <PropertyGroup Condition="'$(Configuration)' == 'Release'">
-        <TreatWarningsAsErrors>True</TreatWarningsAsErrors>
-        <GenerateDocumentationFile>True</GenerateDocumentationFile>
-        <DebugType>Portable</DebugType>
+		<TreatWarningsAsErrors>True</TreatWarningsAsErrors>
+		<GenerateDocumentationFile>True</GenerateDocumentationFile>
+		<DebugType>Portable</DebugType>
+		<Optimize>True</Optimize>
+		<NoWarn>CS1591</NoWarn>
     </PropertyGroup>
 
     <ItemGroup>
@@ -31,3 +35,4 @@
     </PropertyGroup>
 
 </Project>
+ 

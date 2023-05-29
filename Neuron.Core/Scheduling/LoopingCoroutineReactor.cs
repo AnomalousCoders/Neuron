@@ -1,3 +1,4 @@
+using System;
 using System.Threading;
 
 namespace Neuron.Core.Scheduling;
@@ -8,7 +9,7 @@ namespace Neuron.Core.Scheduling;
 public class LoopingCoroutineReactor : CoroutineReactor
 {
     /// <summary>
-    /// The delay between each tick.
+    /// The delay between each tick in milliscondes.
     /// </summary>
     public int TickRate { get; set; } = 50;
     
@@ -16,14 +17,19 @@ public class LoopingCoroutineReactor : CoroutineReactor
     /// The execution state of the reactor.
     /// </summary>
     public bool Running { get; set; } = false;
-        
+
+    /// <summary>
+    /// Launches the courtine handler, must be launched in a thread
+    /// </summary>
     public void Start()
     {
         Running = true;
         while (Running)
         {
+            var befforCall = DateTime.Now;
             Tick();
-            Thread.Sleep(TickRate);
+            var deleta = TickRate - (DateTime.Now - befforCall).Milliseconds;
+            Thread.Sleep(deleta);
         }
     }
 }

@@ -199,7 +199,7 @@ namespace Neuron.Core.Logging
         /// template strings can still use string interpolation. I.e.
         /// <code>$"The value of {myField.Name} is [Value]"</code>
         /// substituted template variables have to be passed using the
-        /// <see cref="args"/> object array
+        /// <paramref name="args "/>object array
         /// </summary>
         /// <param name="level">the log severity</param>
         /// <param name="template">the message template</param>

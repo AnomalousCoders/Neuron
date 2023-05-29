@@ -37,6 +37,6 @@ public class PlatformDebugImpl : IPlatform
 
     public void Disable()
     {
-        _coroutineThread?.Abort();
+        CoroutineReactor.Running = false;
     }
 }

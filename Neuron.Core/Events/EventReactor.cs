@@ -60,7 +60,7 @@ public class EventReactor<T>: IEventReactor where T: IEvent
     }
 
     /// <summary>
-    /// Returns the type of the generic <see cref="T"/>.
+    /// Returns the type of the generic <typeparamref name="T"/>.
     /// </summary>
     public Type TypeDelegate() => typeof(T);
 
@@ -76,11 +76,12 @@ public class EventReactor<T>: IEventReactor where T: IEvent
 
     /// <summary>
     /// Subscribes a method to the backing event.
-    /// Uses reflections to create method delegates of type <see cref="T"/>
+    /// Uses reflections to create method delegates of type <typeparamref name="T"/>.
     /// which can be subscribed normally.
     /// </summary>
     /// <param name="obj">the instance of object which method shall be hooked</param>
     /// <param name="info">the method which shall be hooked</param>
+    /// <param name="priority">the priority, the highest priority takes the event first</param>
     public object SubscribeUnsafe(object obj, MethodInfo info, int priority = 0)
     {
         var handler = DelegateUtils.CreateDelegate<EventHandler<T>>(obj, info);

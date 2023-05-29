@@ -17,7 +17,7 @@ public static class ConsoleWrapper
             {
                 return (WidthOverride == -1 ? ConsoleColumns : WidthOverride) - 1;
             }
-            catch (Exception ignored)
+            catch (Exception)
             {
                 return 100; // Default to small window size in case the console width is not resolvable, 100 because my IDE window fits this :3
             }

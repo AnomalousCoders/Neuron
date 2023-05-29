@@ -1,7 +1,8 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <OutputType>Exe</OutputType>
+		<TargetFrameworks>net472;net48;net6.0</TargetFrameworks>
+		<OutputType>Exe</OutputType>
         <Configurations>Debug;Release</Configurations>
         <Platforms>AnyCPU</Platforms>
         <RootNamespace>Neuron.Core.Standalone</RootNamespace>
@@ -9,13 +10,14 @@
         <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     </PropertyGroup>
 
-
     <Import Project="../Neuron.props"/>
 
     <PropertyGroup Condition="'$(Configuration)' == 'Release'">
-        <TreatWarningsAsErrors>True</TreatWarningsAsErrors>
-        <GenerateDocumentationFile>True</GenerateDocumentationFile>
-        <DebugType>Portable</DebugType>
+		<TreatWarningsAsErrors>True</TreatWarningsAsErrors>
+		<GenerateDocumentationFile>True</GenerateDocumentationFile>
+		<DebugType>Portable</DebugType>
+		<Optimize>True</Optimize>
+		<NoWarn>CS1591</NoWarn>
     </PropertyGroup>
 
     <PropertyGroup Condition="'$(Configuration)' == 'Debug'">

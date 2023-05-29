@@ -8,8 +8,8 @@ namespace Neuron.Core.Scheduling;
 public class ActionCoroutineReactor : CoroutineReactor
 {
 
-    public int TickRate { get; set; } = 50;
-    public bool Running { get; set; } = false;
-
+    /// <summary>
+    /// Returns the Coroutines Reactor Tick method, the return method must be run every tick
+    /// </summary>
     public Action GetTickAction() => Tick;
 }

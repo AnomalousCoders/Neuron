@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading;
 using Neuron.Core.Logging;
 using Neuron.Core.Logging.Diagnostics;
+using Ninject;
 
 namespace Neuron.Core.Scheduling;
 
@@ -14,6 +15,7 @@ namespace Neuron.Core.Scheduling;
 /// </summary>
 public abstract class CoroutineReactor
 {
+    [Inject]
     public ILogger Logger { get; set; }
         
     private List<CoroutineRegistration> _coroutines = new();
@@ -23,19 +25,19 @@ public abstract class CoroutineReactor
     /// <summary>
     /// Starts a new coroutine defined by the enumerator.
     /// </summary>
-    /// <param name="coroutine">the coroutine</param>
-    /// <returns>the coroutine handle</returns>
+    /// <param name="coroutine">the courtoutine is a method that returns the waiting time in seconds (float) before to continue the code</param>
+    /// <returns>the coroutine handle use to stop the coroutine in <see cref="StopCoroutine"/></returns>
     public object StartCoroutine(IEnumerator<float> coroutine)
     {
         var registration = new CoroutineRegistration(coroutine);
         _addCoroutines.Enqueue(registration);
         return registration;
     }
-    
+
     /// <summary>
     /// Stops the coroutine identified by the handle.
     /// </summary>
-    /// <param name="handle">the coroutine handle</param>
+    /// <param name="handle">the coroutine handle seend by <see cref="StartCoroutine"/></param>
     public void StopCoroutine(object handle)
     {
         _removeCoroutines.Enqueue((CoroutineRegistration)handle);
@@ -70,7 +72,7 @@ public abstract class CoroutineReactor
                 );
                 error.Exception = e;
                 NeuronDiagnosticHinter.AddCommonHints(e, error);
-                Logger.Framework(error);
+                Logger?.Framework(error);
             }
         }
     }
