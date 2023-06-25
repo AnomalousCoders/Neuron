@@ -1,20 +1,25 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Neuron.Core", "Neuron.Core\Neuron.Core.csproj", "{2F17FA64-F5B9-43DE-9887-D221B2798CED}"
+# Visual Studio Version 17
+VisualStudioVersion = 17.1.32328.378
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Neuron.Core", "Neuron.Core\Neuron.Core.csproj", "{2F17FA64-F5B9-43DE-9887-D221B2798CED}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Neuron.Tests.Core", "Neuron.Tests.Core\Neuron.Tests.Core.csproj", "{BB734F31-D12F-4B89-9491-C9D416BBF825}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Neuron.Tests.Core", "Neuron.Tests.Core\Neuron.Tests.Core.csproj", "{BB734F31-D12F-4B89-9491-C9D416BBF825}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Neuron.Modules.Patcher", "Neuron.Modules.Patcher\Neuron.Modules.Patcher.csproj", "{7D1BDE3C-A8D9-4648-8CD3-6AEAB259C669}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Neuron.Modules.Patcher", "Neuron.Modules.Patcher\Neuron.Modules.Patcher.csproj", "{7D1BDE3C-A8D9-4648-8CD3-6AEAB259C669}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Neuron.Modules.Commands", "Neuron.Modules.Commands\Neuron.Modules.Commands.csproj", "{D5A1EBCC-4F11-4DFB-96A5-8E73E3C437AB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Neuron.Modules.Commands", "Neuron.Modules.Commands\Neuron.Modules.Commands.csproj", "{D5A1EBCC-4F11-4DFB-96A5-8E73E3C437AB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Neuron.Tests.Commands", "Neuron.Tests.Commands\Neuron.Tests.Commands.csproj", "{38630A44-2CA2-4B7F-B4E1-219C1AADEA42}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Neuron.Tests.Commands", "Neuron.Tests.Commands\Neuron.Tests.Commands.csproj", "{38630A44-2CA2-4B7F-B4E1-219C1AADEA42}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Neuron.Core.Standalone", "Neuron.Core.Standalone\Neuron.Core.Standalone.csproj", "{7AF6BE34-EF21-42B5-A59F-A9027F6C0CA5}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Neuron.Core.Standalone", "Neuron.Core.Standalone\Neuron.Core.Standalone.csproj", "{7AF6BE34-EF21-42B5-A59F-A9027F6C0CA5}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Neuron.Modules.Configs", "Neuron.Modules.Configs\Neuron.Modules.Configs.csproj", "{1FFB9AB5-BEE4-4A9C-BDFA-A38066A769D3}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Neuron.Modules.Configs", "Neuron.Modules.Configs\Neuron.Modules.Configs.csproj", "{1FFB9AB5-BEE4-4A9C-BDFA-A38066A769D3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Neuron.Tests.Configs", "Neuron.Tests.Configs\Neuron.Tests.Configs.csproj", "{CF98E637-DC5B-48A9-A131-B08D87D1F60A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Neuron.Tests.Configs", "Neuron.Tests.Configs\Neuron.Tests.Configs.csproj", "{CF98E637-DC5B-48A9-A131-B08D87D1F60A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Neuron.Modules.Reload", "Neuron.Modules.Reload\Neuron.Modules.Reload.csproj", "{B477E117-27E3-47E1-989D-D74B2D09DD76}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -54,5 +59,15 @@ Global
 		{CF98E637-DC5B-48A9-A131-B08D87D1F60A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{CF98E637-DC5B-48A9-A131-B08D87D1F60A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{CF98E637-DC5B-48A9-A131-B08D87D1F60A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B477E117-27E3-47E1-989D-D74B2D09DD76}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B477E117-27E3-47E1-989D-D74B2D09DD76}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B477E117-27E3-47E1-989D-D74B2D09DD76}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B477E117-27E3-47E1-989D-D74B2D09DD76}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {BC7015E3-DF22-4BB4-B112-D12E32E88BFE}
 	EndGlobalSection
 EndGlobal
