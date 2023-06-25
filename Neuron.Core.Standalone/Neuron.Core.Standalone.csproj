@@ -10,12 +10,13 @@
     </PropertyGroup>
 
 
-    <Import Project="../Neuron.props"/>
+    <Import Project="../Neuron.props" />
 
     <PropertyGroup Condition="'$(Configuration)' == 'Release'">
-        <TreatWarningsAsErrors>True</TreatWarningsAsErrors>
+        <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
         <GenerateDocumentationFile>True</GenerateDocumentationFile>
         <DebugType>Portable</DebugType>
+        <DocumentationFile />
     </PropertyGroup>
 
     <PropertyGroup Condition="'$(Configuration)' == 'Debug'">

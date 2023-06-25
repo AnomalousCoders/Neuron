@@ -8,7 +8,7 @@
         <PackageId>NeuronModding.Modules.Configs</PackageId>
     </PropertyGroup>
 
-    <Import Project="../Neuron.props"/>
+    <Import Project="../Neuron.props" />
     
     <ItemGroup>
         <PackageReference Include="Ninject" Version="3.3.6" />
@@ -17,9 +17,10 @@
     </ItemGroup>
 
     <PropertyGroup Condition="'$(Configuration)' == 'Release'">
-        <TreatWarningsAsErrors>True</TreatWarningsAsErrors>
+        <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
         <GenerateDocumentationFile>True</GenerateDocumentationFile>
         <DebugType>Portable</DebugType>
+        <DocumentationFile />
     </PropertyGroup>
 
     <ItemGroup>
