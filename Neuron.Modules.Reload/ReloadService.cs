@@ -27,7 +27,7 @@ namespace Neuron.Modules.Reload
         public override void Enable()
         {
             _eventManager.RegisterEvent(Reload);
-            Reload.Subscribe(OnReload);
+            Reload.Subscribe(OnReload, int.MaxValue - 100);
         }
 
         public override void Disable()
