@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Neuron.Core.Modules;
+﻿using Neuron.Core.Modules;
 using Neuron.Core;
 using Syml;
 using Neuron.Modules.Configs.Localization;
