@@ -150,6 +150,8 @@ namespace Neuron.Core
             }
         }
         
+
+
         public override void Stop()
         {
             Kernel.Get<PluginManager>().UnloadAll();
