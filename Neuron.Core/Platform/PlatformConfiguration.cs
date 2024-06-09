@@ -27,6 +27,13 @@ public class PlatformConfiguration
     public bool UseGlobals { get; set; } = true;
 
     /// <summary>
+    /// By default Ninject generate a default binding when no binding is found.
+    /// This default binding create a new inistance of the requested type.
+    /// If <see langword="false"/>, Ninject will return <see langword="null"/> when the type is requested.
+    /// </summary>
+    public bool NinjectGenerateDefaultBindings { get; set; } = true;
+
+    /// <summary>
     /// Also writes events to this consumer instead of only the console and possibly a logfile
     /// </summary>
     public ILogRender LogEventSink { get; set; } = null;
