@@ -14,6 +14,7 @@ using Neuron.Core.Platform;
 using Neuron.Core.Plugins;
 using Neuron.Core.Scheduling;
 using Ninject;
+using Ninject.Planning.Bindings.Resolvers;
 
 namespace Neuron.Core
 {
@@ -36,7 +37,14 @@ namespace Neuron.Core
             }
             Kernel.BindSimple<NeuronBase>(this);
             Kernel.BindSimple(Configuration);
-            
+
+            if (!Platform.Configuration.NinjectGenerateDefaultBindings)
+            {
+                Kernel.Components.Remove<IMissingBindingResolver, SelfBindingResolver>();
+                Kernel.Components.Add<IMissingBindingResolver, NullableBindingResolver>();
+                Kernel.Settings.AllowNullInjection = true;
+            }
+
             if (Platform.Configuration.OverrideConsoleEncoding) Console.OutputEncoding = Encoding.UTF8;
             if (Platform.Configuration.FileIo)
             {
@@ -149,7 +157,7 @@ namespace Neuron.Core
                 }
             }
         }
-        
+
         public override void Stop()
         {
             Kernel.Get<PluginManager>().UnloadAll();
